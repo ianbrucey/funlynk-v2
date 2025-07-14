@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -304,5 +306,115 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return 'offline';
+    }
+
+    // ===================================
+    // Core Funlynk Relationships
+    // ===================================
+
+    /**
+     * Get the user's interests.
+     *
+     * @return HasMany
+     */
+    public function interests(): HasMany
+    {
+        return $this->hasMany(\App\Models\Core\UserInterest::class);
+    }
+
+    /**
+     * Get users that this user is following.
+     *
+     * @return BelongsToMany
+     */
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_follows', 'follower_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get users that are following this user.
+     *
+     * @return BelongsToMany
+     */
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_follows', 'following_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if this user is following another user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isFollowing(User $user): bool
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    /**
+     * Check if this user is followed by another user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isFollowedBy(User $user): bool
+    {
+        return $this->followers()->where('follower_id', $user->id)->exists();
+    }
+
+    /**
+     * Follow another user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function follow(User $user): bool
+    {
+        if ($this->id === $user->id || $this->isFollowing($user)) {
+            return false;
+        }
+
+        $this->following()->attach($user->id);
+        return true;
+    }
+
+    /**
+     * Unfollow another user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function unfollow(User $user): bool
+    {
+        if (!$this->isFollowing($user)) {
+            return false;
+        }
+
+        $this->following()->detach($user->id);
+        return true;
+    }
+
+    /**
+     * Get the count of users this user is following.
+     *
+     * @return int
+     */
+    public function getFollowingCountAttribute(): int
+    {
+        return $this->following()->count();
+    }
+
+    /**
+     * Get the count of users following this user.
+     *
+     * @return int
+     */
+    public function getFollowersCountAttribute(): int
+    {
+        return $this->followers()->count();
     }
 }

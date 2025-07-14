@@ -9,6 +9,7 @@ use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
 use App\Services\Shared\ValidationService;
 use App\Services\Shared\CacheService;
+use App\Services\Core\UserService;
 
 /**
  * Core Service Provider
@@ -36,6 +37,15 @@ class CoreServiceProvider extends ServiceProvider
                 $app->make(EmailService::class)
             );
         });
+
+        // Register UserService with dependencies
+        $this->app->singleton(UserService::class, function ($app) {
+            return new UserService(
+                $app->make(FileUploadService::class),
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
     }
 
     /**
@@ -61,6 +71,7 @@ class CoreServiceProvider extends ServiceProvider
             NotificationService::class,
             ValidationService::class,
             CacheService::class,
+            UserService::class,
         ];
     }
 }
