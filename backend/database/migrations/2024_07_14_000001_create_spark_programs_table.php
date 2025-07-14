@@ -15,24 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('short_summary', 500);
+            $table->json('grade_levels');
             $table->integer('duration_minutes')->unsigned();
-            $table->decimal('cost', 8, 2)->default(0.00);
-            $table->string('location_address');
-            $table->string('location_city', 100);
-            $table->string('location_state', 50);
-            $table->string('location_zip', 10);
-            $table->decimal('location_latitude', 10, 8);
-            $table->decimal('location_longitude', 11, 8);
-            $table->text('what_to_bring')->nullable();
-            $table->text('special_instructions')->nullable();
+            $table->integer('max_students')->unsigned();
+            $table->decimal('price_per_student', 8, 2);
+            $table->json('character_topics');
+            $table->json('learning_objectives');
+            $table->json('materials_needed')->nullable();
+            $table->json('resource_files')->nullable();
+            $table->text('special_requirements')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->index(['location_latitude', 'location_longitude']);
-            $table->index(['location_city', 'location_state']);
             $table->index('is_active');
-            $table->fullText(['title', 'description']);
         });
     }
 

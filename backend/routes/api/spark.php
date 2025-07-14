@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Spark\DistrictController;
 use App\Http\Controllers\Api\V1\Spark\SchoolController;
+use App\Http\Controllers\Api\V1\Spark\ProgramController;
+use App\Http\Controllers\Api\V1\Spark\CharacterTopicController;
+use App\Http\Controllers\Api\V1\Spark\ProgramAvailabilityController;
+use App\Http\Controllers\Api\V1\Spark\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,12 +62,78 @@ Route::prefix('schools')->group(function () {
     Route::delete('/{id}/administrators/{userId}', [SchoolController::class, 'removeAdministrator']);
 });
 
-// Program Management Routes (placeholder for Task 002)
+// Program Management Routes
 Route::prefix('programs')->group(function () {
-    // Program routes will be implemented in Agent 3, Task 002
+    Route::get('/', [ProgramController::class, 'index']);
+    Route::post('/', [ProgramController::class, 'store']);
+    Route::get('/{id}', [ProgramController::class, 'show']);
+    Route::put('/{id}', [ProgramController::class, 'update']);
+    Route::delete('/{id}', [ProgramController::class, 'destroy']);
+
+    // Program availability management
+    Route::get('/{id}/availability', [ProgramController::class, 'availability']);
+    Route::post('/{id}/availability', [ProgramController::class, 'addAvailability']);
+    Route::put('/{id}/availability/{availabilityId}', [ProgramController::class, 'updateAvailability']);
+    Route::delete('/{id}/availability/{availabilityId}', [ProgramController::class, 'deleteAvailability']);
+
+    // Program activation/deactivation
+    Route::post('/{id}/activate', [ProgramController::class, 'activate']);
+    Route::post('/{id}/deactivate', [ProgramController::class, 'deactivate']);
+
+    // Program statistics
+    Route::get('/{id}/statistics', [ProgramController::class, 'statistics']);
 });
 
-// Booking Management Routes (placeholder for Task 003)
+// Character Topics Management Routes
+Route::prefix('character-topics')->group(function () {
+    Route::get('/', [CharacterTopicController::class, 'index']);
+    Route::post('/', [CharacterTopicController::class, 'store']);
+    Route::get('/{id}', [CharacterTopicController::class, 'show']);
+    Route::put('/{id}', [CharacterTopicController::class, 'update']);
+    Route::delete('/{id}', [CharacterTopicController::class, 'destroy']);
+
+    // Character topic relationships
+    Route::get('/{id}/programs', [CharacterTopicController::class, 'programs']);
+
+    // Character topic activation/deactivation
+    Route::post('/{id}/activate', [CharacterTopicController::class, 'activate']);
+    Route::post('/{id}/deactivate', [CharacterTopicController::class, 'deactivate']);
+
+    // Get categories
+    Route::get('/categories/list', [CharacterTopicController::class, 'categories']);
+});
+
+// Program Availability Management Routes
+Route::prefix('program-availability')->group(function () {
+    // Availability CRUD operations
+    Route::get('/', [ProgramAvailabilityController::class, 'index']);
+    Route::post('/', [ProgramAvailabilityController::class, 'store']);
+    Route::get('/{id}', [ProgramAvailabilityController::class, 'show']);
+    Route::put('/{id}', [ProgramAvailabilityController::class, 'update']);
+    Route::delete('/{id}', [ProgramAvailabilityController::class, 'destroy']);
+
+    // Program-specific availability
+    Route::get('/program/{programId}', [ProgramAvailabilityController::class, 'programAvailability']);
+    Route::post('/program/{programId}/bulk', [ProgramAvailabilityController::class, 'bulkCreate']);
+    Route::get('/program/{programId}/statistics', [ProgramAvailabilityController::class, 'statistics']);
+});
+
+// Booking Management Routes
 Route::prefix('bookings')->group(function () {
-    // Booking routes will be implemented in Agent 3, Task 003
+    Route::get('/', [BookingController::class, 'index']);
+    Route::post('/', [BookingController::class, 'store']);
+    Route::get('/{id}', [BookingController::class, 'show']);
+    Route::put('/{id}', [BookingController::class, 'update']);
+
+    // Booking status management
+    Route::post('/{id}/confirm', [BookingController::class, 'confirm']);
+    Route::post('/{id}/cancel', [BookingController::class, 'cancel']);
+    Route::post('/{id}/complete', [BookingController::class, 'complete']);
+
+    // Student management
+    Route::get('/{id}/students', [BookingController::class, 'students']);
+    Route::post('/{id}/students', [BookingController::class, 'addStudents']);
+
+    // Booking statistics
+    Route::get('/{id}/statistics', [BookingController::class, 'statistics']);
 });

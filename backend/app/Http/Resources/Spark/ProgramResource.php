@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 /**
  * Program Resource
  * 
- * Placeholder for Spark program data transformation (will be fully implemented in Task 002)
+ * Transform program data for API responses with privacy considerations
  */
 class ProgramResource extends BaseResource
 {
@@ -22,40 +22,51 @@ class ProgramResource extends BaseResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'title' => $this->title,
             'description' => $this->description,
-            'type' => $this->type,
-            'type_display' => $this->type_display,
             'is_active' => $this->is_active,
-            'is_featured' => $this->is_featured,
 
             // Basic information
             'grade_levels' => $this->grade_levels,
             'formatted_grade_levels' => $this->formatted_grade_levels,
-            'subject_areas' => $this->subject_areas,
-            'formatted_subject_areas' => $this->formatted_subject_areas,
-            'duration_weeks' => $this->duration_weeks,
-            'max_participants' => $this->max_participants,
-            'cost_per_student' => $this->cost_per_student,
-            'formatted_cost' => $this->formatted_cost,
+            'duration_minutes' => $this->duration_minutes,
+            'formatted_duration' => $this->formatted_duration,
+            'max_students' => $this->max_students,
+            'price_per_student' => $this->price_per_student,
+            'formatted_price' => $this->formatted_price,
 
-            // School information
-            'school' => $this->whenLoaded('school', function () {
-                return [
-                    'id' => $this->school->id,
-                    'name' => $this->school->name,
-                    'code' => $this->school->code,
-                ];
-            }),
+            // Content
+            'character_topics' => $this->character_topics,
+            'formatted_character_topics' => $this->formatted_character_topics,
+            'learning_objectives' => $this->learning_objectives,
+            'materials_needed' => $this->materials_needed,
+            'special_requirements' => $this->special_requirements,
+            
+            // Resource files - only expose if authenticated
+            ...($this->whenAuthenticated([
+                'resource_files' => $this->resource_files,
+            ])),
 
-            // Statistics
+            // Relationships - lazy loaded
+            'character_topics_rel' => $this->whenLoadedCollection('characterTopics', CharacterTopicResource::class),
+            'availability' => $this->whenLoadedCollection('availability', ProgramAvailabilityResource::class),
+
+            // Statistics - only show basic stats to public
             'statistics' => [
                 'booking_count' => $this->booking_count,
                 'confirmed_booking_count' => $this->confirmed_booking_count,
+                'available_slots_count' => $this->available_slots_count,
+                
+                // Admin-only statistics
+                ...($this->whenCan('view-program-analytics', [
+                    'total_participants' => $this->bookings()->sum('participant_count'),
+                    'revenue' => $this->bookings()->where('status', 'confirmed')->sum('total_amount'),
+                ])),
             ],
 
             // Timestamps
             ...$this->timestamps(),
+            ...$this->softDeleteTimestamp(),
         ];
     }
 }
