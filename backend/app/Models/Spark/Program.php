@@ -2,21 +2,22 @@
 
 namespace App\Models\Spark;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Program Model (SparkProgram)
+ * Program Model (SparkProgram).
  *
  * Manages Spark educational programs with character topics and availability
  */
 class Program extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -107,6 +108,7 @@ class Program extends Model
      * Scope to get active programs.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -118,7 +120,8 @@ class Program extends Model
      * Scope to get programs by grade level.
      *
      * @param Builder $query
-     * @param string $gradeLevel
+     * @param string  $gradeLevel
+     *
      * @return Builder
      */
     public function scopeByGradeLevel(Builder $query, string $gradeLevel): Builder
@@ -130,7 +133,8 @@ class Program extends Model
      * Scope to get programs by character topic.
      *
      * @param Builder $query
-     * @param string $topic
+     * @param string  $topic
+     *
      * @return Builder
      */
     public function scopeByCharacterTopic(Builder $query, string $topic): Builder
@@ -142,8 +146,9 @@ class Program extends Model
      * Scope to get programs by duration range.
      *
      * @param Builder $query
-     * @param int $minMinutes
-     * @param int $maxMinutes
+     * @param int     $minMinutes
+     * @param int     $maxMinutes
+     *
      * @return Builder
      */
     public function scopeByDuration(Builder $query, int $minMinutes, int $maxMinutes): Builder
@@ -155,8 +160,9 @@ class Program extends Model
      * Scope to get programs by price range.
      *
      * @param Builder $query
-     * @param float $minPrice
-     * @param float $maxPrice
+     * @param float   $minPrice
+     * @param float   $maxPrice
+     *
      * @return Builder
      */
     public function scopeByPriceRange(Builder $query, float $minPrice, float $maxPrice): Builder
@@ -168,7 +174,8 @@ class Program extends Model
      * Scope to search programs by title or description.
      *
      * @param Builder $query
-     * @param string $search
+     * @param string  $search
+     *
      * @return Builder
      */
     public function scopeSearch(Builder $query, string $search): Builder
@@ -228,7 +235,7 @@ class Program extends Model
         $remainingMinutes = $minutes % 60;
 
         if ($remainingMinutes === 0) {
-            return $hours === 1 ? "1 hour" : "{$hours} hours";
+            return $hours === 1 ? '1 hour' : "{$hours} hours";
         }
 
         return $hours === 1 ? "1 hour {$remainingMinutes} minutes" : "{$hours} hours {$remainingMinutes} minutes";
@@ -300,6 +307,7 @@ class Program extends Model
     public function activate(): bool
     {
         $this->is_active = true;
+
         return $this->save();
     }
 
@@ -311,6 +319,7 @@ class Program extends Model
     public function deactivate(): bool
     {
         $this->is_active = false;
+
         return $this->save();
     }
 
@@ -318,6 +327,7 @@ class Program extends Model
      * Add character topic to the program.
      *
      * @param string $topic
+     *
      * @return bool
      */
     public function addCharacterTopic(string $topic): bool
@@ -326,8 +336,10 @@ class Program extends Model
         if (!in_array($topic, $topics)) {
             $topics[] = $topic;
             $this->character_topics = $topics;
+
             return $this->save();
         }
+
         return false;
     }
 
@@ -335,6 +347,7 @@ class Program extends Model
      * Remove character topic from the program.
      *
      * @param string $topic
+     *
      * @return bool
      */
     public function removeCharacterTopic(string $topic): bool
@@ -344,8 +357,10 @@ class Program extends Model
         if ($key !== false) {
             unset($topics[$key]);
             $this->character_topics = array_values($topics);
+
             return $this->save();
         }
+
         return false;
     }
 
@@ -353,6 +368,7 @@ class Program extends Model
      * Check if program has a specific character topic.
      *
      * @param string $topic
+     *
      * @return bool
      */
     public function hasCharacterTopic(string $topic): bool

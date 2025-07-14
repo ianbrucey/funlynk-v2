@@ -6,14 +6,14 @@ use App\Models\Spark\CharacterTopic;
 use App\Models\Spark\Program;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
- * Character Topic Service
- * 
+ * Character Topic Service.
+ *
  * Handles character topic management business logic including CRUD, search, and statistics
  */
 class CharacterTopicService
@@ -21,13 +21,15 @@ class CharacterTopicService
     public function __construct(
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated character topics with filters
+     * Get paginated character topics with filters.
      *
      * @param array<string, mixed> $filters
-     * @param int $perPage
+     * @param int                  $perPage
+     *
      * @return LengthAwarePaginator<CharacterTopic>
      */
     public function getCharacterTopics(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -51,11 +53,13 @@ class CharacterTopicService
     }
 
     /**
-     * Create a new character topic
+     * Create a new character topic.
      *
      * @param array<string, mixed> $data
-     * @return CharacterTopic
+     *
      * @throws Exception
+     *
+     * @return CharacterTopic
      */
     public function createCharacterTopic(array $data): CharacterTopic
     {
@@ -74,6 +78,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return $topic;
         } catch (Exception $e) {
             DB::rollBack();
@@ -82,17 +87,20 @@ class CharacterTopicService
                 'operation' => 'create_character_topic',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update a character topic
+     * Update a character topic.
      *
-     * @param CharacterTopic $topic
+     * @param CharacterTopic       $topic
      * @param array<string, mixed> $data
-     * @return CharacterTopic
+     *
      * @throws Exception
+     *
+     * @return CharacterTopic
      */
     public function updateCharacterTopic(CharacterTopic $topic, array $data): CharacterTopic
     {
@@ -117,6 +125,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return $topic;
         } catch (Exception $e) {
             DB::rollBack();
@@ -125,16 +134,19 @@ class CharacterTopicService
                 'operation' => 'update_character_topic',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete a character topic (soft delete)
+     * Delete a character topic (soft delete).
      *
      * @param CharacterTopic $topic
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteCharacterTopic(CharacterTopic $topic): bool
     {
@@ -159,6 +171,7 @@ class CharacterTopicService
             $topic->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -166,15 +179,17 @@ class CharacterTopicService
                 'topic_id' => $topic->id,
                 'operation' => 'delete_character_topic'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get character topic by ID with relationships
+     * Get character topic by ID with relationships.
      *
-     * @param int $id
+     * @param int           $id
      * @param array<string> $relations
+     *
      * @return CharacterTopic
      */
     public function getCharacterTopicById(int $id, array $relations = []): CharacterTopic
@@ -183,10 +198,11 @@ class CharacterTopicService
     }
 
     /**
-     * Get character topic by slug
+     * Get character topic by slug.
      *
-     * @param string $slug
+     * @param string        $slug
      * @param array<string> $relations
+     *
      * @return CharacterTopic
      */
     public function getCharacterTopicBySlug(string $slug, array $relations = []): CharacterTopic
@@ -195,11 +211,12 @@ class CharacterTopicService
     }
 
     /**
-     * Search character topics
+     * Search character topics.
      *
-     * @param string $query
+     * @param string               $query
      * @param array<string, mixed> $filters
-     * @param int $perPage
+     * @param int                  $perPage
+     *
      * @return LengthAwarePaginator<CharacterTopic>
      */
     public function searchCharacterTopics(string $query, array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -221,11 +238,12 @@ class CharacterTopicService
     }
 
     /**
-     * Get programs using a character topic
+     * Get programs using a character topic.
      *
      * @param CharacterTopic $topic
-     * @param bool $activeOnly
-     * @param int $perPage
+     * @param bool           $activeOnly
+     * @param int            $perPage
+     *
      * @return LengthAwarePaginator<Program>
      */
     public function getTopicPrograms(CharacterTopic $topic, bool $activeOnly = false, int $perPage = 15): LengthAwarePaginator
@@ -240,9 +258,10 @@ class CharacterTopicService
     }
 
     /**
-     * Get character topic statistics
+     * Get character topic statistics.
      *
      * @param CharacterTopic $topic
+     *
      * @return array<string, mixed>
      */
     public function getTopicStatistics(CharacterTopic $topic): array
@@ -259,7 +278,7 @@ class CharacterTopicService
     }
 
     /**
-     * Get all character topic statistics
+     * Get all character topic statistics.
      *
      * @return array<string, mixed>
      */
@@ -284,9 +303,10 @@ class CharacterTopicService
     }
 
     /**
-     * Get most used character topics
+     * Get most used character topics.
      *
      * @param int $limit
+     *
      * @return Collection<int, CharacterTopic>
      */
     public function getMostUsedTopics(int $limit = 10): Collection
@@ -298,10 +318,11 @@ class CharacterTopicService
     }
 
     /**
-     * Get character topics by category
+     * Get character topics by category.
      *
      * @param string $category
-     * @param bool $activeOnly
+     * @param bool   $activeOnly
+     *
      * @return Collection<int, CharacterTopic>
      */
     public function getTopicsByCategory(string $category, bool $activeOnly = true): Collection
@@ -316,9 +337,10 @@ class CharacterTopicService
     }
 
     /**
-     * Check if character topic is available for use
+     * Check if character topic is available for use.
      *
      * @param CharacterTopic $topic
+     *
      * @return bool
      */
     public function isTopicAvailable(CharacterTopic $topic): bool
@@ -327,11 +349,13 @@ class CharacterTopicService
     }
 
     /**
-     * Activate a character topic
+     * Activate a character topic.
      *
      * @param CharacterTopic $topic
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function activateCharacterTopic(CharacterTopic $topic): bool
     {
@@ -351,6 +375,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -358,16 +383,19 @@ class CharacterTopicService
                 'topic_id' => $topic->id,
                 'operation' => 'activate_character_topic'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Deactivate a character topic
+     * Deactivate a character topic.
      *
      * @param CharacterTopic $topic
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deactivateCharacterTopic(CharacterTopic $topic): bool
     {
@@ -387,6 +415,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -394,16 +423,19 @@ class CharacterTopicService
                 'topic_id' => $topic->id,
                 'operation' => 'deactivate_character_topic'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Reorder character topics
+     * Reorder character topics.
      *
      * @param array<int, int> $topicOrder Array of topic_id => sort_order
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function reorderTopics(array $topicOrder): bool
     {
@@ -425,6 +457,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -432,16 +465,19 @@ class CharacterTopicService
                 'operation' => 'reorder_character_topics',
                 'topic_order' => $topicOrder
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Bulk update character topics
+     * Bulk update character topics.
      *
      * @param array<int, array<string, mixed>> $updates Array of topic_id => data
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function bulkUpdateTopics(array $updates): bool
     {
@@ -465,6 +501,7 @@ class CharacterTopicService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -472,21 +509,24 @@ class CharacterTopicService
                 'operation' => 'bulk_update_character_topics',
                 'updates' => $updates
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get character topic usage analytics
+     * Get character topic usage analytics.
      *
      * @param CharacterTopic $topic
+     *
      * @return array<string, mixed>
      */
     public function getTopicUsageAnalytics(CharacterTopic $topic): array
     {
         $programs = $topic->programs()->with(['bookings'])->get();
-        $totalBookings = $programs->sum(fn($program) => $program->bookings->count());
-        $totalRevenue = $programs->sum(fn($program) => 
+        $totalBookings = $programs->sum(fn ($program) => $program->bookings->count());
+        $totalRevenue = $programs->sum(
+            fn ($program) =>
             $program->bookings->where('status', 'confirmed')->sum('total_amount')
         );
 
@@ -494,11 +534,11 @@ class CharacterTopicService
             'programs_using_topic' => $programs->count(),
             'total_bookings' => $totalBookings,
             'total_revenue' => $totalRevenue,
-            'average_bookings_per_program' => $programs->count() > 0 ? 
+            'average_bookings_per_program' => $programs->count() > 0 ?
                 round($totalBookings / $programs->count(), 2) : 0,
-            'most_booked_program' => $programs->sortByDesc(fn($program) => 
+            'most_booked_program' => $programs->sortByDesc(fn ($program) =>
                 $program->bookings->count())->first()?->title,
-            'program_breakdown' => $programs->map(fn($program) => [
+            'program_breakdown' => $programs->map(fn ($program) => [
                 'program_id' => $program->id,
                 'program_title' => $program->title,
                 'bookings_count' => $program->bookings->count(),
@@ -508,10 +548,11 @@ class CharacterTopicService
     }
 
     /**
-     * Find or create character topic by name
+     * Find or create character topic by name.
      *
      * @param string $name
      * @param string $category
+     *
      * @return CharacterTopic
      */
     public function findOrCreateByName(string $name, string $category = 'general'): CharacterTopic
@@ -520,7 +561,7 @@ class CharacterTopicService
     }
 
     /**
-     * Get available categories with counts
+     * Get available categories with counts.
      *
      * @return array<string, mixed>
      */
@@ -534,8 +575,8 @@ class CharacterTopicService
             ->toArray();
 
         $allCategories = CharacterTopic::getCategories();
-        
-        return collect($allCategories)->map(fn($display, $key) => [
+
+        return collect($allCategories)->map(fn ($display, $key) => [
             'key' => $key,
             'display' => $display,
             'count' => $categoryCounts[$key] ?? 0,

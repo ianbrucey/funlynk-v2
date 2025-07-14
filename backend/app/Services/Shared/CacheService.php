@@ -2,13 +2,13 @@
 
 namespace App\Services\Shared;
 
+use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 /**
- * Cache Service
- * 
+ * Cache Service.
+ *
  * Centralized caching service with consistent patterns and error handling
  */
 class CacheService
@@ -19,20 +19,22 @@ class CacheService
 
     public function __construct(
         private LoggingService $loggingService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get cached value or execute callback and cache result
+     * Get cached value or execute callback and cache result.
      *
-     * @param string $key
+     * @param string   $key
      * @param callable $callback
      * @param int|null $ttl
+     *
      * @return mixed
      */
     public function remember(string $key, callable $callback, ?int $ttl = null): mixed
     {
         $ttl = $ttl ?? self::DEFAULT_TTL;
-        
+
         try {
             return Cache::remember($key, $ttl, $callback);
         } catch (Exception $e) {
@@ -40,17 +42,18 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'remember'
             ]);
-            
+
             // Fallback: execute callback without caching
             return $callback();
         }
     }
 
     /**
-     * Get value from cache
+     * Get value from cache.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function get(string $key, mixed $default = null): mixed
@@ -62,22 +65,24 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'get'
             ]);
+
             return $default;
         }
     }
 
     /**
-     * Store value in cache
+     * Store value in cache.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param string   $key
+     * @param mixed    $value
      * @param int|null $ttl
+     *
      * @return bool
      */
     public function put(string $key, mixed $value, ?int $ttl = null): bool
     {
         $ttl = $ttl ?? self::DEFAULT_TTL;
-        
+
         try {
             return Cache::put($key, $value, $ttl);
         } catch (Exception $e) {
@@ -85,15 +90,17 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'put'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Store value in cache forever
+     * Store value in cache forever.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function forever(string $key, mixed $value): bool
@@ -105,14 +112,16 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'forever'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Remove value from cache
+     * Remove value from cache.
      *
      * @param string $key
+     *
      * @return bool
      */
     public function forget(string $key): bool
@@ -124,14 +133,16 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'forget'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Check if key exists in cache
+     * Check if key exists in cache.
      *
      * @param string $key
+     *
      * @return bool
      */
     public function has(string $key): bool
@@ -143,15 +154,17 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'has'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Increment cached value
+     * Increment cached value.
      *
      * @param string $key
-     * @param int $value
+     * @param int    $value
+     *
      * @return int|bool
      */
     public function increment(string $key, int $value = 1): int|bool
@@ -163,15 +176,17 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'increment'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Decrement cached value
+     * Decrement cached value.
      *
      * @param string $key
-     * @param int $value
+     * @param int    $value
+     *
      * @return int|bool
      */
     public function decrement(string $key, int $value = 1): int|bool
@@ -183,56 +198,64 @@ class CacheService
                 'cache_key' => $key,
                 'operation' => 'decrement'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Cache user-specific data
+     * Cache user-specific data.
      *
-     * @param int $userId
-     * @param string $key
-     * @param mixed $value
+     * @param int      $userId
+     * @param string   $key
+     * @param mixed    $value
      * @param int|null $ttl
+     *
      * @return bool
      */
     public function putUserData(int $userId, string $key, mixed $value, ?int $ttl = null): bool
     {
         $cacheKey = $this->getUserCacheKey($userId, $key);
+
         return $this->put($cacheKey, $value, $ttl);
     }
 
     /**
-     * Get user-specific cached data
+     * Get user-specific cached data.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getUserData(int $userId, string $key, mixed $default = null): mixed
     {
         $cacheKey = $this->getUserCacheKey($userId, $key);
+
         return $this->get($cacheKey, $default);
     }
 
     /**
-     * Forget user-specific cached data
+     * Forget user-specific cached data.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $key
+     *
      * @return bool
      */
     public function forgetUserData(int $userId, string $key): bool
     {
         $cacheKey = $this->getUserCacheKey($userId, $key);
+
         return $this->forget($cacheKey);
     }
 
     /**
-     * Clear all cache for a user
+     * Clear all cache for a user.
      *
      * @param int $userId
+     *
      * @return bool
      */
     public function clearUserCache(int $userId): bool
@@ -240,83 +263,94 @@ class CacheService
         try {
             $pattern = "user:{$userId}:*";
             $keys = Cache::getRedis()->keys($pattern);
-            
+
             if (!empty($keys)) {
                 Cache::getRedis()->del($keys);
             }
-            
+
             Log::info('User cache cleared', ['user_id' => $userId, 'keys_cleared' => count($keys)]);
+
             return true;
         } catch (Exception $e) {
             $this->loggingService->logError($e, [
                 'user_id' => $userId,
                 'operation' => 'clearUserCache'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Cache API response
+     * Cache API response.
      *
      * @param string $endpoint
-     * @param array $params
-     * @param mixed $response
-     * @param int $ttl
+     * @param array  $params
+     * @param mixed  $response
+     * @param int    $ttl
+     *
      * @return bool
      */
     public function cacheApiResponse(string $endpoint, array $params, mixed $response, int $ttl = self::SHORT_TTL): bool
     {
         $key = $this->getApiCacheKey($endpoint, $params);
+
         return $this->put($key, $response, $ttl);
     }
 
     /**
-     * Get cached API response
+     * Get cached API response.
      *
      * @param string $endpoint
-     * @param array $params
+     * @param array  $params
+     *
      * @return mixed
      */
     public function getCachedApiResponse(string $endpoint, array $params): mixed
     {
         $key = $this->getApiCacheKey($endpoint, $params);
+
         return $this->get($key);
     }
 
     /**
-     * Cache database query result
+     * Cache database query result.
      *
      * @param string $query
-     * @param array $bindings
-     * @param mixed $result
-     * @param int $ttl
+     * @param array  $bindings
+     * @param mixed  $result
+     * @param int    $ttl
+     *
      * @return bool
      */
     public function cacheQueryResult(string $query, array $bindings, mixed $result, int $ttl = self::DEFAULT_TTL): bool
     {
         $key = $this->getQueryCacheKey($query, $bindings);
+
         return $this->put($key, $result, $ttl);
     }
 
     /**
-     * Get cached query result
+     * Get cached query result.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
+     *
      * @return mixed
      */
     public function getCachedQueryResult(string $query, array $bindings): mixed
     {
         $key = $this->getQueryCacheKey($query, $bindings);
+
         return $this->get($key);
     }
 
     /**
-     * Generate user cache key
+     * Generate user cache key.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $key
+     *
      * @return string
      */
     private function getUserCacheKey(int $userId, string $key): string
@@ -325,28 +359,32 @@ class CacheService
     }
 
     /**
-     * Generate API cache key
+     * Generate API cache key.
      *
      * @param string $endpoint
-     * @param array $params
+     * @param array  $params
+     *
      * @return string
      */
     private function getApiCacheKey(string $endpoint, array $params): string
     {
         $paramHash = md5(serialize($params));
+
         return "api:{$endpoint}:{$paramHash}";
     }
 
     /**
-     * Generate query cache key
+     * Generate query cache key.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
+     *
      * @return string
      */
     private function getQueryCacheKey(string $query, array $bindings): string
     {
         $hash = md5($query . serialize($bindings));
+
         return "query:{$hash}";
     }
 }

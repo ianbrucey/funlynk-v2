@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\V1\Core;
 
 use App\Http\Controllers\Api\BaseApiController;
-use App\Services\Core\EventInteractionService;
 use App\Models\Core\Event;
-use Illuminate\Http\Request;
+use App\Services\Core\EventInteractionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Event Interaction Controller
- * 
+ * Event Interaction Controller.
+ *
  * Handles event interactions including sharing, QR codes, and check-ins
  */
 class EventInteractionController extends BaseApiController
@@ -22,17 +22,18 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Share an event
+     * Share an event.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function share(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to share this event');
             }
@@ -56,17 +57,18 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Get event sharing statistics
+     * Get event sharing statistics.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function shareStats(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             // Only event hosts and admins can view share stats
             if (!($request->user()->hasRole('admin') || $event->host_id === $request->user()->id)) {
                 return $this->forbiddenResponse('You do not have permission to view share statistics');
@@ -79,17 +81,18 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Generate QR code for event
+     * Generate QR code for event.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function generateQrCode(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to generate QR code for this event');
             }
@@ -110,10 +113,11 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Check in to an event
+     * Check in to an event.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function checkIn(Request $request, int $eventId): JsonResponse
@@ -147,10 +151,11 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Check out from an event
+     * Check out from an event.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function checkOut(Request $request, int $eventId): JsonResponse
@@ -172,17 +177,18 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Get event check-in statistics
+     * Get event check-in statistics.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function checkInStats(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             // Only event hosts and admins can view check-in stats
             if (!($request->user()->hasRole('admin') || $event->host_id === $request->user()->id)) {
                 return $this->forbiddenResponse('You do not have permission to view check-in statistics');
@@ -195,17 +201,18 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Get event analytics dashboard data
+     * Get event analytics dashboard data.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function analytics(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             // Only event hosts and admins can view analytics
             if (!($request->user()->hasRole('admin') || $event->host_id === $request->user()->id)) {
                 return $this->forbiddenResponse('You do not have permission to view event analytics');
@@ -218,9 +225,10 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Get nearby events for location-based discovery
+     * Get nearby events for location-based discovery.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function nearbyEvents(Request $request): JsonResponse
@@ -245,9 +253,10 @@ class EventInteractionController extends BaseApiController
     }
 
     /**
-     * Get event recommendations for user
+     * Get event recommendations for user.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function recommendations(Request $request): JsonResponse

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\PasswordResetRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\Auth\UserResource;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -26,6 +26,7 @@ class AuthController extends BaseApiController
      * Handle user login.
      *
      * @param LoginRequest $request
+     *
      * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
@@ -47,6 +48,7 @@ class AuthController extends BaseApiController
             }
 
             $message = $result['message'] ?? 'Login successful';
+
             return $this->successResponse($response, $message);
 
         } catch (ValidationException $e) {
@@ -60,6 +62,7 @@ class AuthController extends BaseApiController
      * Handle user registration.
      *
      * @param RegisterRequest $request
+     *
      * @return JsonResponse
      */
     public function register(RegisterRequest $request): JsonResponse
@@ -81,6 +84,7 @@ class AuthController extends BaseApiController
             }
 
             $message = $result['message'] ?? 'Registration successful';
+
             return $this->successResponse($response, $message, 201);
 
         } catch (ValidationException $e) {
@@ -94,6 +98,7 @@ class AuthController extends BaseApiController
      * Handle password reset.
      *
      * @param PasswordResetRequest $request
+     *
      * @return JsonResponse
      */
     public function resetPassword(PasswordResetRequest $request): JsonResponse
@@ -120,6 +125,7 @@ class AuthController extends BaseApiController
      * Send password reset link.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function forgotPassword(Request $request): JsonResponse
@@ -130,6 +136,7 @@ class AuthController extends BaseApiController
 
         try {
             $result = $this->authService->sendPasswordResetLink($request->email);
+
             return $this->successResponse(null, $result['message']);
 
         } catch (ValidationException $e) {
@@ -143,6 +150,7 @@ class AuthController extends BaseApiController
      * Handle user logout.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function logout(Request $request): JsonResponse
@@ -162,6 +170,7 @@ class AuthController extends BaseApiController
      * Logout from all devices.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function logoutAll(Request $request): JsonResponse
@@ -181,6 +190,7 @@ class AuthController extends BaseApiController
      * Get current authenticated user.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function me(Request $request): JsonResponse
@@ -203,6 +213,7 @@ class AuthController extends BaseApiController
      * Refresh user token.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function refresh(Request $request): JsonResponse

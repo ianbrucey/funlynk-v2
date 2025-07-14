@@ -2,19 +2,18 @@
 
 namespace App\Utils\Spark;
 
-use App\Models\Spark\Program;
 use App\Models\Spark\CharacterTopic;
-use Carbon\Carbon;
+use App\Models\Spark\Program;
 
 /**
- * Program Helper Utility
- * 
+ * Program Helper Utility.
+ *
  * Provides utility methods for Spark program management
  */
 class ProgramHelper
 {
     /**
-     * Get available grade levels for programs
+     * Get available grade levels for programs.
      *
      * @return array
      */
@@ -38,7 +37,7 @@ class ProgramHelper
     }
 
     /**
-     * Get grade level groups
+     * Get grade level groups.
      *
      * @return array
      */
@@ -52,9 +51,10 @@ class ProgramHelper
     }
 
     /**
-     * Format grade levels for display
+     * Format grade levels for display.
      *
      * @param array $gradeLevels
+     *
      * @return string
      */
     public static function formatGradeLevels(array $gradeLevels): string
@@ -71,7 +71,7 @@ class ProgramHelper
     }
 
     /**
-     * Get duration options for programs
+     * Get duration options for programs.
      *
      * @return array
      */
@@ -95,9 +95,10 @@ class ProgramHelper
     }
 
     /**
-     * Format duration in minutes to human readable format
+     * Format duration in minutes to human readable format.
      *
      * @param int $minutes
+     *
      * @return string
      */
     public static function formatDuration(int $minutes): string
@@ -110,16 +111,16 @@ class ProgramHelper
         $remainingMinutes = $minutes % 60;
 
         if ($remainingMinutes === 0) {
-            return $hours === 1 ? "1 hour" : "{$hours} hours";
+            return $hours === 1 ? '1 hour' : "{$hours} hours";
         }
 
-        return $hours === 1 
-            ? "1 hour {$remainingMinutes} minutes" 
+        return $hours === 1
+            ? "1 hour {$remainingMinutes} minutes"
             : "{$hours} hours {$remainingMinutes} minutes";
     }
 
     /**
-     * Get price ranges for filtering
+     * Get price ranges for filtering.
      *
      * @return array
      */
@@ -135,9 +136,10 @@ class ProgramHelper
     }
 
     /**
-     * Format price for display
+     * Format price for display.
      *
      * @param float $price
+     *
      * @return string
      */
     public static function formatPrice(float $price): string
@@ -150,7 +152,7 @@ class ProgramHelper
     }
 
     /**
-     * Get character topic categories
+     * Get character topic categories.
      *
      * @return array
      */
@@ -160,9 +162,10 @@ class ProgramHelper
     }
 
     /**
-     * Get popular character topics
+     * Get popular character topics.
      *
      * @param int $limit
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getPopularCharacterTopics(int $limit = 10)
@@ -175,9 +178,10 @@ class ProgramHelper
     }
 
     /**
-     * Calculate program statistics
+     * Calculate program statistics.
      *
      * @param Program $program
+     *
      * @return array
      */
     public static function calculateProgramStatistics(Program $program): array
@@ -200,11 +204,12 @@ class ProgramHelper
     }
 
     /**
-     * Get program recommendations based on grade level and topics
+     * Get program recommendations based on grade level and topics.
      *
      * @param array $gradeLevels
      * @param array $characterTopics
-     * @param int $limit
+     * @param int   $limit
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getRecommendedPrograms(array $gradeLevels = [], array $characterTopics = [], int $limit = 5)
@@ -234,10 +239,11 @@ class ProgramHelper
     }
 
     /**
-     * Check if a program is suitable for a grade level
+     * Check if a program is suitable for a grade level.
      *
      * @param Program $program
-     * @param string $gradeLevel
+     * @param string  $gradeLevel
+     *
      * @return bool
      */
     public static function isSuitableForGrade(Program $program, string $gradeLevel): bool
@@ -246,7 +252,7 @@ class ProgramHelper
     }
 
     /**
-     * Get time slot suggestions for program availability
+     * Get time slot suggestions for program availability.
      *
      * @return array
      */
@@ -276,9 +282,10 @@ class ProgramHelper
     }
 
     /**
-     * Validate program data
+     * Validate program data.
      *
      * @param array $data
+     *
      * @return array
      */
     public static function validateProgramData(array $data): array

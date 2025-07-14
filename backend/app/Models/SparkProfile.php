@@ -189,6 +189,7 @@ class SparkProfile extends Model
         if ($this->spark_score >= 30) {
             return 'Moderately Fun';
         }
+
         return 'Getting Started';
     }
 
@@ -208,6 +209,7 @@ class SparkProfile extends Model
         if (empty($this->fun_facts)) {
             return null;
         }
+
         return $this->fun_facts[array_rand($this->fun_facts)];
     }
 
@@ -219,6 +221,7 @@ class SparkProfile extends Model
         if (empty($this->conversation_starters)) {
             return null;
         }
+
         return $this->conversation_starters[array_rand($this->conversation_starters)];
     }
 }

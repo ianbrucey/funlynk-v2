@@ -4,8 +4,8 @@ namespace Tests\Unit\Http\Resources\Spark;
 
 use App\Http\Resources\Spark\CharacterTopicResource;
 use App\Models\Spark\CharacterTopic;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CharacterTopicResourceTest extends TestCase
 {

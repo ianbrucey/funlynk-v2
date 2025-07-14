@@ -2,20 +2,20 @@
 
 namespace App\Services\Core;
 
-use App\Models\User;
 use App\Models\Core\Event;
 use App\Models\Core\EventAttendee;
 use App\Models\Core\EventTag;
+use App\Models\User;
 use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * Event Service
- * 
+ * Event Service.
+ *
  * Handles event management business logic including CRUD, search, and attendance
  */
 class EventService
@@ -24,13 +24,15 @@ class EventService
         private FileUploadService $fileUploadService,
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated events with filters
+     * Get paginated events with filters.
      *
      * @param array $filters
-     * @param int $perPage
+     * @param int   $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getEvents(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -74,12 +76,14 @@ class EventService
     }
 
     /**
-     * Create a new event
+     * Create a new event.
      *
-     * @param User $host
+     * @param User  $host
      * @param array $data
-     * @return Event
+     *
      * @throws Exception
+     *
+     * @return Event
      */
     public function createEvent(User $host, array $data): Event
     {
@@ -120,6 +124,7 @@ class EventService
             );
 
             DB::commit();
+
             return $event;
         } catch (Exception $e) {
             DB::rollBack();
@@ -127,17 +132,20 @@ class EventService
                 'user_id' => $host->id,
                 'operation' => 'create_event'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update an event
+     * Update an event.
      *
      * @param Event $event
      * @param array $data
-     * @return Event
+     *
      * @throws Exception
+     *
+     * @return Event
      */
     public function updateEvent(Event $event, array $data): Event
     {
@@ -151,7 +159,7 @@ class EventService
                     $imageData = $this->fileUploadService->uploadImage($image, 'event-images');
                     $newImageUrls[] = $imageData['url'];
                 }
-                
+
                 // Merge with existing images
                 $existingImages = $event->images ?? [];
                 $data['images'] = array_merge($existingImages, $newImageUrls);
@@ -161,12 +169,12 @@ class EventService
             if (isset($data['remove_images']) && !empty($data['remove_images'])) {
                 $existingImages = $event->images ?? [];
                 $data['images'] = array_diff($existingImages, $data['remove_images']);
-                
+
                 // Delete removed images from storage
                 foreach ($data['remove_images'] as $imageUrl) {
                     $this->fileUploadService->deleteFile($imageUrl);
                 }
-                
+
                 unset($data['remove_images']);
             }
 
@@ -191,6 +199,7 @@ class EventService
             );
 
             DB::commit();
+
             return $event;
         } catch (Exception $e) {
             DB::rollBack();
@@ -198,16 +207,19 @@ class EventService
                 'event_id' => $event->id,
                 'operation' => 'update_event'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete an event
+     * Delete an event.
      *
      * @param Event $event
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteEvent(Event $event): bool
     {
@@ -249,6 +261,7 @@ class EventService
             $event->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -256,16 +269,18 @@ class EventService
                 'event_id' => $event->id,
                 'operation' => 'delete_event'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Search events
+     * Search events.
      *
      * @param string $query
-     * @param array $filters
-     * @param int $perPage
+     * @param array  $filters
+     * @param int    $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function searchEvents(string $query, array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -313,11 +328,10 @@ class EventService
     }
 
     /**
-     * Attach tags to an event
+     * Attach tags to an event.
      *
      * @param Event $event
      * @param array $tagNames
-     * @return void
      */
     private function attachTags(Event $event, array $tagNames): void
     {
@@ -327,16 +341,15 @@ class EventService
             $tag->incrementUsage();
             $tagIds[] = $tag->id;
         }
-        
+
         $event->tags()->attach($tagIds);
     }
 
     /**
-     * Sync tags for an event
+     * Sync tags for an event.
      *
      * @param Event $event
      * @param array $tagNames
-     * @return void
      */
     private function syncTags(Event $event, array $tagNames): void
     {
@@ -352,17 +365,18 @@ class EventService
             $tag->incrementUsage();
             $tagIds[] = $tag->id;
         }
-        
+
         $event->tags()->sync($tagIds);
     }
 
     /**
-     * RSVP to an event
+     * RSVP to an event.
      *
-     * @param User $user
-     * @param Event $event
-     * @param string $response
+     * @param User        $user
+     * @param Event       $event
+     * @param string      $response
      * @param string|null $notes
+     *
      * @return bool
      */
     public function rsvpToEvent(User $user, Event $event, string $response, ?string $notes = null): bool
@@ -433,6 +447,7 @@ class EventService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -441,15 +456,17 @@ class EventService
                 'event_id' => $event->id,
                 'operation' => 'rsvp_to_event'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Cancel RSVP to an event
+     * Cancel RSVP to an event.
      *
-     * @param User $user
+     * @param User  $user
      * @param Event $event
+     *
      * @return bool
      */
     public function cancelRsvp(User $user, Event $event): bool
@@ -481,16 +498,18 @@ class EventService
                 'event_id' => $event->id,
                 'operation' => 'cancel_rsvp'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Get event attendees
+     * Get event attendees.
      *
-     * @param Event $event
+     * @param Event       $event
      * @param string|null $status
-     * @param int $perPage
+     * @param int         $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getEventAttendees(Event $event, ?string $status = null, int $perPage = 15): LengthAwarePaginator
@@ -505,11 +524,12 @@ class EventService
     }
 
     /**
-     * Get user's hosted events
+     * Get user's hosted events.
      *
-     * @param User $user
+     * @param User        $user
      * @param string|null $status
-     * @param int $perPage
+     * @param int         $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getUserHostedEvents(User $user, ?string $status = null, int $perPage = 15): LengthAwarePaginator
@@ -524,11 +544,12 @@ class EventService
     }
 
     /**
-     * Get user's attended events
+     * Get user's attended events.
      *
-     * @param User $user
+     * @param User        $user
      * @param string|null $status
-     * @param int $perPage
+     * @param int         $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getUserAttendedEvents(User $user, ?string $status = null, int $perPage = 15): LengthAwarePaginator

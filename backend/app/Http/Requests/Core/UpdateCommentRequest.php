@@ -5,8 +5,8 @@ namespace App\Http\Requests\Core;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Update Comment Request
- * 
+ * Update Comment Request.
+ *
  * Validates comment update data
  */
 class UpdateCommentRequest extends FormRequest
@@ -61,8 +61,6 @@ class UpdateCommentRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

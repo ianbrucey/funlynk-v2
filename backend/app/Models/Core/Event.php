@@ -2,18 +2,17 @@
 
 namespace App\Models\Core;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
-use Carbon\Carbon;
 
 /**
- * Event Model
- * 
+ * Event Model.
+ *
  * Manages Core Funlynk events with comprehensive functionality
  */
 class Event extends Model
@@ -137,6 +136,7 @@ class Event extends Model
      * Scope to get published events.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopePublished(Builder $query): Builder
@@ -148,6 +148,7 @@ class Event extends Model
      * Scope to get public events.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopePublic(Builder $query): Builder
@@ -159,6 +160,7 @@ class Event extends Model
      * Scope to get upcoming events.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeUpcoming(Builder $query): Builder
@@ -170,6 +172,7 @@ class Event extends Model
      * Scope to get past events.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopePast(Builder $query): Builder
@@ -181,6 +184,7 @@ class Event extends Model
      * Scope to get events happening today.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeToday(Builder $query): Builder
@@ -192,9 +196,10 @@ class Event extends Model
      * Scope to get events by location radius.
      *
      * @param Builder $query
-     * @param float $latitude
-     * @param float $longitude
-     * @param float $radius (in kilometers)
+     * @param float   $latitude
+     * @param float   $longitude
+     * @param float   $radius    (in kilometers)
+     *
      * @return Builder
      */
     public function scopeWithinRadius(Builder $query, float $latitude, float $longitude, float $radius = 50): Builder
@@ -209,7 +214,8 @@ class Event extends Model
      * Scope to get events by category.
      *
      * @param Builder $query
-     * @param int $categoryId
+     * @param int     $categoryId
+     *
      * @return Builder
      */
     public function scopeByCategory(Builder $query, int $categoryId): Builder
@@ -221,6 +227,7 @@ class Event extends Model
      * Scope to get events with available spots.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeWithAvailableSpots(Builder $query): Builder
@@ -292,6 +299,7 @@ class Event extends Model
     public function getIsActiveAttribute(): bool
     {
         $now = now();
+
         return $this->start_time <= $now && $this->end_time >= $now;
     }
 
@@ -365,18 +373,18 @@ class Event extends Model
     public function getFormattedDurationAttribute(): string
     {
         $minutes = $this->duration_in_minutes;
-        
+
         if ($minutes < 60) {
             return "{$minutes} minutes";
         }
-        
+
         $hours = floor($minutes / 60);
         $remainingMinutes = $minutes % 60;
-        
+
         if ($remainingMinutes === 0) {
-            return $hours === 1 ? "1 hour" : "{$hours} hours";
+            return $hours === 1 ? '1 hour' : "{$hours} hours";
         }
-        
+
         return $hours === 1 ? "1 hour {$remainingMinutes} minutes" : "{$hours} hours {$remainingMinutes} minutes";
     }
 
@@ -388,6 +396,7 @@ class Event extends Model
      * Check if a user can view this event.
      *
      * @param User|null $user
+     *
      * @return bool
      */
     public function canBeViewedBy(?User $user): bool
@@ -424,6 +433,7 @@ class Event extends Model
      * Check if a user can edit this event.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function canBeEditedBy(User $user): bool
@@ -435,6 +445,7 @@ class Event extends Model
      * Check if a user can delete this event.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function canBeDeletedBy(User $user): bool

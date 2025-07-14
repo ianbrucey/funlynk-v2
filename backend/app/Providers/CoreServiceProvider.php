@@ -2,20 +2,20 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Services\Shared\FileUploadService;
+use App\Services\Core\EventCommentService;
+use App\Services\Core\EventInteractionService;
+use App\Services\Core\EventService;
+use App\Services\Core\UserService;
+use App\Services\Shared\CacheService;
 use App\Services\Shared\EmailService;
+use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
 use App\Services\Shared\ValidationService;
-use App\Services\Shared\CacheService;
-use App\Services\Core\UserService;
-use App\Services\Core\EventService;
-use App\Services\Core\EventCommentService;
-use App\Services\Core\EventInteractionService;
+use Illuminate\Support\ServiceProvider;
 
 /**
- * Core Service Provider
+ * Core Service Provider.
  *
  * Registers all shared services and their dependencies
  */

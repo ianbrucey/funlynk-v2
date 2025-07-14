@@ -2,31 +2,32 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Shared\LoggingService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use App\Services\Shared\LoggingService;
 
 /**
- * Rate Limiting Middleware
- * 
+ * Rate Limiting Middleware.
+ *
  * Implements rate limiting for API endpoints with configurable limits
  */
 class RateLimitMiddleware
 {
     public function __construct(
         private LoggingService $loggingService
-    ) {}
+    ) {
+    }
 
     /**
-     * Handle an incoming request
+     * Handle an incoming request.
      *
      * @param Request $request
      * @param Closure $next
-     * @param int $maxAttempts
-     * @param int $decayMinutes
+     * @param int     $maxAttempts
+     * @param int     $decayMinutes
+     *
      * @return Response
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1): Response
@@ -64,9 +65,10 @@ class RateLimitMiddleware
     }
 
     /**
-     * Resolve request signature for rate limiting
+     * Resolve request signature for rate limiting.
      *
      * @param Request $request
+     *
      * @return string
      */
     protected function resolveRequestSignature(Request $request): string

@@ -19,7 +19,7 @@ class AuthenticationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create default roles
         Role::create(['name' => 'user']);
         Role::create(['name' => 'admin']);
@@ -501,8 +501,11 @@ class AuthenticationTest extends TestCase
         $response = $this->getJson('/api/auth/me');
 
         $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.roles', fn ($json) =>
+            ->assertJson(
+                fn (AssertableJson $json) =>
+                $json->has(
+                    'data.roles',
+                    fn ($json) =>
                     $json->where('0.name', 'admin')
                         ->etc()
                 )
@@ -520,8 +523,11 @@ class AuthenticationTest extends TestCase
         $response = $this->getJson('/api/auth/me');
 
         $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.roles', fn ($json) =>
+            ->assertJson(
+                fn (AssertableJson $json) =>
+                $json->has(
+                    'data.roles',
+                    fn ($json) =>
                     $json->where('0.name', 'moderator')
                         ->etc()
                 )
@@ -538,8 +544,11 @@ class AuthenticationTest extends TestCase
         $response = $this->getJson('/api/auth/me');
 
         $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.roles', fn ($json) =>
+            ->assertJson(
+                fn (AssertableJson $json) =>
+                $json->has(
+                    'data.roles',
+                    fn ($json) =>
                     $json->where('0.name', 'user')
                         ->etc()
                 )

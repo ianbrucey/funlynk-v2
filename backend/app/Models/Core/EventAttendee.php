@@ -2,14 +2,14 @@
 
 namespace App\Models\Core;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
 
 /**
- * Event Attendee Model
- * 
+ * Event Attendee Model.
+ *
  * Manages event attendance and RSVP functionality
  */
 class EventAttendee extends Model
@@ -73,6 +73,7 @@ class EventAttendee extends Model
      * Scope to get confirmed attendees.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeConfirmed(Builder $query): Builder
@@ -84,6 +85,7 @@ class EventAttendee extends Model
      * Scope to get pending attendees.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopePending(Builder $query): Builder
@@ -95,6 +97,7 @@ class EventAttendee extends Model
      * Scope to get declined attendees.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeDeclined(Builder $query): Builder
@@ -106,6 +109,7 @@ class EventAttendee extends Model
      * Scope to get checked-in attendees.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeCheckedIn(Builder $query): Builder
@@ -117,7 +121,8 @@ class EventAttendee extends Model
      * Scope to get attendees for a specific event.
      *
      * @param Builder $query
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return Builder
      */
     public function scopeForEvent(Builder $query, int $eventId): Builder
@@ -129,7 +134,8 @@ class EventAttendee extends Model
      * Scope to get attendees for a specific user.
      *
      * @param Builder $query
-     * @param int $userId
+     * @param int     $userId
+     *
      * @return Builder
      */
     public function scopeForUser(Builder $query, int $userId): Builder
@@ -208,6 +214,7 @@ class EventAttendee extends Model
         }
 
         $this->checked_in_at = now();
+
         return $this->save();
     }
 
@@ -223,6 +230,7 @@ class EventAttendee extends Model
         }
 
         $this->checked_out_at = now();
+
         return $this->save();
     }
 
@@ -235,6 +243,7 @@ class EventAttendee extends Model
     {
         $this->status = 'confirmed';
         $this->rsvp_response = 'yes';
+
         return $this->save();
     }
 
@@ -247,6 +256,7 @@ class EventAttendee extends Model
     {
         $this->status = 'declined';
         $this->rsvp_response = 'no';
+
         return $this->save();
     }
 
@@ -258,6 +268,7 @@ class EventAttendee extends Model
     public function cancel(): bool
     {
         $this->status = 'cancelled';
+
         return $this->save();
     }
 }

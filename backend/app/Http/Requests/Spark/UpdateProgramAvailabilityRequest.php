@@ -3,11 +3,10 @@
 namespace App\Http\Requests\Spark;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
- * Update Program Availability Request
- * 
+ * Update Program Availability Request.
+ *
  * Validates program availability slot update data
  */
 class UpdateProgramAvailabilityRequest extends FormRequest
@@ -78,8 +77,6 @@ class UpdateProgramAvailabilityRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -87,7 +84,7 @@ class UpdateProgramAvailabilityRequest extends FormRequest
         if ($this->has('start_time') && $this->has('end_time')) {
             $startTime = \Carbon\Carbon::createFromFormat('H:i', $this->input('start_time'));
             $endTime = \Carbon\Carbon::createFromFormat('H:i', $this->input('end_time'));
-            
+
             if ($endTime->diffInHours($startTime) > 8) {
                 $this->merge([
                     'end_time' => $startTime->copy()->addHours(8)->format('H:i'),
@@ -99,18 +96,17 @@ class UpdateProgramAvailabilityRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @param \Illuminate\Validation\Validator $validator
      */
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
             $availabilityId = $this->route('availabilityId');
-            
+
             // Check for time conflicts with existing availability (excluding current record)
             if ($this->has(['date', 'start_time', 'end_time'])) {
                 $availability = \App\Models\Spark\ProgramAvailability::find($availabilityId);
-                
+
                 if ($availability) {
                     $conflicts = \App\Models\Spark\ProgramAvailability::where('program_id', $availability->program_id)
                         ->where('id', '!=', $availabilityId)
@@ -118,7 +114,7 @@ class UpdateProgramAvailabilityRequest extends FormRequest
                         ->where(function ($query) use ($availability) {
                             $startTime = $this->input('start_time', $availability->start_time->format('H:i'));
                             $endTime = $this->input('end_time', $availability->end_time->format('H:i'));
-                            
+
                             $query->whereBetween('start_time', [$startTime, $endTime])
                                   ->orWhereBetween('end_time', [$startTime, $endTime])
                                   ->orWhere(function ($q) use ($startTime, $endTime) {
@@ -137,7 +133,7 @@ class UpdateProgramAvailabilityRequest extends FormRequest
             // Prevent reducing max_bookings below current_bookings
             if ($this->has('max_bookings')) {
                 $availability = \App\Models\Spark\ProgramAvailability::find($availabilityId);
-                
+
                 if ($availability && $this->input('max_bookings') < $availability->current_bookings) {
                     $validator->errors()->add('max_bookings', 'Cannot reduce maximum bookings below current bookings (' . $availability->current_bookings . ').');
                 }

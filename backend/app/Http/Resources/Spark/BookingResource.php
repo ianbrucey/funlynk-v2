@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * Booking Resource
- * 
+ * Booking Resource.
+ *
  * Transform booking data for API responses
  */
 class BookingResource extends BaseResource
@@ -16,6 +16,7 @@ class BookingResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array

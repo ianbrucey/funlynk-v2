@@ -5,8 +5,8 @@ namespace App\Http\Requests\Spark;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create Program Availability Request
- * 
+ * Create Program Availability Request.
+ *
  * Validates program availability slot creation data
  */
 class CreateProgramAvailabilityRequest extends FormRequest
@@ -83,8 +83,6 @@ class CreateProgramAvailabilityRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -98,7 +96,7 @@ class CreateProgramAvailabilityRequest extends FormRequest
         if ($this->has('start_time') && $this->has('end_time')) {
             $startTime = \Carbon\Carbon::createFromFormat('H:i', $this->input('start_time'));
             $endTime = \Carbon\Carbon::createFromFormat('H:i', $this->input('end_time'));
-            
+
             if ($endTime->diffInHours($startTime) > 8) {
                 $this->merge([
                     'end_time' => $startTime->copy()->addHours(8)->format('H:i'),
@@ -110,8 +108,7 @@ class CreateProgramAvailabilityRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @param \Illuminate\Validation\Validator $validator
      */
     public function withValidator($validator): void
     {
@@ -123,7 +120,7 @@ class CreateProgramAvailabilityRequest extends FormRequest
                     ->where(function ($query) {
                         $startTime = $this->input('start_time');
                         $endTime = $this->input('end_time');
-                        
+
                         $query->whereBetween('start_time', [$startTime, $endTime])
                               ->orWhereBetween('end_time', [$startTime, $endTime])
                               ->orWhere(function ($q) use ($startTime, $endTime) {

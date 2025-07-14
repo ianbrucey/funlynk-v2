@@ -29,6 +29,7 @@ class RegisterController extends Controller
      * Handle a registration request for the application.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function register(Request $request): JsonResponse

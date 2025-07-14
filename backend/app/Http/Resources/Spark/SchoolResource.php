@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * School Resource
- * 
+ * School Resource.
+ *
  * Transforms school data for Spark API responses
  */
 class SchoolResource extends BaseResource
@@ -16,6 +16,7 @@ class SchoolResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -131,7 +132,7 @@ class SchoolResource extends BaseResource
     }
 
     /**
-     * Check if user can edit this school
+     * Check if user can edit this school.
      *
      * @return bool
      */
@@ -148,7 +149,7 @@ class SchoolResource extends BaseResource
     }
 
     /**
-     * Check if user can manage programs in this school
+     * Check if user can manage programs in this school.
      *
      * @return bool
      */
@@ -165,7 +166,7 @@ class SchoolResource extends BaseResource
     }
 
     /**
-     * Check if user can manage administrators for this school
+     * Check if user can manage administrators for this school.
      *
      * @return bool
      */

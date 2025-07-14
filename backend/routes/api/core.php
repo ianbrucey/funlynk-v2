@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\Core\UserController;
-use App\Http\Controllers\Api\V1\Core\EventController;
 use App\Http\Controllers\Api\V1\Core\EventCommentController;
+use App\Http\Controllers\Api\V1\Core\EventController;
 use App\Http\Controllers\Api\V1\Core\EventInteractionController;
+use App\Http\Controllers\Api\V1\Core\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------

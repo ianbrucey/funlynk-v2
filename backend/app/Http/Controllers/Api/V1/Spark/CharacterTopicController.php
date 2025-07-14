@@ -6,14 +6,14 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Spark\CreateCharacterTopicRequest;
 use App\Http\Requests\Spark\UpdateCharacterTopicRequest;
 use App\Http\Resources\Spark\CharacterTopicResource;
-use App\Services\Spark\CharacterTopicService;
 use App\Models\Spark\CharacterTopic;
-use Illuminate\Http\Request;
+use App\Services\Spark\CharacterTopicService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Character Topic Controller
- * 
+ * Character Topic Controller.
+ *
  * Handles character topic management for Spark programs
  */
 class CharacterTopicController extends BaseApiController
@@ -25,9 +25,10 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Get paginated list of character topics
+     * Get paginated list of character topics.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -50,16 +51,17 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Create a new character topic
+     * Create a new character topic.
      *
      * @param CreateCharacterTopicRequest $request
+     *
      * @return JsonResponse
      */
     public function store(CreateCharacterTopicRequest $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request) {
             $topic = $this->characterTopicService->createCharacterTopic($request->validated());
-            
+
             return $this->createdResponse(
                 new CharacterTopicResource($topic),
                 'Character topic created successfully'
@@ -68,17 +70,18 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Get a specific character topic
+     * Get a specific character topic.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function show(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $topic = CharacterTopic::with(['programs'])->findOrFail($id);
-            
+
             return $this->successResponse(
                 new CharacterTopicResource($topic),
                 'Character topic retrieved successfully'
@@ -87,10 +90,11 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Update a character topic
+     * Update a character topic.
      *
      * @param UpdateCharacterTopicRequest $request
-     * @param int $id
+     * @param int                         $id
+     *
      * @return JsonResponse
      */
     public function update(UpdateCharacterTopicRequest $request, int $id): JsonResponse
@@ -98,7 +102,7 @@ class CharacterTopicController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $topic = CharacterTopic::findOrFail($id);
             $topic = $this->characterTopicService->updateCharacterTopic($topic, $request->validated());
-            
+
             return $this->updatedResponse(
                 new CharacterTopicResource($topic),
                 'Character topic updated successfully'
@@ -107,41 +111,43 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Delete a character topic
+     * Delete a character topic.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function destroy(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $topic = CharacterTopic::findOrFail($id);
-            
+
             if ($topic->programs()->count() > 0) {
                 return $this->errorResponse(
                     'Cannot delete character topic that is used by programs',
                     400
                 );
             }
-            
+
             $this->characterTopicService->deleteCharacterTopic($topic);
-            
+
             return $this->deletedResponse('Character topic deleted successfully');
         });
     }
 
     /**
-     * Get character topic categories
+     * Get character topic categories.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function categories(Request $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () {
             $categories = CharacterTopic::getCategories();
-            
+
             return $this->successResponse(
                 $categories,
                 'Character topic categories retrieved successfully'
@@ -150,17 +156,18 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Get programs using a character topic
+     * Get programs using a character topic.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function programs(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $topic = CharacterTopic::findOrFail($id);
-            
+
             $request->validate([
                 'per_page' => 'integer|min:1|max:50',
                 'active_only' => 'boolean',
@@ -177,10 +184,11 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Activate a character topic
+     * Activate a character topic.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function activate(Request $request, int $id): JsonResponse
@@ -189,7 +197,7 @@ class CharacterTopicController extends BaseApiController
             $topic = CharacterTopic::findOrFail($id);
             $topic->is_active = true;
             $topic->save();
-            
+
             return $this->successResponse(
                 ['is_active' => true],
                 'Character topic activated successfully'
@@ -198,10 +206,11 @@ class CharacterTopicController extends BaseApiController
     }
 
     /**
-     * Deactivate a character topic
+     * Deactivate a character topic.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function deactivate(Request $request, int $id): JsonResponse
@@ -210,7 +219,7 @@ class CharacterTopicController extends BaseApiController
             $topic = CharacterTopic::findOrFail($id);
             $topic->is_active = false;
             $topic->save();
-            
+
             return $this->successResponse(
                 ['is_active' => false],
                 'Character topic deactivated successfully'

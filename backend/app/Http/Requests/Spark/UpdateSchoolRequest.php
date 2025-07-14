@@ -6,8 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Update School Request
- * 
+ * Update School Request.
+ *
  * Validates school update data for Spark educational programs
  */
 class UpdateSchoolRequest extends FormRequest
@@ -119,8 +119,6 @@ class UpdateSchoolRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

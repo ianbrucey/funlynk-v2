@@ -64,6 +64,7 @@ class BookingStudent extends Model
         }
 
         $this->update(['checked_in_at' => now()]);
+
         return true;
     }
 }

@@ -10,13 +10,13 @@ use App\Models\User;
 use App\Services\Shared\EmailService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * Booking Service
- * 
+ * Booking Service.
+ *
  * Handles booking management business logic including CRUD operations, confirmations, and student management
  */
 class BookingService
@@ -25,12 +25,14 @@ class BookingService
         private EmailService $emailService,
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated bookings with filters
+     * Get paginated bookings with filters.
      *
      * @param array<string, mixed> $filters
+     *
      * @return LengthAwarePaginator<Booking>
      */
     public function getBookings(array $filters = []): LengthAwarePaginator
@@ -73,12 +75,14 @@ class BookingService
     }
 
     /**
-     * Create a new booking
+     * Create a new booking.
      *
-     * @param User $teacher
+     * @param User                 $teacher
      * @param array<string, mixed> $data
-     * @return Booking
+     *
      * @throws Exception
+     *
+     * @return Booking
      */
     public function createBooking(User $teacher, array $data): Booking
     {
@@ -129,6 +133,7 @@ class BookingService
             $this->sendBookingConfirmationEmail($booking);
 
             DB::commit();
+
             return $booking->load(['school', 'program', 'teacher']);
         } catch (Exception $e) {
             DB::rollBack();
@@ -137,14 +142,16 @@ class BookingService
                 'operation' => 'create_booking',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get booking by ID
+     * Get booking by ID.
      *
      * @param int $id
+     *
      * @return Booking|null
      */
     public function getBookingById(int $id): ?Booking
@@ -153,12 +160,14 @@ class BookingService
     }
 
     /**
-     * Update booking
+     * Update booking.
      *
-     * @param Booking $booking
+     * @param Booking              $booking
      * @param array<string, mixed> $data
-     * @return Booking
+     *
      * @throws Exception
+     *
+     * @return Booking
      */
     public function updateBooking(Booking $booking, array $data): Booking
     {
@@ -192,6 +201,7 @@ class BookingService
             );
 
             DB::commit();
+
             return $booking->fresh(['school', 'program', 'teacher']);
         } catch (Exception $e) {
             DB::rollBack();
@@ -200,19 +210,22 @@ class BookingService
                 'operation' => 'update_booking',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Confirm booking
+     * Confirm booking.
      *
-     * @param Booking $booking
-     * @param string $date
-     * @param string $time
+     * @param Booking     $booking
+     * @param string      $date
+     * @param string      $time
      * @param string|null $notes
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function confirmBooking(Booking $booking, string $date, string $time, ?string $notes = null): bool
     {
@@ -246,6 +259,7 @@ class BookingService
             $this->sendBookingConfirmedEmail($booking);
 
             DB::commit();
+
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
@@ -253,17 +267,20 @@ class BookingService
                 'booking_id' => $booking->id,
                 'operation' => 'confirm_booking'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Cancel booking
+     * Cancel booking.
      *
-     * @param Booking $booking
+     * @param Booking     $booking
      * @param string|null $reason
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function cancelBooking(Booking $booking, ?string $reason = null): bool
     {
@@ -290,6 +307,7 @@ class BookingService
             }
 
             DB::commit();
+
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
@@ -297,18 +315,21 @@ class BookingService
                 'booking_id' => $booking->id,
                 'operation' => 'cancel_booking'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Complete booking
+     * Complete booking.
      *
-     * @param Booking $booking
-     * @param int|null $rating
+     * @param Booking     $booking
+     * @param int|null    $rating
      * @param string|null $feedback
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function completeBooking(Booking $booking, ?int $rating = null, ?string $feedback = null): bool
     {
@@ -336,6 +357,7 @@ class BookingService
             }
 
             DB::commit();
+
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
@@ -343,15 +365,17 @@ class BookingService
                 'booking_id' => $booking->id,
                 'operation' => 'complete_booking'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get booking students
+     * Get booking students.
      *
      * @param int $bookingId
      * @param int $perPage
+     *
      * @return LengthAwarePaginator<BookingStudent>
      */
     public function getBookingStudents(int $bookingId, int $perPage = 50): LengthAwarePaginator
@@ -364,12 +388,14 @@ class BookingService
     }
 
     /**
-     * Add students to booking
+     * Add students to booking.
      *
-     * @param int $bookingId
+     * @param int                         $bookingId
      * @param array<array<string, mixed>> $studentsData
-     * @return array<string, mixed>
+     *
      * @throws Exception
+     *
+     * @return array<string, mixed>
      */
     public function addStudentsToBooking(int $bookingId, array $studentsData): array
     {
@@ -421,6 +447,7 @@ class BookingService
             );
 
             DB::commit();
+
             return [
                 'added_count' => count($addedStudents),
                 'total_students' => $booking->student_count,
@@ -432,14 +459,16 @@ class BookingService
                 'booking_id' => $bookingId,
                 'operation' => 'add_students_to_booking'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get booking statistics
+     * Get booking statistics.
      *
      * @param Booking $booking
+     *
      * @return array<string, mixed>
      */
     public function getBookingStatistics(Booking $booking): array
@@ -454,10 +483,9 @@ class BookingService
     }
 
     /**
-     * Send booking confirmation email
+     * Send booking confirmation email.
      *
      * @param Booking $booking
-     * @return void
      */
     private function sendBookingConfirmationEmail(Booking $booking): void
     {
@@ -475,10 +503,9 @@ class BookingService
     }
 
     /**
-     * Send booking confirmed email
+     * Send booking confirmed email.
      *
      * @param Booking $booking
-     * @return void
      */
     private function sendBookingConfirmedEmail(Booking $booking): void
     {
@@ -495,11 +522,10 @@ class BookingService
     }
 
     /**
-     * Send booking cancelled email
+     * Send booking cancelled email.
      *
-     * @param Booking $booking
+     * @param Booking     $booking
      * @param string|null $reason
-     * @return void
      */
     private function sendBookingCancelledEmail(Booking $booking, ?string $reason): void
     {
@@ -515,10 +541,9 @@ class BookingService
     }
 
     /**
-     * Send booking completed email
+     * Send booking completed email.
      *
      * @param Booking $booking
-     * @return void
      */
     private function sendBookingCompletedEmail(Booking $booking): void
     {

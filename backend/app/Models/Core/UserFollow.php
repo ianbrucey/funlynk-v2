@@ -2,13 +2,13 @@
 
 namespace App\Models\Core;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
 
 /**
- * User Follow Model
- * 
+ * User Follow Model.
+ *
  * Manages the social following system between users
  */
 class UserFollow extends Model
@@ -57,7 +57,8 @@ class UserFollow extends Model
      * Scope to get follows for a specific user.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $userId
+     * @param int                                   $userId
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForUser($query, int $userId)
@@ -69,7 +70,8 @@ class UserFollow extends Model
      * Scope to get followers of a specific user.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $userId
+     * @param int                                   $userId
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeFollowersOf($query, int $userId)
@@ -82,6 +84,7 @@ class UserFollow extends Model
      *
      * @param int $followerId
      * @param int $followingId
+     *
      * @return bool
      */
     public static function exists(int $followerId, int $followingId): bool
@@ -96,6 +99,7 @@ class UserFollow extends Model
      *
      * @param int $followerId
      * @param int $followingId
+     *
      * @return static|null
      */
     public static function createFollow(int $followerId, int $followingId): ?static
@@ -119,6 +123,7 @@ class UserFollow extends Model
      *
      * @param int $followerId
      * @param int $followingId
+     *
      * @return bool
      */
     public static function removeFollow(int $followerId, int $followingId): bool

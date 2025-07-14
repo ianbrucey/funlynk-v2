@@ -2,23 +2,22 @@
 
 namespace App\Services\Spark;
 
+use App\Models\Spark\Booking;
 use App\Models\Spark\Program;
 use App\Models\Spark\ProgramAvailability;
-use App\Models\Spark\CharacterTopic;
-use App\Models\Spark\Booking;
 use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
-use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
- * Program Service
- * 
+ * Program Service.
+ *
  * Handles program management business logic including CRUD, file uploads, availability, and statistics
  */
 class ProgramService
@@ -27,13 +26,15 @@ class ProgramService
         private FileUploadService $fileUploadService,
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated programs with filters
+     * Get paginated programs with filters.
      *
      * @param array<string, mixed> $filters
-     * @param int $perPage
+     * @param int                  $perPage
+     *
      * @return LengthAwarePaginator<Program>
      */
     public function getPrograms(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -70,11 +71,13 @@ class ProgramService
     }
 
     /**
-     * Create a new program
+     * Create a new program.
      *
      * @param array<string, mixed> $data
-     * @return Program
+     *
      * @throws Exception
+     *
+     * @return Program
      */
     public function createProgram(array $data): Program
     {
@@ -107,6 +110,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return $program;
         } catch (Exception $e) {
             DB::rollBack();
@@ -115,17 +119,20 @@ class ProgramService
                 'operation' => 'create_program',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update a program
+     * Update a program.
      *
-     * @param Program $program
+     * @param Program              $program
      * @param array<string, mixed> $data
-     * @return Program
+     *
      * @throws Exception
+     *
+     * @return Program
      */
     public function updateProgram(Program $program, array $data): Program
     {
@@ -164,6 +171,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return $program;
         } catch (Exception $e) {
             DB::rollBack();
@@ -172,16 +180,19 @@ class ProgramService
                 'operation' => 'update_program',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete a program (soft delete)
+     * Delete a program (soft delete).
      *
      * @param Program $program
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteProgram(Program $program): bool
     {
@@ -229,6 +240,7 @@ class ProgramService
             $program->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -236,15 +248,17 @@ class ProgramService
                 'program_id' => $program->id,
                 'operation' => 'delete_program'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get program by ID with relationships
+     * Get program by ID with relationships.
      *
-     * @param int $id
+     * @param int           $id
      * @param array<string> $relations
+     *
      * @return Program
      */
     public function getProgramById(int $id, array $relations = []): Program
@@ -253,11 +267,12 @@ class ProgramService
     }
 
     /**
-     * Search programs
+     * Search programs.
      *
-     * @param string $query
+     * @param string               $query
      * @param array<string, mixed> $filters
-     * @param int $perPage
+     * @param int                  $perPage
+     *
      * @return LengthAwarePaginator<Program>
      */
     public function searchPrograms(string $query, array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -291,12 +306,13 @@ class ProgramService
     }
 
     /**
-     * Get program availability with filters
+     * Get program availability with filters.
      *
-     * @param Program $program
+     * @param Program     $program
      * @param string|null $startDate
      * @param string|null $endDate
-     * @param int $perPage
+     * @param int         $perPage
+     *
      * @return LengthAwarePaginator<ProgramAvailability>
      */
     public function getProgramAvailability(Program $program, ?string $startDate = null, ?string $endDate = null, int $perPage = 15): LengthAwarePaginator
@@ -313,12 +329,14 @@ class ProgramService
     }
 
     /**
-     * Add availability slot to program
+     * Add availability slot to program.
      *
-     * @param Program $program
+     * @param Program              $program
      * @param array<string, mixed> $data
-     * @return ProgramAvailability
+     *
      * @throws Exception
+     *
+     * @return ProgramAvailability
      */
     public function addProgramAvailability(Program $program, array $data): ProgramAvailability
     {
@@ -355,6 +373,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return $availability;
         } catch (Exception $e) {
             DB::rollBack();
@@ -363,17 +382,20 @@ class ProgramService
                 'operation' => 'add_program_availability',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update availability slot
+     * Update availability slot.
      *
-     * @param ProgramAvailability $availability
+     * @param ProgramAvailability  $availability
      * @param array<string, mixed> $data
-     * @return ProgramAvailability
+     *
      * @throws Exception
+     *
+     * @return ProgramAvailability
      */
     public function updateProgramAvailability(ProgramAvailability $availability, array $data): ProgramAvailability
     {
@@ -404,6 +426,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return $availability;
         } catch (Exception $e) {
             DB::rollBack();
@@ -412,16 +435,19 @@ class ProgramService
                 'operation' => 'update_program_availability',
                 'data' => $data
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete availability slot
+     * Delete availability slot.
      *
      * @param ProgramAvailability $availability
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteProgramAvailability(ProgramAvailability $availability): bool
     {
@@ -454,6 +480,7 @@ class ProgramService
             $availability->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -461,14 +488,16 @@ class ProgramService
                 'availability_id' => $availability->id,
                 'operation' => 'delete_program_availability'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get program statistics
+     * Get program statistics.
      *
      * @param Program $program
+     *
      * @return array<string, mixed>
      */
     public function getProgramStatistics(Program $program): array
@@ -488,7 +517,7 @@ class ProgramService
     }
 
     /**
-     * Get all programs statistics
+     * Get all programs statistics.
      *
      * @return array<string, mixed>
      */
@@ -517,11 +546,13 @@ class ProgramService
     }
 
     /**
-     * Activate a program
+     * Activate a program.
      *
      * @param Program $program
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function activateProgram(Program $program): bool
     {
@@ -540,6 +571,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -547,16 +579,19 @@ class ProgramService
                 'program_id' => $program->id,
                 'operation' => 'activate_program'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Deactivate a program
+     * Deactivate a program.
      *
      * @param Program $program
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deactivateProgram(Program $program): bool
     {
@@ -575,6 +610,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -582,15 +618,17 @@ class ProgramService
                 'program_id' => $program->id,
                 'operation' => 'deactivate_program'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get programs by grade level
+     * Get programs by grade level.
      *
      * @param string $gradeLevel
-     * @param bool $activeOnly
+     * @param bool   $activeOnly
+     *
      * @return Collection<int, Program>
      */
     public function getProgramsByGradeLevel(string $gradeLevel, bool $activeOnly = true): Collection
@@ -605,10 +643,11 @@ class ProgramService
     }
 
     /**
-     * Get programs by character topic
+     * Get programs by character topic.
      *
      * @param string $characterTopic
-     * @param bool $activeOnly
+     * @param bool   $activeOnly
+     *
      * @return Collection<int, Program>
      */
     public function getProgramsByCharacterTopic(string $characterTopic, bool $activeOnly = true): Collection
@@ -623,9 +662,10 @@ class ProgramService
     }
 
     /**
-     * Check if program is available for booking
+     * Check if program is available for booking.
      *
      * @param Program $program
+     *
      * @return bool
      */
     public function isProgramAvailable(Program $program): bool
@@ -634,10 +674,11 @@ class ProgramService
     }
 
     /**
-     * Get available time slots for a program
+     * Get available time slots for a program.
      *
-     * @param Program $program
+     * @param Program     $program
      * @param string|null $date
+     *
      * @return Collection<int, ProgramAvailability>
      */
     public function getAvailableTimeSlots(Program $program, ?string $date = null): Collection
@@ -654,11 +695,13 @@ class ProgramService
     }
 
     /**
-     * Handle file uploads for programs
+     * Handle file uploads for programs.
      *
      * @param array<UploadedFile> $files
-     * @return array<array<string, mixed>>
+     *
      * @throws Exception
+     *
+     * @return array<array<string, mixed>>
      */
     private function handleFileUploads(array $files): array
     {
@@ -675,11 +718,10 @@ class ProgramService
     }
 
     /**
-     * Remove files from program
+     * Remove files from program.
      *
-     * @param Program $program
+     * @param Program       $program
      * @param array<string> $filesToRemove
-     * @return void
      */
     private function removeFiles(Program $program, array $filesToRemove): void
     {
@@ -699,9 +741,10 @@ class ProgramService
     }
 
     /**
-     * Calculate utilization rate for a program
+     * Calculate utilization rate for a program.
      *
      * @param Program $program
+     *
      * @return float
      */
     private function calculateUtilizationRate(Program $program): float
@@ -713,9 +756,10 @@ class ProgramService
     }
 
     /**
-     * Get peak booking periods for a program
+     * Get peak booking periods for a program.
      *
      * @param Program $program
+     *
      * @return array<string, mixed>
      */
     private function getPeakBookingPeriods(Program $program): array
@@ -733,9 +777,10 @@ class ProgramService
     }
 
     /**
-     * Get most popular programs
+     * Get most popular programs.
      *
      * @param int $limit
+     *
      * @return Collection<int, Program>
      */
     private function getMostPopularPrograms(int $limit = 10): Collection
@@ -749,7 +794,7 @@ class ProgramService
     }
 
     /**
-     * Get grade level distribution
+     * Get grade level distribution.
      *
      * @return array<string, mixed>
      */
@@ -770,7 +815,7 @@ class ProgramService
     }
 
     /**
-     * Get character topics usage
+     * Get character topics usage.
      *
      * @return array<string, mixed>
      */
@@ -791,11 +836,13 @@ class ProgramService
     }
 
     /**
-     * Bulk update programs
+     * Bulk update programs.
      *
      * @param array<int, array<string, mixed>> $updates Array of program_id => data
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function bulkUpdatePrograms(array $updates): bool
     {
@@ -819,6 +866,7 @@ class ProgramService
             );
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -826,6 +874,7 @@ class ProgramService
                 'operation' => 'bulk_update_programs',
                 'updates' => $updates
             ]);
+
             throw $e;
         }
     }

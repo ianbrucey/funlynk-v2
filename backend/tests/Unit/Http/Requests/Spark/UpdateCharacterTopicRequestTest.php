@@ -37,12 +37,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -61,12 +67,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -85,12 +97,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -105,12 +123,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -125,12 +149,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -156,12 +186,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -183,12 +219,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -209,12 +251,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -235,12 +283,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };
@@ -264,12 +318,18 @@ class UpdateCharacterTopicRequestTest extends TestCase
 
         $request = new UpdateCharacterTopicRequest();
         $request->setRouteResolver(function () use ($characterTopic) {
-            return new class($characterTopic) {
-                public function __construct(private CharacterTopic $characterTopic) {}
-                public function parameter($name) {
+            return new class ($characterTopic) {
+                public function __construct(private CharacterTopic $characterTopic)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->characterTopic;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->characterTopic;
                 }
             };

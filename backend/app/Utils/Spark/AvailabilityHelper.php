@@ -2,23 +2,24 @@
 
 namespace App\Utils\Spark;
 
-use App\Models\Spark\ProgramAvailability;
 use App\Models\Spark\Program;
+use App\Models\Spark\ProgramAvailability;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- * Availability Helper Utility
- * 
+ * Availability Helper Utility.
+ *
  * Provides utility methods for program availability management
  */
 class AvailabilityHelper
 {
     /**
-     * Get available time slots for a specific date
+     * Get available time slots for a specific date.
      *
      * @param Program $program
-     * @param string $date
+     * @param string  $date
+     *
      * @return Collection
      */
     public static function getAvailableSlots(Program $program, string $date): Collection
@@ -31,13 +32,14 @@ class AvailabilityHelper
     }
 
     /**
-     * Check if a time slot conflicts with existing availability
+     * Check if a time slot conflicts with existing availability.
      *
-     * @param Program $program
-     * @param string $date
-     * @param string $startTime
-     * @param string $endTime
+     * @param Program  $program
+     * @param string   $date
+     * @param string   $startTime
+     * @param string   $endTime
      * @param int|null $excludeId
+     *
      * @return bool
      */
     public static function hasTimeConflict(Program $program, string $date, string $startTime, string $endTime, ?int $excludeId = null): bool
@@ -61,13 +63,14 @@ class AvailabilityHelper
     }
 
     /**
-     * Generate availability slots for a date range
+     * Generate availability slots for a date range.
      *
      * @param Program $program
-     * @param string $startDate
-     * @param string $endDate
-     * @param array $timeSlots
-     * @param int $maxBookings
+     * @param string  $startDate
+     * @param string  $endDate
+     * @param array   $timeSlots
+     * @param int     $maxBookings
+     *
      * @return array
      */
     public static function generateAvailabilitySlots(Program $program, string $startDate, string $endDate, array $timeSlots, int $maxBookings = 3): array
@@ -80,6 +83,7 @@ class AvailabilityHelper
             // Skip weekends if needed
             if ($currentDate->isWeekend()) {
                 $currentDate->addDay();
+
                 continue;
             }
 
@@ -108,11 +112,12 @@ class AvailabilityHelper
     }
 
     /**
-     * Get availability statistics for a program
+     * Get availability statistics for a program.
      *
-     * @param Program $program
+     * @param Program     $program
      * @param string|null $startDate
      * @param string|null $endDate
+     *
      * @return array
      */
     public static function getAvailabilityStatistics(Program $program, ?string $startDate = null, ?string $endDate = null): array
@@ -148,10 +153,11 @@ class AvailabilityHelper
     }
 
     /**
-     * Find optimal time slots based on program duration
+     * Find optimal time slots based on program duration.
      *
-     * @param int $durationMinutes
+     * @param int    $durationMinutes
      * @param string $preferredTime
+     *
      * @return array
      */
     public static function findOptimalTimeSlots(int $durationMinutes, string $preferredTime = 'morning'): array
@@ -192,10 +198,11 @@ class AvailabilityHelper
     }
 
     /**
-     * Get next available slot for a program
+     * Get next available slot for a program.
      *
-     * @param Program $program
+     * @param Program     $program
      * @param string|null $fromDate
+     *
      * @return ProgramAvailability|null
      */
     public static function getNextAvailableSlot(Program $program, ?string $fromDate = null): ?ProgramAvailability
@@ -210,10 +217,11 @@ class AvailabilityHelper
     }
 
     /**
-     * Check if a program has availability on a specific date
+     * Check if a program has availability on a specific date.
      *
      * @param Program $program
-     * @param string $date
+     * @param string  $date
+     *
      * @return bool
      */
     public static function hasAvailabilityOnDate(Program $program, string $date): bool
@@ -225,11 +233,12 @@ class AvailabilityHelper
     }
 
     /**
-     * Get availability calendar for a program
+     * Get availability calendar for a program.
      *
      * @param Program $program
-     * @param string $month
-     * @param string $year
+     * @param string  $month
+     * @param string  $year
+     *
      * @return array
      */
     public static function getAvailabilityCalendar(Program $program, string $month, string $year): array
@@ -267,10 +276,11 @@ class AvailabilityHelper
     }
 
     /**
-     * Bulk update availability status
+     * Bulk update availability status.
      *
      * @param array $availabilityIds
-     * @param bool $isAvailable
+     * @param bool  $isAvailable
+     *
      * @return int
      */
     public static function bulkUpdateAvailability(array $availabilityIds, bool $isAvailable): int
@@ -280,12 +290,13 @@ class AvailabilityHelper
     }
 
     /**
-     * Get conflicting availability slots
+     * Get conflicting availability slots.
      *
      * @param Program $program
-     * @param string $date
-     * @param string $startTime
-     * @param string $endTime
+     * @param string  $date
+     * @param string  $startTime
+     * @param string  $endTime
+     *
      * @return Collection
      */
     public static function getConflictingSlots(Program $program, string $date, string $startTime, string $endTime): Collection

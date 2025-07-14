@@ -5,8 +5,8 @@ namespace App\Http\Requests\Core;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Update Interests Request
- * 
+ * Update Interests Request.
+ *
  * Validates user interests update data
  */
 class UpdateInterestsRequest extends FormRequest
@@ -68,8 +68,6 @@ class UpdateInterestsRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

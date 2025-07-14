@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
     /**
      * Return a successful JSON response.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $message
-     * @param int $status
+     * @param int    $status
+     *
      * @return JsonResponse
      */
     protected function successResponse($data = null, string $message = 'Success', int $status = 200): JsonResponse
@@ -32,8 +34,9 @@ class Controller extends BaseController
      * Return an error JSON response.
      *
      * @param string $message
-     * @param mixed $data
-     * @param int $status
+     * @param mixed  $data
+     * @param int    $status
+     *
      * @return JsonResponse
      */
     protected function errorResponse(string $message = 'Error', $data = null, int $status = 400): JsonResponse
@@ -48,8 +51,9 @@ class Controller extends BaseController
     /**
      * Return a validation error response.
      *
-     * @param array $errors
+     * @param array  $errors
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function validationErrorResponse(array $errors, string $message = 'Validation failed'): JsonResponse

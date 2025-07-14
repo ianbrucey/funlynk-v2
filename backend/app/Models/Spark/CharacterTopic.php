@@ -2,19 +2,20 @@
 
 namespace App\Models\Spark;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Character Topic Model
- * 
+ * Character Topic Model.
+ *
  * Manages character development topics for Spark programs
  */
 class CharacterTopic extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -63,6 +64,7 @@ class CharacterTopic extends Model
      * Scope to get active topics.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -74,7 +76,8 @@ class CharacterTopic extends Model
      * Scope to get topics by category.
      *
      * @param Builder $query
-     * @param string $category
+     * @param string  $category
+     *
      * @return Builder
      */
     public function scopeByCategory(Builder $query, string $category): Builder
@@ -86,6 +89,7 @@ class CharacterTopic extends Model
      * Scope to order by sort order.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeOrdered(Builder $query): Builder
@@ -97,7 +101,8 @@ class CharacterTopic extends Model
      * Scope to search topics.
      *
      * @param Builder $query
-     * @param string $search
+     * @param string  $search
+     *
      * @return Builder
      */
     public function scopeSearch(Builder $query, string $search): Builder
@@ -152,7 +157,6 @@ class CharacterTopic extends Model
      * Set the name attribute and generate slug.
      *
      * @param string $value
-     * @return void
      */
     public function setNameAttribute(string $value): void
     {
@@ -168,21 +172,22 @@ class CharacterTopic extends Model
      * Generate a slug from the name.
      *
      * @param string $name
+     *
      * @return string
      */
     private function generateSlug(string $name): string
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-        
+
         // Ensure uniqueness
         $originalSlug = $slug;
         $counter = 1;
-        
+
         while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
             $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
-        
+
         return $slug;
     }
 
@@ -191,12 +196,13 @@ class CharacterTopic extends Model
      *
      * @param string $name
      * @param string $category
+     *
      * @return static
      */
     public static function findOrCreateByName(string $name, string $category = 'general'): static
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-        
+
         return static::firstOrCreate(
             ['slug' => $slug],
             [

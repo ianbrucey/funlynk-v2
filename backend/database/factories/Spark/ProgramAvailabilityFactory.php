@@ -2,13 +2,13 @@
 
 namespace Database\Factories\Spark;
 
-use App\Models\Spark\ProgramAvailability;
 use App\Models\Spark\Program;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Spark\ProgramAvailability;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * Program Availability Factory
+ * Program Availability Factory.
  *
  * Generates realistic test data for program availability slots
  */
@@ -54,6 +54,7 @@ class ProgramAvailabilityFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $maxBookings = $attributes['max_bookings'] ?? 3;
+
             return [
                 'current_bookings' => $maxBookings,
                 'is_available' => false,
@@ -139,4 +140,3 @@ class ProgramAvailabilityFactory extends Factory
         });
     }
 }
-

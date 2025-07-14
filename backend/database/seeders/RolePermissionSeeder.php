@@ -23,7 +23,7 @@ class RolePermissionSeeder extends Seeder
             'create users',
             'edit users',
             'delete users',
-            
+
             // Role & Permission Management
             'view roles',
             'create roles',
@@ -35,7 +35,7 @@ class RolePermissionSeeder extends Seeder
             'edit permissions',
             'delete permissions',
             'assign permissions',
-            
+
             // System Administration
             'view system settings',
             'edit system settings',
@@ -43,7 +43,7 @@ class RolePermissionSeeder extends Seeder
             'clear cache',
             'backup system',
             'restore system',
-            
+
             // Content Management
             'view content',
             'create content',
@@ -59,32 +59,32 @@ class RolePermissionSeeder extends Seeder
             'view dashboard',
             'view analytics',
             'export analytics',
-            
+
             // API Management
             'view api keys',
             'create api keys',
             'edit api keys',
             'delete api keys',
-            
+
             // Notifications
             'view notifications',
             'create notifications',
             'send notifications',
             'delete notifications',
-            
+
             // File Management
             'view files',
             'upload files',
             'download files',
             'delete files',
-            
+
             // Reporting
             'view reports',
             'create reports',
             'edit reports',
             'delete reports',
             'export reports',
-            
+
             // Integration Management
             'view integrations',
             'create integrations',
@@ -95,13 +95,13 @@ class RolePermissionSeeder extends Seeder
 
         // Create all permissions
         $allPermissions = array_merge($corePermissions, $sparkPermissions);
-        
+
         foreach ($allPermissions as $permission) {
             Permission::create(['name' => $permission]);
         }
 
         // Create Roles and assign permissions
-        
+
         // Super Admin Role - has all permissions
         $superAdmin = Role::create(['name' => 'super-admin']);
         $superAdmin->givePermissionTo(Permission::all());

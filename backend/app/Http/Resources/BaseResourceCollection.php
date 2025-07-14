@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
- * Base Resource Collection
- * 
+ * Base Resource Collection.
+ *
  * Provides common functionality for all API resource collections
  */
 class BaseResourceCollection extends ResourceCollection
@@ -16,6 +16,7 @@ class BaseResourceCollection extends ResourceCollection
      * Transform the resource collection into an array.
      *
      * @param Request $request
+     *
      * @return array<int|string, mixed>
      */
     public function toArray(Request $request): array
@@ -29,6 +30,7 @@ class BaseResourceCollection extends ResourceCollection
      * Get additional data that should be returned with the resource array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function with(Request $request): array
@@ -45,9 +47,8 @@ class BaseResourceCollection extends ResourceCollection
     /**
      * Customize the outgoing response for the resource.
      *
-     * @param Request $request
+     * @param Request                       $request
      * @param \Illuminate\Http\JsonResponse $response
-     * @return void
      */
     public function withResponse(Request $request, $response): void
     {
@@ -56,9 +57,10 @@ class BaseResourceCollection extends ResourceCollection
     }
 
     /**
-     * Create a paginated collection response
+     * Create a paginated collection response.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function paginationInformation(Request $request): array

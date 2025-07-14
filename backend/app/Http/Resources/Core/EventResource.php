@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * Core Event Resource
- * 
+ * Core Event Resource.
+ *
  * Transforms event data for Core Funlynk API responses
  */
 class EventResource extends BaseResource
@@ -16,6 +16,7 @@ class EventResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -106,7 +107,7 @@ class EventResource extends BaseResource
                         if (!$attendee) {
                             return null;
                         }
-                        
+
                         return [
                             'status' => $attendee->status,
                             'status_display' => $attendee->status_display,
@@ -141,7 +142,7 @@ class EventResource extends BaseResource
     }
 
     /**
-     * Determine if contact info should be shown
+     * Determine if contact info should be shown.
      *
      * @return bool
      */
@@ -171,9 +172,10 @@ class EventResource extends BaseResource
     }
 
     /**
-     * Check if user can RSVP to this event
+     * Check if user can RSVP to this event.
      *
      * @param \App\Models\User|null $user
+     *
      * @return bool
      */
     private function canUserRsvp(?\App\Models\User $user): bool

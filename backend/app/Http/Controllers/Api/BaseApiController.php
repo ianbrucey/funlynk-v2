@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
- * Base API Controller
- * 
+ * Base API Controller.
+ *
  * Provides consistent response formats and logging for all API controllers
  */
 class BaseApiController extends Controller
@@ -23,11 +23,12 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Success response with data
+     * Success response with data.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $message
-     * @param int $statusCode
+     * @param int    $statusCode
+     *
      * @return JsonResponse
      */
     protected function successResponse($data = null, string $message = 'Success', int $statusCode = 200): JsonResponse
@@ -46,11 +47,12 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Error response
+     * Error response.
      *
      * @param string $message
-     * @param int $statusCode
-     * @param array $errors
+     * @param int    $statusCode
+     * @param array  $errors
+     *
      * @return JsonResponse
      */
     protected function errorResponse(string $message = 'Error', int $statusCode = 400, array $errors = []): JsonResponse
@@ -69,9 +71,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Validation error response
+     * Validation error response.
      *
      * @param array $errors
+     *
      * @return JsonResponse
      */
     protected function validationErrorResponse(array $errors): JsonResponse
@@ -80,9 +83,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Not found response
+     * Not found response.
      *
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function notFoundResponse(string $message = 'Resource not found'): JsonResponse
@@ -91,9 +95,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Unauthorized response
+     * Unauthorized response.
      *
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function unauthorizedResponse(string $message = 'Unauthorized'): JsonResponse
@@ -102,9 +107,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Forbidden response
+     * Forbidden response.
      *
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function forbiddenResponse(string $message = 'Forbidden'): JsonResponse
@@ -113,9 +119,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Server error response
+     * Server error response.
      *
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function serverErrorResponse(string $message = 'Internal server error'): JsonResponse
@@ -124,10 +131,11 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Paginated response
+     * Paginated response.
      *
      * @param LengthAwarePaginator $paginator
-     * @param string $message
+     * @param string               $message
+     *
      * @return JsonResponse
      */
     protected function paginatedResponse(LengthAwarePaginator $paginator, string $message = 'Success'): JsonResponse
@@ -156,11 +164,12 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Collection response for multiple items
+     * Collection response for multiple items.
      *
-     * @param mixed $collection
+     * @param mixed  $collection
      * @param string $message
-     * @param array $meta
+     * @param array  $meta
+     *
      * @return JsonResponse
      */
     protected function collectionResponse($collection, string $message = 'Success', array $meta = []): JsonResponse
@@ -180,10 +189,11 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Created response for resource creation
+     * Created response for resource creation.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function createdResponse($data = null, string $message = 'Resource created successfully'): JsonResponse
@@ -192,10 +202,11 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Updated response for resource updates
+     * Updated response for resource updates.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function updatedResponse($data = null, string $message = 'Resource updated successfully'): JsonResponse
@@ -204,9 +215,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Deleted response for resource deletion
+     * Deleted response for resource deletion.
      *
      * @param string $message
+     *
      * @return JsonResponse
      */
     protected function deletedResponse(string $message = 'Resource deleted successfully'): JsonResponse
@@ -215,10 +227,9 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Log API request
+     * Log API request.
      *
      * @param Request $request
-     * @return void
      */
     protected function logRequest(Request $request): void
     {
@@ -231,11 +242,10 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Log API response
+     * Log API response.
      *
      * @param Request $request
-     * @param int $statusCode
-     * @return void
+     * @param int     $statusCode
      */
     protected function logResponse(Request $request, int $statusCode): void
     {
@@ -248,20 +258,22 @@ class BaseApiController extends Controller
     }
 
     /**
-     * Handle common API operations with logging
+     * Handle common API operations with logging.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param callable $operation
+     *
      * @return JsonResponse
      */
     protected function handleApiOperation(Request $request, callable $operation): JsonResponse
     {
         $this->logRequest($request);
-        
+
         try {
             $result = $operation();
             $statusCode = $result->getStatusCode();
             $this->logResponse($request, $statusCode);
+
             return $result;
         } catch (\Exception $e) {
             $this->loggingService->logError($e, [
@@ -269,8 +281,9 @@ class BaseApiController extends Controller
                 'request_method' => $request->method(),
                 'user_id' => auth()->id()
             ]);
-            
+
             $this->logResponse($request, 500);
+
             return $this->serverErrorResponse('An error occurred while processing your request');
         }
     }

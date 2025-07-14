@@ -2,25 +2,24 @@
 
 namespace App\Services\Shared;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Logging Service
- * 
+ * Logging Service.
+ *
  * Centralized logging service for application events and activities
  */
 class LoggingService
 {
     /**
-     * Log API request
+     * Log API request.
      *
-     * @param string $method
-     * @param string $url
-     * @param array $data
+     * @param string   $method
+     * @param string   $url
+     * @param array    $data
      * @param int|null $userId
-     * @return void
      */
     public function logApiRequest(string $method, string $url, array $data = [], ?int $userId = null): void
     {
@@ -36,13 +35,12 @@ class LoggingService
     }
 
     /**
-     * Log API response
+     * Log API response.
      *
-     * @param string $method
-     * @param string $url
-     * @param int $statusCode
+     * @param string   $method
+     * @param string   $url
+     * @param int      $statusCode
      * @param int|null $userId
-     * @return void
      */
     public function logApiResponse(string $method, string $url, int $statusCode, ?int $userId = null): void
     {
@@ -56,14 +54,13 @@ class LoggingService
     }
 
     /**
-     * Log user activity
+     * Log user activity.
      *
-     * @param int $userId
-     * @param string $action
+     * @param int         $userId
+     * @param string      $action
      * @param string|null $modelType
-     * @param int|null $modelId
-     * @param array $changes
-     * @return void
+     * @param int|null    $modelId
+     * @param array       $changes
      */
     public function logUserActivity(int $userId, string $action, ?string $modelType = null, ?int $modelId = null, array $changes = []): void
     {
@@ -95,12 +92,11 @@ class LoggingService
     }
 
     /**
-     * Log authentication events
+     * Log authentication events.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $event
-     * @param array $context
-     * @return void
+     * @param array  $context
      */
     public function logAuthEvent(int $userId, string $event, array $context = []): void
     {
@@ -115,12 +111,11 @@ class LoggingService
     }
 
     /**
-     * Log security events
+     * Log security events.
      *
      * @param string $event
-     * @param array $context
+     * @param array  $context
      * @param string $level
-     * @return void
      */
     public function logSecurityEvent(string $event, array $context = [], string $level = 'warning'): void
     {
@@ -134,11 +129,10 @@ class LoggingService
     }
 
     /**
-     * Log business events
+     * Log business events.
      *
      * @param string $event
-     * @param array $context
-     * @return void
+     * @param array  $context
      */
     public function logBusinessEvent(string $event, array $context = []): void
     {
@@ -150,11 +144,10 @@ class LoggingService
     }
 
     /**
-     * Log error with context
+     * Log error with context.
      *
      * @param Exception $exception
-     * @param array $context
-     * @return void
+     * @param array     $context
      */
     public function logError(Exception $exception, array $context = []): void
     {
@@ -172,12 +165,11 @@ class LoggingService
     }
 
     /**
-     * Log performance metrics
+     * Log performance metrics.
      *
      * @param string $operation
-     * @param float $duration
-     * @param array $context
-     * @return void
+     * @param float  $duration
+     * @param array  $context
      */
     public function logPerformance(string $operation, float $duration, array $context = []): void
     {
@@ -190,13 +182,12 @@ class LoggingService
     }
 
     /**
-     * Log file operations
+     * Log file operations.
      *
-     * @param string $operation
-     * @param string $filename
+     * @param string   $operation
+     * @param string   $filename
      * @param int|null $userId
-     * @param array $context
-     * @return void
+     * @param array    $context
      */
     public function logFileOperation(string $operation, string $filename, ?int $userId = null, array $context = []): void
     {
@@ -210,14 +201,13 @@ class LoggingService
     }
 
     /**
-     * Log email events
+     * Log email events.
      *
-     * @param string $event
-     * @param string $recipient
-     * @param string $subject
-     * @param bool $success
+     * @param string      $event
+     * @param string      $recipient
+     * @param string      $subject
+     * @param bool        $success
      * @param string|null $error
-     * @return void
      */
     public function logEmailEvent(string $event, string $recipient, string $subject, bool $success, ?string $error = null): void
     {
@@ -232,13 +222,12 @@ class LoggingService
     }
 
     /**
-     * Log notification events
+     * Log notification events.
      *
      * @param string $type
-     * @param int $userId
-     * @param array $data
-     * @param bool $success
-     * @return void
+     * @param int    $userId
+     * @param array  $data
+     * @param bool   $success
      */
     public function logNotificationEvent(string $type, int $userId, array $data, bool $success): void
     {

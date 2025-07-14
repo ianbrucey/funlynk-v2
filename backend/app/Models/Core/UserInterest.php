@@ -2,13 +2,13 @@
 
 namespace App\Models\Core;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
 
 /**
- * User Interest Model
- * 
+ * User Interest Model.
+ *
  * Manages user interests and preferences for event recommendations
  */
 class UserInterest extends Model
@@ -47,7 +47,8 @@ class UserInterest extends Model
      * Scope to get interests by category.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $category
+     * @param string                                $category
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByCategory($query, string $category)
@@ -59,7 +60,8 @@ class UserInterest extends Model
      * Scope to get popular interests.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $limit
+     * @param int                                   $limit
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePopular($query, int $limit = 10)

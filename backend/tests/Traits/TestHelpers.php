@@ -15,7 +15,7 @@ trait TestHelpers
     {
         $user = User::factory()->create($attributes);
         $user->assignRole($role);
-        
+
         return $user;
     }
 
@@ -49,7 +49,7 @@ trait TestHelpers
     protected function actingAsUser(User $user, array $abilities = ['*']): self
     {
         Sanctum::actingAs($user, $abilities);
-        
+
         return $this;
     }
 
@@ -59,7 +59,7 @@ trait TestHelpers
     protected function actingAsAdmin(array $attributes = []): self
     {
         $admin = $this->createAdminUser($attributes);
-        
+
         return $this->actingAsUser($admin);
     }
 
@@ -69,7 +69,7 @@ trait TestHelpers
     protected function actingAsModerator(array $attributes = []): self
     {
         $moderator = $this->createModeratorUser($attributes);
-        
+
         return $this->actingAsUser($moderator);
     }
 
@@ -155,7 +155,7 @@ trait TestHelpers
     protected function assertUserHasTokens(User $user, int $count = null): void
     {
         $tokenCount = $user->tokens()->count();
-        
+
         if ($count === null) {
             $this->assertGreaterThan(0, $tokenCount, "User {$user->id} has no tokens");
         } else {
@@ -282,7 +282,7 @@ trait TestHelpers
     {
         $user = User::factory()->create($userAttributes);
         $token = $user->createToken('test-token', $tokenAbilities);
-        
+
         return [
             'user' => $user,
             'token' => $token->plainTextToken,

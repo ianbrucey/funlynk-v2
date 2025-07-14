@@ -5,26 +5,25 @@ namespace App\Services\Auth;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
-use Illuminate\Auth\Events\Verified;
 
 class AuthService
 {
     /**
      * Authenticate a user and return a token.
      *
-     * @param array $credentials
-     * @param bool $remember
+     * @param array       $credentials
+     * @param bool        $remember
      * @param string|null $clientType
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function login(array $credentials, bool $remember = false, ?string $clientType = null): array
     {
@@ -111,10 +110,12 @@ class AuthService
     /**
      * Register a new user.
      *
-     * @param array $userData
+     * @param array       $userData
      * @param string|null $clientType
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function register(array $userData, ?string $clientType = null): array
     {
@@ -199,8 +200,10 @@ class AuthService
      * Reset user password using token.
      *
      * @param array $credentials
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function resetPassword(array $credentials): array
     {
@@ -292,8 +295,10 @@ class AuthService
      * Send password reset link to user.
      *
      * @param string $email
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function sendPasswordResetLink(string $email): array
     {
@@ -329,6 +334,7 @@ class AuthService
      * Logout user by revoking current token.
      *
      * @param User $user
+     *
      * @return array
      */
     public function logout(User $user): array
@@ -346,6 +352,7 @@ class AuthService
      * Logout user from all devices by revoking all tokens.
      *
      * @param User $user
+     *
      * @return array
      */
     public function logoutFromAllDevices(User $user): array
@@ -364,6 +371,7 @@ class AuthService
      *
      * @param User $user
      * @param bool $remember
+     *
      * @return array
      */
     public function refreshToken(User $user, bool $remember = false): array
@@ -393,8 +401,10 @@ class AuthService
      * Check if user account is active and handle inactive users.
      *
      * @param User $user
-     * @return bool
+     *
      * @throws ValidationException
+     *
+     * @return bool
      */
     public function checkUserStatus(User $user): bool
     {
@@ -414,6 +424,7 @@ class AuthService
      * Deactivate user account.
      *
      * @param User $user
+     *
      * @return array
      */
     public function deactivateUser(User $user): array
@@ -446,6 +457,7 @@ class AuthService
      * Activate user account.
      *
      * @param User $user
+     *
      * @return array
      */
     public function activateUser(User $user): array
@@ -462,6 +474,7 @@ class AuthService
      * Get user with roles and permissions.
      *
      * @param User $user
+     *
      * @return User
      */
     public function getUserWithRoles(User $user): User
@@ -472,10 +485,12 @@ class AuthService
     /**
      * Assign role to user.
      *
-     * @param User $user
+     * @param User   $user
      * @param string $roleName
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function assignRole(User $user, string $roleName): array
     {
@@ -505,10 +520,12 @@ class AuthService
     /**
      * Remove role from user.
      *
-     * @param User $user
+     * @param User   $user
      * @param string $roleName
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function removeRole(User $user, string $roleName): array
     {
@@ -530,10 +547,12 @@ class AuthService
     /**
      * Verify user email using token.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $hash
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function verifyEmail(int $userId, string $hash): array
     {
@@ -565,8 +584,10 @@ class AuthService
      * Resend email verification notification.
      *
      * @param User $user
-     * @return array
+     *
      * @throws ValidationException
+     *
+     * @return array
      */
     public function resendEmailVerification(User $user): array
     {

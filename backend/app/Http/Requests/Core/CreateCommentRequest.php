@@ -5,8 +5,8 @@ namespace App\Http\Requests\Core;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create Comment Request
- * 
+ * Create Comment Request.
+ *
  * Validates comment creation data
  */
 class CreateCommentRequest extends FormRequest
@@ -64,8 +64,6 @@ class CreateCommentRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

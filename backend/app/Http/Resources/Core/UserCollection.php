@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResourceCollection;
 use Illuminate\Http\Request;
 
 /**
- * Core User Collection Resource
- * 
+ * Core User Collection Resource.
+ *
  * Transforms user collections for Core Funlynk API responses
  */
 class UserCollection extends BaseResourceCollection
@@ -16,6 +16,7 @@ class UserCollection extends BaseResourceCollection
      * Transform the resource collection into an array.
      *
      * @param Request $request
+     *
      * @return array<int|string, mixed>
      */
     public function toArray(Request $request): array
@@ -29,6 +30,7 @@ class UserCollection extends BaseResourceCollection
      * Get additional data that should be returned with the resource array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function with(Request $request): array

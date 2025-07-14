@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Spark;
 
+use App\Models\Spark\Program;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
-use App\Models\Spark\Program;
 
 /**
- * Update Program Request
- * 
+ * Update Program Request.
+ *
  * Validates Spark program update data, inheriting rules from CreateProgramRequest
  * with 'sometimes' modifiers for partial updates
  */
@@ -22,12 +22,12 @@ class UpdateProgramRequest extends FormRequest
     public function authorize(): bool
     {
         $program = $this->route('program');
-        
+
         // Policy-based authorization (stub for future extension)
         if (Gate::getPolicyFor(Program::class)) {
             return Gate::allows('update', $program);
         }
-        
+
         // Fallback to role-based authorization
         return auth()->check() && auth()->user()->hasRole(['admin', 'spark_admin']);
     }
@@ -40,7 +40,7 @@ class UpdateProgramRequest extends FormRequest
     public function rules(): array
     {
         $createRules = (new CreateProgramRequest())->rules();
-        
+
         // Convert all rules to "sometimes" for partial updates
         $updateRules = [];
         foreach ($createRules as $field => $rules) {
@@ -50,7 +50,7 @@ class UpdateProgramRequest extends FormRequest
                 $updateRules[$field] = 'sometimes|' . $rules;
             }
         }
-        
+
         return $updateRules;
     }
 
@@ -76,8 +76,6 @@ class UpdateProgramRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

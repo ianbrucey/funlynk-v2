@@ -6,8 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Update District Request
- * 
+ * Update District Request.
+ *
  * Validates district update data for Spark educational programs
  */
 class UpdateDistrictRequest extends FormRequest
@@ -102,8 +102,6 @@ class UpdateDistrictRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

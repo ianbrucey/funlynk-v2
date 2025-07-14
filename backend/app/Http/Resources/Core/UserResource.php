@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * Core User Resource
- * 
+ * Core User Resource.
+ *
  * Transforms user data for Core Funlynk API responses
  */
 class UserResource extends BaseResource
@@ -16,6 +16,7 @@ class UserResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -116,9 +117,10 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Determine if email should be shown
+     * Determine if email should be shown.
      *
      * @param Request $request
+     *
      * @return bool
      */
     private function shouldShowEmail(Request $request): bool
@@ -131,9 +133,10 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Determine if phone should be shown
+     * Determine if phone should be shown.
      *
      * @param Request $request
+     *
      * @return bool
      */
     private function shouldShowPhone(Request $request): bool
@@ -146,9 +149,10 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Determine if date of birth should be shown
+     * Determine if date of birth should be shown.
      *
      * @param Request $request
+     *
      * @return bool
      */
     private function shouldShowDateOfBirth(Request $request): bool
@@ -158,9 +162,10 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Determine if gender should be shown
+     * Determine if gender should be shown.
      *
      * @param Request $request
+     *
      * @return bool
      */
     private function shouldShowGender(Request $request): bool
@@ -173,7 +178,7 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Determine if emergency contact should be shown
+     * Determine if emergency contact should be shown.
      *
      * @return bool
      */
@@ -184,7 +189,7 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Format social links
+     * Format social links.
      *
      * @return array
      */
@@ -203,7 +208,7 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Format emergency contact information
+     * Format emergency contact information.
      *
      * @return array|null
      */
@@ -221,13 +226,14 @@ class UserResource extends BaseResource
     }
 
     /**
-     * Check if gender is public
+     * Check if gender is public.
      *
      * @return bool
      */
     private function isGenderPublic(): bool
     {
         $visibilitySettings = $this->coreProfile?->visibility_settings ?? [];
+
         return ($visibilitySettings['show_gender'] ?? true) === true;
     }
 }

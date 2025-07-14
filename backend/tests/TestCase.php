@@ -8,12 +8,14 @@ use Tests\Traits\TestHelpers;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, TestHelpers, RefreshDatabase;
-    
+    use CreatesApplication;
+    use TestHelpers;
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->createDefaultRoles();
     }
 }

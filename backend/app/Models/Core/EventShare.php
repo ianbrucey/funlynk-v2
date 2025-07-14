@@ -2,14 +2,14 @@
 
 namespace App\Models\Core;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
 
 /**
- * Event Share Model
- * 
+ * Event Share Model.
+ *
  * Tracks event sharing activity and analytics
  */
 class EventShare extends Model
@@ -70,7 +70,8 @@ class EventShare extends Model
      * Scope to get shares for a specific event.
      *
      * @param Builder $query
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return Builder
      */
     public function scopeForEvent(Builder $query, int $eventId): Builder
@@ -82,7 +83,8 @@ class EventShare extends Model
      * Scope to get shares by a specific user.
      *
      * @param Builder $query
-     * @param int $userId
+     * @param int     $userId
+     *
      * @return Builder
      */
     public function scopeByUser(Builder $query, int $userId): Builder
@@ -94,7 +96,8 @@ class EventShare extends Model
      * Scope to get shares on a specific platform.
      *
      * @param Builder $query
-     * @param string $platform
+     * @param string  $platform
+     *
      * @return Builder
      */
     public function scopeOnPlatform(Builder $query, string $platform): Builder
@@ -106,7 +109,8 @@ class EventShare extends Model
      * Scope to get recent shares.
      *
      * @param Builder $query
-     * @param int $days
+     * @param int     $days
+     *
      * @return Builder
      */
     public function scopeRecent(Builder $query, int $days = 7): Builder
@@ -145,12 +149,13 @@ class EventShare extends Model
     /**
      * Record a share event.
      *
-     * @param int $eventId
-     * @param int|null $userId
-     * @param string $platform
-     * @param string $sharedUrl
+     * @param int         $eventId
+     * @param int|null    $userId
+     * @param string      $platform
+     * @param string      $sharedUrl
      * @param string|null $ipAddress
      * @param string|null $userAgent
+     *
      * @return static
      */
     public static function recordShare(
@@ -175,6 +180,7 @@ class EventShare extends Model
      * Get share statistics for an event.
      *
      * @param int $eventId
+     *
      * @return array
      */
     public static function getEventShareStats(int $eventId): array

@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -26,7 +26,7 @@ class UserFactory extends Factory
     {
         $firstName = fake()->firstName();
         $lastName = fake()->lastName();
-        
+
         return [
             'first_name' => $firstName,
             'last_name' => $lastName,

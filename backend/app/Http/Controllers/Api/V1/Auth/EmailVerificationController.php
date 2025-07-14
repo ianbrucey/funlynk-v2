@@ -28,8 +28,9 @@ class EmailVerificationController extends Controller
      * Handle email verification.
      *
      * @param Request $request
-     * @param int $id
-     * @param string $hash
+     * @param int     $id
+     * @param string  $hash
+     *
      * @return JsonResponse
      */
     public function verify(Request $request, int $id, string $hash): JsonResponse
@@ -53,6 +54,7 @@ class EmailVerificationController extends Controller
      * Handle email verification resend.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function resend(Request $request): JsonResponse

@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * Program Resource
- * 
+ * Program Resource.
+ *
  * Transform program data for API responses with privacy considerations
  */
 class ProgramResource extends BaseResource
@@ -16,6 +16,7 @@ class ProgramResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -41,7 +42,7 @@ class ProgramResource extends BaseResource
             'learning_objectives' => $this->learning_objectives,
             'materials_needed' => $this->materials_needed,
             'special_requirements' => $this->special_requirements,
-            
+
             // Resource files - only expose if authenticated
             ...($this->whenAuthenticated([
                 'resource_files' => $this->resource_files,
@@ -56,7 +57,7 @@ class ProgramResource extends BaseResource
                 'booking_count' => $this->booking_count,
                 'confirmed_booking_count' => $this->confirmed_booking_count,
                 'available_slots_count' => $this->available_slots_count,
-                
+
                 // Admin-only statistics
                 ...($this->whenCan('view-program-analytics', [
                     'total_participants' => $this->bookings()->sum('participant_count'),

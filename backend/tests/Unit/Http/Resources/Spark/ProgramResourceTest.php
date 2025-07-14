@@ -3,15 +3,14 @@
 namespace Tests\Unit\Http\Resources\Spark;
 
 use App\Http\Resources\Spark\ProgramResource;
-use App\Models\Spark\Program;
 use App\Models\Spark\CharacterTopic;
+use App\Models\Spark\Program;
 use App\Models\Spark\ProgramAvailability;
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class ProgramResourceTest extends TestCase
 {
@@ -20,11 +19,11 @@ class ProgramResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create permissions for testing
         Permission::create(['name' => 'view-program-analytics']);
         Permission::create(['name' => 'manage-character-topics']);
-        
+
         // Create roles
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'user']);
@@ -46,7 +45,7 @@ class ProgramResourceTest extends TestCase
             'resource_files' => ['file1.pdf', 'file2.pdf'],
             'is_active' => true,
         ]);
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
 
@@ -70,7 +69,7 @@ class ProgramResourceTest extends TestCase
         $this->assertArrayHasKey('statistics', $resourceArray);
         $this->assertArrayHasKey('created_at', $resourceArray);
         $this->assertArrayHasKey('updated_at', $resourceArray);
-        
+
         // Test values
         $this->assertEquals('Test Program', $resourceArray['title']);
         $this->assertEquals('This is a test program', $resourceArray['description']);
@@ -83,7 +82,7 @@ class ProgramResourceTest extends TestCase
         $this->assertEquals(['Objective 1', 'Objective 2'], $resourceArray['learning_objectives']);
         $this->assertEquals(['Material 1', 'Material 2'], $resourceArray['materials_needed']);
         $this->assertEquals('None', $resourceArray['special_requirements']);
-        
+
         // Test statistics structure
         $this->assertArrayHasKey('booking_count', $resourceArray['statistics']);
         $this->assertArrayHasKey('confirmed_booking_count', $resourceArray['statistics']);
@@ -95,7 +94,7 @@ class ProgramResourceTest extends TestCase
         $program = Program::factory()->create([
             'resource_files' => ['file1.pdf', 'file2.pdf'],
         ]);
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
 
@@ -107,11 +106,11 @@ class ProgramResourceTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user);
-        
+
         $program = Program::factory()->create([
             'resource_files' => ['file1.pdf', 'file2.pdf'],
         ]);
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
 
@@ -125,9 +124,9 @@ class ProgramResourceTest extends TestCase
         $user = User::factory()->create();
         $user->givePermissionTo('view-program-analytics');
         $this->actingAs($user);
-        
+
         $program = Program::factory()->create();
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
 
@@ -139,17 +138,17 @@ class ProgramResourceTest extends TestCase
     public function testProgramResourceLazyLoadRelationships(): void
     {
         $program = Program::factory()->create();
-        
+
         // Create related character topics
         $characterTopic = CharacterTopic::factory()->create();
         $program->characterTopics()->attach($characterTopic);
-        
+
         // Create availability
         $availability = ProgramAvailability::factory()->create(['program_id' => $program->id]);
-        
+
         // Load relationships
         $program->load('characterTopics', 'availability');
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
 
@@ -174,10 +173,10 @@ class ProgramResourceTest extends TestCase
             'special_requirements' => 'Projector needed',
             'is_active' => true,
         ]);
-        
+
         $resource = new ProgramResource($program);
         $resourceArray = $resource->resolve();
-        
+
         // Create expected JSON structure for comparison
         $expectedStructure = [
             'id' => $program->id,
@@ -197,7 +196,7 @@ class ProgramResourceTest extends TestCase
             'materials_needed' => ['Worksheets', 'Markers', 'Flipchart'],
             'special_requirements' => 'Projector needed',
         ];
-        
+
         // Assert key fields match expected structure
         foreach ($expectedStructure as $key => $value) {
             $this->assertArrayHasKey($key, $resourceArray);
@@ -205,4 +204,3 @@ class ProgramResourceTest extends TestCase
         }
     }
 }
-

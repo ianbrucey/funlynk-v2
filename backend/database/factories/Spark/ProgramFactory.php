@@ -6,7 +6,7 @@ use App\Models\Spark\Program;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * Program Factory
+ * Program Factory.
  *
  * Generates realistic test data for Spark educational programs
  */
@@ -78,7 +78,7 @@ class ProgramFactory extends Factory
     }
 
     /**
-     * Generate a realistic program title
+     * Generate a realistic program title.
      *
      * @return string
      */
@@ -185,4 +185,3 @@ class ProgramFactory extends Factory
         ]);
     }
 }
-

@@ -29,6 +29,7 @@ class LoginController extends Controller
      * Handle a login request to the application.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
@@ -66,6 +67,7 @@ class LoginController extends Controller
      * Handle a logout request to the application.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function logout(Request $request): JsonResponse
@@ -93,6 +95,7 @@ class LoginController extends Controller
      * Get the authenticated user information.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function me(Request $request): JsonResponse

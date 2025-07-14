@@ -6,7 +6,7 @@ use App\Models\Spark\CharacterTopic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * Character Topic Factory
+ * Character Topic Factory.
  *
  * Generates realistic test data for character development topics
  */
@@ -113,9 +113,10 @@ class CharacterTopicFactory extends Factory
     }
 
     /**
-     * Generate a slug from the topic name
+     * Generate a slug from the topic name.
      *
      * @param string $name
+     *
      * @return string
      */
     private function generateSlug(string $name): string
@@ -124,10 +125,11 @@ class CharacterTopicFactory extends Factory
     }
 
     /**
-     * Generate a description for the topic
+     * Generate a description for the topic.
      *
      * @param string $topicName
      * @param string $category
+     *
      * @return string
      */
     private function generateDescription(string $topicName, string $category): string
@@ -164,6 +166,7 @@ class CharacterTopicFactory extends Factory
      * Create a topic for a specific category.
      *
      * @param string $category
+     *
      * @return static
      */
     public function category(string $category): static

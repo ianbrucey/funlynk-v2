@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Api\V1\Spark;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Spark\CreateProgramAvailabilityRequest;
 use App\Http\Requests\Spark\UpdateProgramAvailabilityRequest;
-use App\Models\Spark\ProgramAvailability;
 use App\Models\Spark\Program;
-use Illuminate\Http\Request;
+use App\Models\Spark\ProgramAvailability;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Program Availability Controller
- * 
+ * Program Availability Controller.
+ *
  * Handles program availability slot management operations
  */
 class ProgramAvailabilityController extends BaseApiController
@@ -23,9 +23,10 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Get paginated list of program availability slots
+     * Get paginated list of program availability slots.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -72,16 +73,17 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Create a new program availability slot
+     * Create a new program availability slot.
      *
      * @param CreateProgramAvailabilityRequest $request
+     *
      * @return JsonResponse
      */
     public function store(CreateProgramAvailabilityRequest $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request) {
             $availability = ProgramAvailability::create($request->validated());
-            
+
             return $this->createdResponse(
                 $availability->load('program'),
                 'Program availability slot created successfully'
@@ -90,17 +92,18 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Get a specific program availability slot
+     * Get a specific program availability slot.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function show(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $availability = ProgramAvailability::with(['program'])->findOrFail($id);
-            
+
             return $this->successResponse(
                 $availability,
                 'Program availability slot retrieved successfully'
@@ -109,10 +112,11 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Update a program availability slot
+     * Update a program availability slot.
      *
      * @param UpdateProgramAvailabilityRequest $request
-     * @param int $id
+     * @param int                              $id
+     *
      * @return JsonResponse
      */
     public function update(UpdateProgramAvailabilityRequest $request, int $id): JsonResponse
@@ -120,7 +124,7 @@ class ProgramAvailabilityController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $availability = ProgramAvailability::findOrFail($id);
             $availability->update($request->validated());
-            
+
             return $this->updatedResponse(
                 $availability->load('program'),
                 'Program availability slot updated successfully'
@@ -129,17 +133,18 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Delete a program availability slot
+     * Delete a program availability slot.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function destroy(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $availability = ProgramAvailability::findOrFail($id);
-            
+
             // Check if there are any bookings for this slot
             if ($availability->current_bookings > 0) {
                 return $this->errorResponse(
@@ -147,25 +152,26 @@ class ProgramAvailabilityController extends BaseApiController
                     400
                 );
             }
-            
+
             $availability->delete();
-            
+
             return $this->deletedResponse('Program availability slot deleted successfully');
         });
     }
 
     /**
-     * Get availability for a specific program
+     * Get availability for a specific program.
      *
      * @param Request $request
-     * @param int $programId
+     * @param int     $programId
+     *
      * @return JsonResponse
      */
     public function programAvailability(Request $request, int $programId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $programId) {
             $program = Program::findOrFail($programId);
-            
+
             $request->validate([
                 'per_page' => 'integer|min:1|max:50',
                 'date_from' => 'date',
@@ -198,17 +204,18 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Bulk create availability slots for a program
+     * Bulk create availability slots for a program.
      *
      * @param Request $request
-     * @param int $programId
+     * @param int     $programId
+     *
      * @return JsonResponse
      */
     public function bulkCreate(Request $request, int $programId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $programId) {
             $program = Program::findOrFail($programId);
-            
+
             $request->validate([
                 'slots' => 'required|array|min:1|max:50',
                 'slots.*.date' => 'required|date|after_or_equal:today',
@@ -219,12 +226,12 @@ class ProgramAvailabilityController extends BaseApiController
             ]);
 
             $createdSlots = [];
-            
+
             foreach ($request->input('slots') as $slotData) {
                 $slotData['program_id'] = $programId;
                 $slotData['current_bookings'] = 0;
                 $slotData['is_available'] = true;
-                
+
                 $createdSlots[] = ProgramAvailability::create($slotData);
             }
 
@@ -236,17 +243,18 @@ class ProgramAvailabilityController extends BaseApiController
     }
 
     /**
-     * Get availability statistics for a program
+     * Get availability statistics for a program.
      *
      * @param Request $request
-     * @param int $programId
+     * @param int     $programId
+     *
      * @return JsonResponse
      */
     public function statistics(Request $request, int $programId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($programId) {
             $program = Program::findOrFail($programId);
-            
+
             $stats = [
                 'total_slots' => $program->availability()->count(),
                 'available_slots' => $program->availability()->available()->count(),
@@ -256,7 +264,7 @@ class ProgramAvailabilityController extends BaseApiController
                 'total_bookings' => $program->availability()->sum('current_bookings'),
             ];
 
-            $stats['utilization_rate'] = $stats['total_capacity'] > 0 
+            $stats['utilization_rate'] = $stats['total_capacity'] > 0
                 ? round(($stats['total_bookings'] / $stats['total_capacity']) * 100, 2)
                 : 0;
 

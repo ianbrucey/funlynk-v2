@@ -2,14 +2,17 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use App\Services\Spark\CharacterTopicService;
 use App\Services\Spark\DistrictService;
+use App\Services\Spark\ProgramService;
 use App\Services\Spark\SchoolService;
+use Illuminate\Support\ServiceProvider;
 
 /**
- * Spark Service Provider
+ * Spark Service Provider.
  *
  * Registers services for Spark educational programs
  */
@@ -17,8 +20,6 @@ class SparkServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -37,12 +38,27 @@ class SparkServiceProvider extends ServiceProvider
                 $app->make(NotificationService::class)
             );
         });
+
+        // Register ProgramService with dependencies
+        $this->app->singleton(ProgramService::class, function ($app) {
+            return new ProgramService(
+                $app->make(FileUploadService::class),
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
+
+        // Register CharacterTopicService with dependencies
+        $this->app->singleton(CharacterTopicService::class, function ($app) {
+            return new CharacterTopicService(
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
     }
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -59,6 +75,8 @@ class SparkServiceProvider extends ServiceProvider
         return [
             DistrictService::class,
             SchoolService::class,
+            ProgramService::class,
+            CharacterTopicService::class,
         ];
     }
 }

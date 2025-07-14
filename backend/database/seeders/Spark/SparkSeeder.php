@@ -2,22 +2,20 @@
 
 namespace Database\Seeders\Spark;
 
-use Illuminate\Database\Seeder;
 use App\Models\Spark\CharacterTopic;
 use App\Models\Spark\Program;
 use App\Models\Spark\ProgramAvailability;
+use Illuminate\Database\Seeder;
 
 /**
- * Spark Module Seeder
- * 
+ * Spark Module Seeder.
+ *
  * Seeds the database with realistic Spark educational program data
  */
 class SparkSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run(): void
     {
@@ -36,9 +34,7 @@ class SparkSeeder extends Seeder
     }
 
     /**
-     * Seed character topics with predefined categories
-     *
-     * @return void
+     * Seed character topics with predefined categories.
      */
     private function seedCharacterTopics(): void
     {
@@ -48,39 +44,39 @@ class SparkSeeder extends Seeder
             ['category' => 'respect', 'name' => 'Treating Others with Respect', 'sort_order' => 1],
             ['category' => 'respect', 'name' => 'Respecting Differences', 'sort_order' => 2],
             ['category' => 'respect', 'name' => 'Self-Respect and Dignity', 'sort_order' => 3],
-            
+
             ['category' => 'responsibility', 'name' => 'Personal Responsibility', 'sort_order' => 4],
             ['category' => 'responsibility', 'name' => 'Academic Responsibility', 'sort_order' => 5],
             ['category' => 'responsibility', 'name' => 'Environmental Responsibility', 'sort_order' => 6],
-            
+
             ['category' => 'integrity', 'name' => 'Honesty and Truthfulness', 'sort_order' => 7],
             ['category' => 'integrity', 'name' => 'Doing the Right Thing', 'sort_order' => 8],
             ['category' => 'integrity', 'name' => 'Moral Courage', 'sort_order' => 9],
-            
+
             ['category' => 'kindness', 'name' => 'Acts of Kindness', 'sort_order' => 10],
             ['category' => 'kindness', 'name' => 'Compassion for Others', 'sort_order' => 11],
             ['category' => 'kindness', 'name' => 'Helping Those in Need', 'sort_order' => 12],
-            
+
             ['category' => 'perseverance', 'name' => 'Never Giving Up', 'sort_order' => 13],
             ['category' => 'perseverance', 'name' => 'Overcoming Challenges', 'sort_order' => 14],
             ['category' => 'perseverance', 'name' => 'Building Resilience', 'sort_order' => 15],
-            
+
             ['category' => 'courage', 'name' => 'Standing Up for Others', 'sort_order' => 16],
             ['category' => 'courage', 'name' => 'Facing Your Fears', 'sort_order' => 17],
             ['category' => 'courage', 'name' => 'Speaking Up for What\'s Right', 'sort_order' => 18],
-            
+
             ['category' => 'empathy', 'name' => 'Understanding Others\' Feelings', 'sort_order' => 19],
             ['category' => 'empathy', 'name' => 'Active Listening', 'sort_order' => 20],
             ['category' => 'empathy', 'name' => 'Showing Compassion', 'sort_order' => 21],
-            
+
             ['category' => 'teamwork', 'name' => 'Working Together', 'sort_order' => 22],
             ['category' => 'teamwork', 'name' => 'Collaboration Skills', 'sort_order' => 23],
             ['category' => 'teamwork', 'name' => 'Supporting Team Members', 'sort_order' => 24],
-            
+
             ['category' => 'leadership', 'name' => 'Leading by Example', 'sort_order' => 25],
             ['category' => 'leadership', 'name' => 'Inspiring Others', 'sort_order' => 26],
             ['category' => 'leadership', 'name' => 'Taking Initiative', 'sort_order' => 27],
-            
+
             ['category' => 'citizenship', 'name' => 'Being a Good Citizen', 'sort_order' => 28],
             ['category' => 'citizenship', 'name' => 'Community Service', 'sort_order' => 29],
             ['category' => 'citizenship', 'name' => 'Civic Responsibility', 'sort_order' => 30],
@@ -103,9 +99,7 @@ class SparkSeeder extends Seeder
     }
 
     /**
-     * Seed programs with various configurations
-     *
-     * @return void
+     * Seed programs with various configurations.
      */
     private function seedPrograms(): void
     {
@@ -151,9 +145,7 @@ class SparkSeeder extends Seeder
     }
 
     /**
-     * Seed program availability slots
-     *
-     * @return void
+     * Seed program availability slots.
      */
     private function seedProgramAvailability(): void
     {
@@ -201,9 +193,10 @@ class SparkSeeder extends Seeder
     }
 
     /**
-     * Generate a slug from a name
+     * Generate a slug from a name.
      *
      * @param string $name
+     *
      * @return string
      */
     private function generateSlug(string $name): string
@@ -212,9 +205,10 @@ class SparkSeeder extends Seeder
     }
 
     /**
-     * Get description for a topic category
+     * Get description for a topic category.
      *
      * @param string $category
+     *
      * @return string
      */
     private function getTopicDescription(string $category): string

@@ -6,16 +6,15 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Core\CreateEventRequest;
 use App\Http\Requests\Core\UpdateEventRequest;
 use App\Http\Resources\Core\EventResource;
-use App\Http\Resources\Core\EventCollection;
-use App\Services\Core\EventService;
 use App\Models\Core\Event;
 use App\Models\Core\EventCategory;
-use Illuminate\Http\Request;
+use App\Services\Core\EventService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Event Controller
- * 
+ * Event Controller.
+ *
  * Handles event management operations including CRUD, search, and attendance
  */
 class EventController extends BaseApiController
@@ -27,9 +26,10 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get paginated list of events
+     * Get paginated list of events.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -61,16 +61,17 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Create a new event
+     * Create a new event.
      *
      * @param CreateEventRequest $request
+     *
      * @return JsonResponse
      */
     public function store(CreateEventRequest $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request) {
             $event = $this->eventService->createEvent($request->user(), $request->validated());
-            
+
             return $this->createdResponse(
                 new EventResource($event),
                 'Event created successfully'
@@ -79,21 +80,22 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get a specific event
+     * Get a specific event.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function show(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $event = Event::with(['host', 'category', 'attendees.user', 'tags'])->findOrFail($id);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to view this event');
             }
-            
+
             return $this->successResponse(
                 new EventResource($event),
                 'Event retrieved successfully'
@@ -102,23 +104,24 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Update an event
+     * Update an event.
      *
      * @param UpdateEventRequest $request
-     * @param int $id
+     * @param int                $id
+     *
      * @return JsonResponse
      */
     public function update(UpdateEventRequest $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $event = Event::findOrFail($id);
-            
+
             if (!$event->canBeEditedBy($request->user())) {
                 return $this->forbiddenResponse('You do not have permission to edit this event');
             }
-            
+
             $event = $this->eventService->updateEvent($event, $request->validated());
-            
+
             return $this->updatedResponse(
                 new EventResource($event),
                 'Event updated successfully'
@@ -127,31 +130,33 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Delete an event
+     * Delete an event.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function destroy(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $event = Event::findOrFail($id);
-            
+
             if (!$event->canBeDeletedBy($request->user())) {
                 return $this->forbiddenResponse('You do not have permission to delete this event');
             }
-            
+
             $this->eventService->deleteEvent($event);
-            
+
             return $this->deletedResponse('Event deleted successfully');
         });
     }
 
     /**
-     * Search events
+     * Search events.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function search(Request $request): JsonResponse
@@ -184,16 +189,17 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get event categories
+     * Get event categories.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function categories(Request $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () {
             $categories = EventCategory::active()->ordered()->get();
-            
+
             return $this->successResponse(
                 $categories->map(function ($category) {
                     return [
@@ -212,10 +218,11 @@ class EventController extends BaseApiController
     }
 
     /**
-     * RSVP to an event
+     * RSVP to an event.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function rsvp(Request $request, int $id): JsonResponse
@@ -246,10 +253,11 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Cancel RSVP to an event
+     * Cancel RSVP to an event.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function cancelRsvp(Request $request, int $id): JsonResponse
@@ -270,17 +278,18 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get event attendees
+     * Get event attendees.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function attendees(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $event = Event::findOrFail($id);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to view event attendees');
             }
@@ -301,9 +310,10 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get user's hosted events
+     * Get user's hosted events.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function myHostedEvents(Request $request): JsonResponse
@@ -325,9 +335,10 @@ class EventController extends BaseApiController
     }
 
     /**
-     * Get user's attended events
+     * Get user's attended events.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function myAttendedEvents(Request $request): JsonResponse

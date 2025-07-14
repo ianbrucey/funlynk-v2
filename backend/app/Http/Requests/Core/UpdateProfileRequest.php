@@ -6,8 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Update Profile Request
- * 
+ * Update Profile Request.
+ *
  * Validates user profile update data
  */
 class UpdateProfileRequest extends FormRequest

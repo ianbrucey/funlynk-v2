@@ -2,11 +2,11 @@
 
 namespace App\Models\Spark;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 
 class Booking extends Model
 {
@@ -138,8 +138,8 @@ class Booking extends Model
 
     public function getCanBeCancelledAttribute(): bool
     {
-        return in_array($this->status, ['pending', 'confirmed']) && 
-               $this->confirmed_date && 
+        return in_array($this->status, ['pending', 'confirmed']) &&
+               $this->confirmed_date &&
                $this->confirmed_date->diffInDays(now()) >= 1;
     }
 
@@ -161,7 +161,7 @@ class Booking extends Model
     // Methods
     public function generateReference(): string
     {
-        return 'SPK-' . strtoupper(substr($this->school->code, 0, 3)) . '-' . 
+        return 'SPK-' . strtoupper(substr($this->school->code, 0, 3)) . '-' .
                date('Ymd') . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
@@ -195,7 +195,7 @@ class Booking extends Model
 
         $this->update([
             'status' => 'cancelled',
-            'notes' => ($this->notes ? $this->notes . "\n" : '') . 
+            'notes' => ($this->notes ? $this->notes . "\n" : '') .
                       'Cancelled: ' . ($reason ?: 'No reason provided'),
         ]);
 

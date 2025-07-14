@@ -28,6 +28,7 @@ class PasswordResetController extends Controller
      * Handle a password reset request.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function request(Request $request): JsonResponse
@@ -55,6 +56,7 @@ class PasswordResetController extends Controller
      * Handle a password reset.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function reset(Request $request): JsonResponse

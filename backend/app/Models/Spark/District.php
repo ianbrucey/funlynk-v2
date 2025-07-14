@@ -2,15 +2,15 @@
 
 namespace App\Models\Spark;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
 
 /**
- * District Model
- * 
+ * District Model.
+ *
  * Manages school districts for Spark educational programs
  */
 class District extends Model
@@ -81,6 +81,7 @@ class District extends Model
      * Scope to get active districts.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -92,7 +93,8 @@ class District extends Model
      * Scope to get districts by state.
      *
      * @param Builder $query
-     * @param string $state
+     * @param string  $state
+     *
      * @return Builder
      */
     public function scopeByState(Builder $query, string $state): Builder
@@ -104,7 +106,8 @@ class District extends Model
      * Scope to search districts by name or code.
      *
      * @param Builder $query
-     * @param string $search
+     * @param string  $search
+     *
      * @return Builder
      */
     public function scopeSearch(Builder $query, string $search): Builder
@@ -174,7 +177,8 @@ class District extends Model
         // Simple US phone number formatting
         $phone = preg_replace('/[^0-9]/', '', $this->phone);
         if (strlen($phone) === 10) {
-            return sprintf('(%s) %s-%s', 
+            return sprintf(
+                '(%s) %s-%s',
                 substr($phone, 0, 3),
                 substr($phone, 3, 3),
                 substr($phone, 6, 4)
@@ -206,6 +210,7 @@ class District extends Model
     public function activate(): bool
     {
         $this->is_active = true;
+
         return $this->save();
     }
 
@@ -217,6 +222,7 @@ class District extends Model
     public function deactivate(): bool
     {
         $this->is_active = false;
+
         return $this->save();
     }
 

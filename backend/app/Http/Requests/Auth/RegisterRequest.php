@@ -185,8 +185,7 @@ class RegisterRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @param \Illuminate\Validation\Validator $validator
      */
     public function withValidator($validator): void
     {
@@ -211,8 +210,6 @@ class RegisterRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

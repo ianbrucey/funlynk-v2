@@ -5,8 +5,8 @@ namespace App\Http\Requests\Spark;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create District Request
- * 
+ * Create District Request.
+ *
  * Validates district creation data for Spark educational programs
  */
 class CreateDistrictRequest extends FormRequest
@@ -95,8 +95,6 @@ class CreateDistrictRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

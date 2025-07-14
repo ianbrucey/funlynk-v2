@@ -2,19 +2,18 @@
 
 namespace App\Services\Core;
 
-use App\Models\User;
 use App\Models\Core\Event;
-use App\Models\Core\EventShare;
 use App\Models\Core\EventAttendee;
+use App\Models\Core\EventShare;
+use App\Models\User;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Cache;
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
- * Event Interaction Service
- * 
+ * Event Interaction Service.
+ *
  * Handles event interactions including sharing, QR codes, check-ins, and recommendations
  */
 class EventInteractionService
@@ -22,17 +21,19 @@ class EventInteractionService
     public function __construct(
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Share an event
+     * Share an event.
      *
-     * @param Event $event
-     * @param User|null $user
-     * @param string $platform
+     * @param Event       $event
+     * @param User|null   $user
+     * @param string      $platform
      * @param string|null $message
      * @param string|null $ipAddress
      * @param string|null $userAgent
+     *
      * @return array
      */
     public function shareEvent(
@@ -84,14 +85,16 @@ class EventInteractionService
                 'platform' => $platform,
                 'operation' => 'share_event'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get event share statistics
+     * Get event share statistics.
      *
      * @param Event $event
+     *
      * @return array
      */
     public function getEventShareStats(Event $event): array
@@ -100,18 +103,19 @@ class EventInteractionService
     }
 
     /**
-     * Generate QR code for event
+     * Generate QR code for event.
      *
-     * @param Event $event
-     * @param int $size
+     * @param Event  $event
+     * @param int    $size
      * @param string $format
+     *
      * @return array
      */
     public function generateEventQrCode(Event $event, int $size = 300, string $format = 'png'): array
     {
         try {
             $eventUrl = url("/events/{$event->id}");
-            
+
             // For now, return a placeholder. In a real implementation, you would use
             // a QR code library like SimpleSoftwareIO/simple-qrcode
             $qrCodeData = [
@@ -141,18 +145,20 @@ class EventInteractionService
                 'event_id' => $event->id,
                 'operation' => 'generate_qr_code'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Check in to an event
+     * Check in to an event.
      *
-     * @param User $user
-     * @param Event $event
-     * @param float|null $latitude
-     * @param float|null $longitude
+     * @param User        $user
+     * @param Event       $event
+     * @param float|null  $latitude
+     * @param float|null  $longitude
      * @param string|null $qrCodeToken
+     *
      * @return array
      */
     public function checkInToEvent(
@@ -232,7 +238,7 @@ class EventInteractionService
                 'event_id' => $event->id,
                 'operation' => 'check_in_to_event'
             ]);
-            
+
             return [
                 'success' => false,
                 'message' => 'An error occurred during check-in',
@@ -241,10 +247,11 @@ class EventInteractionService
     }
 
     /**
-     * Check out from an event
+     * Check out from an event.
      *
-     * @param User $user
+     * @param User  $user
      * @param Event $event
+     *
      * @return array
      */
     public function checkOutFromEvent(User $user, Event $event): array
@@ -298,7 +305,7 @@ class EventInteractionService
                 'event_id' => $event->id,
                 'operation' => 'check_out_from_event'
             ]);
-            
+
             return [
                 'success' => false,
                 'message' => 'An error occurred during check-out',
@@ -307,9 +314,10 @@ class EventInteractionService
     }
 
     /**
-     * Get event check-in statistics
+     * Get event check-in statistics.
      *
      * @param Event $event
+     *
      * @return array
      */
     public function getEventCheckInStats(Event $event): array
@@ -321,18 +329,19 @@ class EventInteractionService
             'checked_in' => $attendees->checkedIn()->count(),
             'checked_out' => $attendees->whereNotNull('checked_out_at')->count(),
             'currently_at_event' => $attendees->checkedIn()->whereNull('checked_out_at')->count(),
-            'check_in_rate' => $attendees->count() > 0 ? 
+            'check_in_rate' => $attendees->count() > 0 ?
                 round(($attendees->checkedIn()->count() / $attendees->count()) * 100, 2) : 0,
         ];
     }
 
     /**
-     * Get nearby events
+     * Get nearby events.
      *
      * @param float $latitude
      * @param float $longitude
      * @param float $radius
-     * @param int $perPage
+     * @param int   $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getNearbyEvents(float $latitude, float $longitude, float $radius = 10, int $perPage = 15): LengthAwarePaginator
@@ -348,12 +357,13 @@ class EventInteractionService
     }
 
     /**
-     * Get event recommendations for a user
+     * Get event recommendations for a user.
      *
-     * @param User $user
-     * @param int $perPage
+     * @param User       $user
+     * @param int        $perPage
      * @param float|null $latitude
      * @param float|null $longitude
+     *
      * @return LengthAwarePaginator
      */
     public function getEventRecommendations(User $user, int $perPage = 15, ?float $latitude = null, ?float $longitude = null): LengthAwarePaginator
@@ -384,9 +394,10 @@ class EventInteractionService
     }
 
     /**
-     * Get comprehensive event analytics
+     * Get comprehensive event analytics.
      *
      * @param Event $event
+     *
      * @return array
      */
     public function getEventAnalytics(Event $event): array
@@ -410,11 +421,12 @@ class EventInteractionService
     }
 
     /**
-     * Generate share URL for different platforms
+     * Generate share URL for different platforms.
      *
-     * @param Event $event
-     * @param string $platform
+     * @param Event       $event
+     * @param string      $platform
      * @param string|null $message
+     *
      * @return string
      */
     private function generateShareUrl(Event $event, string $platform, ?string $message = null): string
@@ -424,22 +436,23 @@ class EventInteractionService
         $shareMessage = $message ?: $defaultMessage;
 
         return match($platform) {
-            'facebook' => "https://www.facebook.com/sharer/sharer.php?u=" . urlencode($eventUrl),
-            'twitter' => "https://twitter.com/intent/tweet?text=" . urlencode($shareMessage) . "&url=" . urlencode($eventUrl),
-            'linkedin' => "https://www.linkedin.com/sharing/share-offsite/?url=" . urlencode($eventUrl),
-            'whatsapp' => "https://wa.me/?text=" . urlencode($shareMessage . " " . $eventUrl),
-            'email' => "mailto:?subject=" . urlencode($event->title) . "&body=" . urlencode($shareMessage . "\n\n" . $eventUrl),
+            'facebook' => 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($eventUrl),
+            'twitter' => 'https://twitter.com/intent/tweet?text=' . urlencode($shareMessage) . '&url=' . urlencode($eventUrl),
+            'linkedin' => 'https://www.linkedin.com/sharing/share-offsite/?url=' . urlencode($eventUrl),
+            'whatsapp' => 'https://wa.me/?text=' . urlencode($shareMessage . ' ' . $eventUrl),
+            'email' => 'mailto:?subject=' . urlencode($event->title) . '&body=' . urlencode($shareMessage . "\n\n" . $eventUrl),
             default => $eventUrl,
         };
     }
 
     /**
-     * Calculate distance between two coordinates in kilometers
+     * Calculate distance between two coordinates in kilometers.
      *
      * @param float $lat1
      * @param float $lon1
      * @param float $lat2
      * @param float $lon2
+     *
      * @return float
      */
     private function calculateDistance(float $lat1, float $lon1, float $lat2, float $lon2): float

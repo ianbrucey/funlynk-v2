@@ -2,22 +2,23 @@
 
 namespace App\Services\Shared;
 
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
- * Email Service
- * 
+ * Email Service.
+ *
  * Handles all email communications for the application
  */
 class EmailService
 {
     /**
-     * Send welcome email to new user
+     * Send welcome email to new user.
      *
      * @param string $email
      * @param string $name
+     *
      * @return bool
      */
     public function sendWelcomeEmail(string $email, string $name): bool
@@ -27,24 +28,27 @@ class EmailService
                 $message->to($email, $name)
                         ->subject('Welcome to Funlynk!');
             });
-            
+
             Log::info('Welcome email sent successfully', ['email' => $email]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send welcome email', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send password reset email
+     * Send password reset email.
      *
      * @param string $email
      * @param string $name
      * @param string $resetUrl
+     *
      * @return bool
      */
     public function sendPasswordResetEmail(string $email, string $name, string $resetUrl): bool
@@ -57,24 +61,27 @@ class EmailService
                 $message->to($email, $name)
                         ->subject('Reset Your Funlynk Password');
             });
-            
+
             Log::info('Password reset email sent successfully', ['email' => $email]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send password reset email', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send email verification email
+     * Send email verification email.
      *
      * @param string $email
      * @param string $name
      * @param string $verificationUrl
+     *
      * @return bool
      */
     public function sendEmailVerification(string $email, string $name, string $verificationUrl): bool
@@ -87,24 +94,27 @@ class EmailService
                 $message->to($email, $name)
                         ->subject('Verify Your Funlynk Email Address');
             });
-            
+
             Log::info('Email verification sent successfully', ['email' => $email]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send email verification', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send event invitation email
+     * Send event invitation email.
      *
      * @param string $email
      * @param string $name
-     * @param array $eventData
+     * @param array  $eventData
+     *
      * @return bool
      */
     public function sendEventInvitation(string $email, string $name, array $eventData): bool
@@ -117,28 +127,31 @@ class EmailService
                 $message->to($email, $name)
                         ->subject('You\'re Invited: ' . $eventData['title']);
             });
-            
+
             Log::info('Event invitation sent successfully', [
                 'email' => $email,
                 'event_id' => $eventData['id'] ?? null
             ]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send event invitation', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send permission slip email for Spark programs
+     * Send permission slip email for Spark programs.
      *
      * @param string $email
      * @param string $parentName
-     * @param array $tripData
+     * @param array  $tripData
      * @param string $permissionSlipUrl
+     *
      * @return bool
      */
     public function sendPermissionSlipEmail(string $email, string $parentName, array $tripData, string $permissionSlipUrl): bool
@@ -152,28 +165,31 @@ class EmailService
                 $message->to($email, $parentName)
                         ->subject('Permission Slip Required: ' . $tripData['program_title']);
             });
-            
+
             Log::info('Permission slip email sent successfully', [
                 'email' => $email,
                 'trip_id' => $tripData['id'] ?? null
             ]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send permission slip email', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send notification email
+     * Send notification email.
      *
      * @param string $email
      * @param string $name
      * @param string $subject
      * @param string $message
+     *
      * @return bool
      */
     public function sendNotificationEmail(string $email, string $name, string $subject, string $message): bool
@@ -186,25 +202,28 @@ class EmailService
                 $mail->to($email, $name)
                      ->subject($subject);
             });
-            
+
             Log::info('Notification email sent successfully', ['email' => $email]);
+
             return true;
         } catch (Exception $e) {
             Log::error('Failed to send notification email', [
                 'email' => $email,
                 'error' => $e->getMessage()
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send bulk emails
+     * Send bulk emails.
      *
-     * @param array $recipients
+     * @param array  $recipients
      * @param string $subject
      * @param string $template
-     * @param array $data
+     * @param array  $data
+     *
      * @return array
      */
     public function sendBulkEmails(array $recipients, string $subject, string $template, array $data = []): array
@@ -217,12 +236,15 @@ class EmailService
 
         foreach ($recipients as $recipient) {
             try {
-                Mail::send($template, array_merge($data, ['name' => $recipient['name']]), 
+                Mail::send(
+                    $template,
+                    array_merge($data, ['name' => $recipient['name']]),
                     function ($message) use ($recipient, $subject) {
                         $message->to($recipient['email'], $recipient['name'])
                                 ->subject($subject);
-                    });
-                
+                    }
+                );
+
                 $results['sent']++;
                 Log::info('Bulk email sent successfully', ['email' => $recipient['email']]);
             } catch (Exception $e) {

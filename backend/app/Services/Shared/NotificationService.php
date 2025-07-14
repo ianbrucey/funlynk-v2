@@ -2,13 +2,13 @@
 
 namespace App\Services\Shared;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 /**
- * Notification Service
- * 
+ * Notification Service.
+ *
  * Handles all types of notifications including database, push, email, and SMS
  */
 class NotificationService
@@ -16,16 +16,18 @@ class NotificationService
     public function __construct(
         private LoggingService $loggingService,
         private EmailService $emailService
-    ) {}
+    ) {
+    }
 
     /**
-     * Create a database notification
+     * Create a database notification.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $type
      * @param string $title
      * @param string $message
-     * @param array $data
+     * @param array  $data
+     *
      * @return bool
      */
     public function createNotification(
@@ -46,6 +48,7 @@ class NotificationService
             ]);
 
             $this->loggingService->logNotificationEvent($type, $userId, $data, true);
+
             return true;
         } catch (Exception $e) {
             $this->loggingService->logError($e, [
@@ -53,17 +56,19 @@ class NotificationService
                 'type' => $type,
                 'title' => $title
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send push notification (placeholder for Firebase implementation)
+     * Send push notification (placeholder for Firebase implementation).
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $title
      * @param string $body
-     * @param array $data
+     * @param array  $data
+     *
      * @return bool
      */
     public function sendPushNotification(int $userId, string $title, string $body, array $data = []): bool
@@ -71,7 +76,7 @@ class NotificationService
         try {
             // TODO: Implement Firebase push notification
             // This is a placeholder for future Firebase integration
-            
+
             Log::info('Push notification would be sent', [
                 'user_id' => $userId,
                 'title' => $title,
@@ -85,17 +90,19 @@ class NotificationService
                 'user_id' => $userId,
                 'title' => $title
             ]);
+
             return false;
         }
     }
 
     /**
-     * Send event notification
+     * Send event notification.
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $eventType
-     * @param array $eventData
-     * @param array $channels
+     * @param array  $eventData
+     * @param array  $channels
+     *
      * @return array
      */
     public function sendEventNotification(
@@ -116,6 +123,7 @@ class NotificationService
                         $eventData['message'] ?? '',
                         $eventData
                     );
+
                     break;
 
                 case 'push':
@@ -125,6 +133,7 @@ class NotificationService
                         $eventData['message'] ?? '',
                         $eventData
                     );
+
                     break;
 
                 case 'email':
@@ -136,6 +145,7 @@ class NotificationService
                             $eventData['message'] ?? ''
                         );
                     }
+
                     break;
             }
         }
@@ -144,10 +154,11 @@ class NotificationService
     }
 
     /**
-     * Mark notification as read
+     * Mark notification as read.
      *
      * @param int $notificationId
      * @param int $userId
+     *
      * @return bool
      */
     public function markAsRead(int $notificationId, int $userId): bool
@@ -165,14 +176,16 @@ class NotificationService
                 'notification_id' => $notificationId,
                 'user_id' => $userId
             ]);
+
             return false;
         }
     }
 
     /**
-     * Mark all notifications as read for a user
+     * Mark all notifications as read for a user.
      *
      * @param int $userId
+     *
      * @return bool
      */
     public function markAllAsRead(int $userId): bool
@@ -186,14 +199,16 @@ class NotificationService
             return true;
         } catch (Exception $e) {
             $this->loggingService->logError($e, ['user_id' => $userId]);
+
             return false;
         }
     }
 
     /**
-     * Get unread notifications count for user
+     * Get unread notifications count for user.
      *
      * @param int $userId
+     *
      * @return int
      */
     public function getUnreadCount(int $userId): int
@@ -205,16 +220,18 @@ class NotificationService
                 ->count();
         } catch (Exception $e) {
             $this->loggingService->logError($e, ['user_id' => $userId]);
+
             return 0;
         }
     }
 
     /**
-     * Get notifications for user with pagination
+     * Get notifications for user with pagination.
      *
      * @param int $userId
      * @param int $limit
      * @param int $offset
+     *
      * @return array
      */
     public function getUserNotifications(int $userId, int $limit = 20, int $offset = 0): array
@@ -228,6 +245,7 @@ class NotificationService
                 ->get()
                 ->map(function ($notification) {
                     $notification->data = json_decode($notification->data, true);
+
                     return $notification;
                 })
                 ->toArray();
@@ -235,14 +253,16 @@ class NotificationService
             return $notifications;
         } catch (Exception $e) {
             $this->loggingService->logError($e, ['user_id' => $userId]);
+
             return [];
         }
     }
 
     /**
-     * Delete old notifications (cleanup)
+     * Delete old notifications (cleanup).
      *
      * @param int $daysOld
+     *
      * @return int
      */
     public function deleteOldNotifications(int $daysOld = 30): int
@@ -253,21 +273,24 @@ class NotificationService
                 ->delete();
 
             Log::info('Old notifications deleted', ['count' => $deleted, 'days_old' => $daysOld]);
+
             return $deleted;
         } catch (Exception $e) {
             $this->loggingService->logError($e, ['days_old' => $daysOld]);
+
             return 0;
         }
     }
 
     /**
-     * Send bulk notifications to multiple users
+     * Send bulk notifications to multiple users.
      *
-     * @param array $userIds
+     * @param array  $userIds
      * @param string $type
      * @param string $title
      * @param string $message
-     * @param array $data
+     * @param array  $data
+     *
      * @return array
      */
     public function sendBulkNotifications(

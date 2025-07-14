@@ -3,16 +3,15 @@
 namespace App\Services\Spark;
 
 use App\Models\Spark\District;
-use App\Models\User;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * District Service
- * 
+ * District Service.
+ *
  * Handles district management business logic for Spark educational programs
  */
 class DistrictService
@@ -20,13 +19,15 @@ class DistrictService
     public function __construct(
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated districts with filters
+     * Get paginated districts with filters.
      *
      * @param array $filters
-     * @param int $perPage
+     * @param int   $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getDistricts(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -50,11 +51,13 @@ class DistrictService
     }
 
     /**
-     * Create a new district
+     * Create a new district.
      *
      * @param array $data
-     * @return District
+     *
      * @throws Exception
+     *
+     * @return District
      */
     public function createDistrict(array $data): District
     {
@@ -73,6 +76,7 @@ class DistrictService
             );
 
             DB::commit();
+
             return $district;
         } catch (Exception $e) {
             DB::rollBack();
@@ -80,17 +84,20 @@ class DistrictService
                 'user_id' => auth()->id(),
                 'operation' => 'create_district'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update a district
+     * Update a district.
      *
      * @param District $district
-     * @param array $data
-     * @return District
+     * @param array    $data
+     *
      * @throws Exception
+     *
+     * @return District
      */
     public function updateDistrict(District $district, array $data): District
     {
@@ -109,6 +116,7 @@ class DistrictService
             );
 
             DB::commit();
+
             return $district;
         } catch (Exception $e) {
             DB::rollBack();
@@ -116,16 +124,19 @@ class DistrictService
                 'district_id' => $district->id,
                 'operation' => 'update_district'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete a district
+     * Delete a district.
      *
      * @param District $district
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteDistrict(District $district): bool
     {
@@ -145,6 +156,7 @@ class DistrictService
             $district->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -152,16 +164,18 @@ class DistrictService
                 'district_id' => $district->id,
                 'operation' => 'delete_district'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get schools in a district
+     * Get schools in a district.
      *
      * @param District $district
-     * @param bool $activeOnly
-     * @param int $perPage
+     * @param bool     $activeOnly
+     * @param int      $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getDistrictSchools(District $district, bool $activeOnly = false, int $perPage = 15): LengthAwarePaginator
@@ -176,11 +190,12 @@ class DistrictService
     }
 
     /**
-     * Get users in a district
+     * Get users in a district.
      *
-     * @param District $district
+     * @param District    $district
      * @param string|null $role
-     * @param int $perPage
+     * @param int         $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getDistrictUsers(District $district, ?string $role = null, int $perPage = 15): LengthAwarePaginator
@@ -197,9 +212,10 @@ class DistrictService
     }
 
     /**
-     * Get district statistics
+     * Get district statistics.
      *
      * @param District $district
+     *
      * @return array
      */
     public function getDistrictStatistics(District $district): array
@@ -208,20 +224,21 @@ class DistrictService
 
         // Add additional computed statistics
         $schools = $district->schools()->withCount(['programs', 'users'])->get();
-        
+
         $stats['schools_by_type'] = $schools->groupBy('type')->map->count();
         $stats['total_programs'] = $schools->sum('programs_count');
         $stats['total_school_users'] = $schools->sum('users_count');
-        $stats['average_programs_per_school'] = $stats['active_schools'] > 0 ? 
+        $stats['average_programs_per_school'] = $stats['active_schools'] > 0 ?
             round($stats['total_programs'] / $stats['active_schools'], 2) : 0;
 
         return $stats;
     }
 
     /**
-     * Bulk import districts from CSV data
+     * Bulk import districts from CSV data.
      *
      * @param array $csvData
+     *
      * @return array
      */
     public function bulkImportDistricts(array $csvData): array
@@ -279,6 +296,7 @@ class DistrictService
                 'operation' => 'bulk_import_districts',
                 'total_rows' => count($csvData)
             ]);
+
             throw $e;
         }
     }

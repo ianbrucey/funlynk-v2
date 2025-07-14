@@ -5,8 +5,8 @@ namespace App\Http\Requests\Spark;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create Program Request
- * 
+ * Create Program Request.
+ *
  * Validates Spark program creation data
  */
 class CreateProgramRequest extends FormRequest
@@ -112,8 +112,6 @@ class CreateProgramRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

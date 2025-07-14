@@ -8,13 +8,11 @@ use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -28,7 +26,7 @@ class AuthServiceTest extends TestCase
     {
         parent::setUp();
         $this->authService = new AuthService();
-        
+
         // Create default roles
         Role::create(['name' => 'user']);
         Role::create(['name' => 'admin']);
@@ -58,7 +56,7 @@ class AuthServiceTest extends TestCase
     public function test_login_with_invalid_email(): void
     {
         $this->expectException(ValidationException::class);
-        
+
         $this->authService->login([
             'email' => 'nonexistent@example.com',
             'password' => 'password',
@@ -73,7 +71,7 @@ class AuthServiceTest extends TestCase
         ]);
 
         $this->expectException(ValidationException::class);
-        
+
         $this->authService->login([
             'email' => 'test@example.com',
             'password' => 'wrongpassword',
@@ -88,7 +86,7 @@ class AuthServiceTest extends TestCase
         ]);
 
         $this->expectException(ValidationException::class);
-        
+
         $this->authService->login([
             'email' => 'test@example.com',
             'password' => 'password',
@@ -109,7 +107,7 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('expires_at', $result);
         $this->assertNotNull($result['expires_at']);
-        
+
         // Check that the token has extended expiry
         $token = $user->tokens()->first();
         $this->assertNotNull($token->expires_at);
@@ -193,7 +191,7 @@ class AuthServiceTest extends TestCase
         ];
 
         $result = $this->authService->register($userData);
-        
+
         $this->assertTrue($result['user']->hasRole('user'));
     }
 
@@ -201,7 +199,7 @@ class AuthServiceTest extends TestCase
     {
         $user = User::factory()->create();
         $token = $user->createToken('test-token');
-        
+
         // Simulate the current token
         $user->withAccessToken($token->accessToken);
 
@@ -209,7 +207,7 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals('Successfully logged out.', $result['message']);
-        
+
         // Verify token is deleted
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $token->accessToken->id,
@@ -226,7 +224,7 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals('Successfully logged out from all devices.', $result['message']);
-        
+
         // Verify all tokens are deleted
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $token1->accessToken->id,
@@ -240,7 +238,7 @@ class AuthServiceTest extends TestCase
     {
         $user = User::factory()->create();
         $oldToken = $user->createToken('old-token');
-        
+
         // Simulate the current token
         $user->withAccessToken($oldToken->accessToken);
 
@@ -250,12 +248,12 @@ class AuthServiceTest extends TestCase
         $this->assertArrayHasKey('user', $result);
         $this->assertArrayHasKey('token_type', $result);
         $this->assertEquals('Bearer', $result['token_type']);
-        
+
         // Verify old token is deleted
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $oldToken->accessToken->id,
         ]);
-        
+
         // Verify new token exists
         $this->assertDatabaseHas('personal_access_tokens', [
             'tokenable_id' => $user->id,
@@ -280,7 +278,7 @@ class AuthServiceTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->authService->checkUserStatus($user);
-        
+
         // Verify tokens are revoked
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $token->accessToken->id,
@@ -296,10 +294,10 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals('User account has been deactivated.', $result['message']);
-        
+
         $user->refresh();
         $this->assertFalse($user->is_active);
-        
+
         // Verify tokens are revoked
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $token->accessToken->id,
@@ -314,7 +312,7 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals('User account has been activated.', $result['message']);
-        
+
         $user->refresh();
         $this->assertTrue($user->is_active);
     }
@@ -385,7 +383,7 @@ class AuthServiceTest extends TestCase
     public function test_verify_email_with_valid_hash(): void
     {
         Event::fake();
-        
+
         $user = User::factory()->unverified()->create();
         $hash = sha1($user->email);
 
@@ -393,10 +391,10 @@ class AuthServiceTest extends TestCase
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals('Email verified successfully.', $result['message']);
-        
+
         $user->refresh();
         $this->assertNotNull($user->email_verified_at);
-        
+
         Event::assertDispatched(Verified::class);
     }
 
@@ -442,7 +440,7 @@ class AuthServiceTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'test@example.com']);
         $token = 'reset-token';
-        
+
         // Insert password reset token
         DB::table('password_reset_tokens')->insert([
             'email' => 'test@example.com',
@@ -459,11 +457,11 @@ class AuthServiceTest extends TestCase
         $this->assertArrayHasKey('user', $result);
         $this->assertArrayHasKey('token', $result);
         $this->assertArrayHasKey('message', $result);
-        
+
         // Verify password was updated
         $user->refresh();
         $this->assertTrue(Hash::check('newpassword', $user->password));
-        
+
         // Verify token was deleted
         $this->assertDatabaseMissing('password_reset_tokens', [
             'email' => 'test@example.com',
@@ -473,7 +471,7 @@ class AuthServiceTest extends TestCase
     public function test_reset_password_with_invalid_token(): void
     {
         $user = User::factory()->create(['email' => 'test@example.com']);
-        
+
         // Insert password reset token
         DB::table('password_reset_tokens')->insert([
             'email' => 'test@example.com',
@@ -494,7 +492,7 @@ class AuthServiceTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'test@example.com']);
         $token = 'reset-token';
-        
+
         // Insert expired password reset token
         DB::table('password_reset_tokens')->insert([
             'email' => 'test@example.com',

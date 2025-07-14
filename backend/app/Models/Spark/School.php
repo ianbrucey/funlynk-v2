@@ -2,17 +2,17 @@
 
 namespace App\Models\Spark;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
 
 /**
- * School Model
- * 
+ * School Model.
+ *
  * Manages individual schools within districts for Spark educational programs
  */
 class School extends Model
@@ -116,6 +116,7 @@ class School extends Model
      * Scope to get active schools.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -127,7 +128,8 @@ class School extends Model
      * Scope to get schools by type.
      *
      * @param Builder $query
-     * @param string $type
+     * @param string  $type
+     *
      * @return Builder
      */
     public function scopeByType(Builder $query, string $type): Builder
@@ -139,7 +141,8 @@ class School extends Model
      * Scope to get schools by district.
      *
      * @param Builder $query
-     * @param int $districtId
+     * @param int     $districtId
+     *
      * @return Builder
      */
     public function scopeByDistrict(Builder $query, int $districtId): Builder
@@ -151,7 +154,8 @@ class School extends Model
      * Scope to get schools by grade level.
      *
      * @param Builder $query
-     * @param string $gradeLevel
+     * @param string  $gradeLevel
+     *
      * @return Builder
      */
     public function scopeByGradeLevel(Builder $query, string $gradeLevel): Builder
@@ -163,7 +167,8 @@ class School extends Model
      * Scope to search schools.
      *
      * @param Builder $query
-     * @param string $search
+     * @param string  $search
+     *
      * @return Builder
      */
     public function scopeSearch(Builder $query, string $search): Builder
@@ -237,7 +242,8 @@ class School extends Model
         // Simple US phone number formatting
         $phone = preg_replace('/[^0-9]/', '', $this->phone);
         if (strlen($phone) === 10) {
-            return sprintf('(%s) %s-%s', 
+            return sprintf(
+                '(%s) %s-%s',
                 substr($phone, 0, 3),
                 substr($phone, 3, 3),
                 substr($phone, 6, 4)
@@ -289,6 +295,7 @@ class School extends Model
     public function activate(): bool
     {
         $this->is_active = true;
+
         return $this->save();
     }
 
@@ -300,16 +307,16 @@ class School extends Model
     public function deactivate(): bool
     {
         $this->is_active = false;
+
         return $this->save();
     }
 
     /**
      * Add an administrator to the school.
      *
-     * @param User $user
+     * @param User   $user
      * @param string $role
-     * @param array $permissions
-     * @return void
+     * @param array  $permissions
      */
     public function addAdministrator(User $user, string $role = 'admin', array $permissions = []): void
     {
@@ -323,7 +330,6 @@ class School extends Model
      * Remove an administrator from the school.
      *
      * @param User $user
-     * @return void
      */
     public function removeAdministrator(User $user): void
     {
@@ -334,6 +340,7 @@ class School extends Model
      * Check if a user is an administrator of this school.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function isAdministrator(User $user): bool

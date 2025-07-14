@@ -2,18 +2,18 @@
 
 namespace App\Services\Core;
 
-use App\Models\User;
 use App\Models\Core\UserInterest;
+use App\Models\User;
 use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * User Service
- * 
+ * User Service.
+ *
  * Handles user management business logic including profiles, interests, and social features
  */
 class UserService
@@ -22,15 +22,18 @@ class UserService
         private FileUploadService $fileUploadService,
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Update user profile
+     * Update user profile.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $data
-     * @return User
+     *
      * @throws Exception
+     *
+     * @return User
      */
     public function updateProfile(User $user, array $data): User
     {
@@ -75,6 +78,7 @@ class UserService
             );
 
             DB::commit();
+
             return $user;
         } catch (Exception $e) {
             DB::rollBack();
@@ -82,17 +86,20 @@ class UserService
                 'user_id' => $user->id,
                 'operation' => 'update_profile'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update user interests
+     * Update user interests.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $interests
-     * @return User
+     *
      * @throws Exception
+     *
+     * @return User
      */
     public function updateInterests(User $user, array $interests): User
     {
@@ -123,6 +130,7 @@ class UserService
             );
 
             DB::commit();
+
             return $user;
         } catch (Exception $e) {
             DB::rollBack();
@@ -130,16 +138,18 @@ class UserService
                 'user_id' => $user->id,
                 'operation' => 'update_interests'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Search users
+     * Search users.
      *
      * @param string $query
-     * @param array $interests
-     * @param int $perPage
+     * @param array  $interests
+     * @param int    $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function searchUsers(string $query, array $interests = [], int $perPage = 15): LengthAwarePaginator
@@ -172,10 +182,11 @@ class UserService
     }
 
     /**
-     * Follow a user
+     * Follow a user.
      *
      * @param User $follower
      * @param User $following
+     *
      * @return bool
      */
     public function followUser(User $follower, User $following): bool
@@ -212,15 +223,17 @@ class UserService
                 'following_id' => $following->id,
                 'operation' => 'follow_user'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Unfollow a user
+     * Unfollow a user.
      *
      * @param User $follower
      * @param User $following
+     *
      * @return bool
      */
     public function unfollowUser(User $follower, User $following): bool
@@ -245,15 +258,17 @@ class UserService
                 'following_id' => $following->id,
                 'operation' => 'unfollow_user'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Check if a user can view another user's profile
+     * Check if a user can view another user's profile.
      *
      * @param User|null $viewer
-     * @param User $target
+     * @param User      $target
+     *
      * @return bool
      */
     public function canViewProfile(?User $viewer, User $target): bool
@@ -275,7 +290,7 @@ class UserService
 
         // Check profile visibility settings
         $visibilitySettings = $target->coreProfile?->visibility_settings ?? [];
-        
+
         // Default to public if no settings
         if (empty($visibilitySettings)) {
             return true;
@@ -299,15 +314,16 @@ class UserService
     }
 
     /**
-     * Check if a profile is public
+     * Check if a profile is public.
      *
      * @param User $user
+     *
      * @return bool
      */
     private function isProfilePublic(User $user): bool
     {
         $visibilitySettings = $user->coreProfile?->visibility_settings ?? [];
-        
+
         if (isset($visibilitySettings['profile_visibility'])) {
             return $visibilitySettings['profile_visibility'] === 'public';
         }

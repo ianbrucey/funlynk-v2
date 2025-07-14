@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -107,7 +107,8 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to only include active users.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
@@ -118,7 +119,8 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to only include users with verified emails.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeEmailVerified($query)
@@ -129,8 +131,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to only include users who have logged in recently.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $days
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int                                   $days
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRecentlyActive($query, $days = 30)
@@ -141,8 +144,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to filter users by timezone.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $timezone
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $timezone
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeInTimezone($query, $timezone)
@@ -153,8 +157,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to filter users by language.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $language
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $language
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeLanguage($query, $language)
@@ -165,8 +170,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to filter users by gender.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $gender
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $gender
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeGender($query, $gender)
@@ -177,9 +183,10 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to filter users by age range.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $minAge
-     * @param  int  $maxAge
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int                                   $minAge
+     * @param int                                   $maxAge
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeAgeRange($query, $minAge, $maxAge)
@@ -241,6 +248,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         $countryCode = $this->country_code ? '+' . $this->country_code . ' ' : '';
+
         return $countryCode . $this->phone;
     }
 
@@ -349,6 +357,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if this user is following another user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function isFollowing(User $user): bool
@@ -360,6 +369,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if this user is followed by another user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function isFollowedBy(User $user): bool
@@ -371,6 +381,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Follow another user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function follow(User $user): bool
@@ -380,6 +391,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         $this->following()->attach($user->id);
+
         return true;
     }
 
@@ -387,6 +399,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Unfollow another user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function unfollow(User $user): bool
@@ -396,6 +409,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         $this->following()->detach($user->id);
+
         return true;
     }
 
@@ -459,6 +473,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if user is attending a specific event.
      *
      * @param \App\Models\Core\Event $event
+     *
      * @return bool
      */
     public function isAttending(\App\Models\Core\Event $event): bool
@@ -470,6 +485,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if user is hosting a specific event.
      *
      * @param \App\Models\Core\Event $event
+     *
      * @return bool
      */
     public function isHosting(\App\Models\Core\Event $event): bool
@@ -529,6 +545,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if user is a school administrator.
      *
      * @param \App\Models\Spark\School|null $school
+     *
      * @return bool
      */
     public function isSchoolAdministrator(?\App\Models\Spark\School $school = null): bool
@@ -544,6 +561,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Check if user is a program teacher.
      *
      * @param \App\Models\Spark\Program|null $program
+     *
      * @return bool
      */
     public function isProgramTeacher(?\App\Models\Spark\Program $program = null): bool

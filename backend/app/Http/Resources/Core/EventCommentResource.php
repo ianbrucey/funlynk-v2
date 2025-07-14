@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * Event Comment Resource
- * 
+ * Event Comment Resource.
+ *
  * Transforms event comment data for API responses
  */
 class EventCommentResource extends BaseResource
@@ -16,6 +16,7 @@ class EventCommentResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -84,7 +85,7 @@ class EventCommentResource extends BaseResource
                         'can_edit' => $this->canBeEditedBy(auth()->user()),
                         'can_delete' => $this->canBeDeletedBy(auth()->user()),
                         'can_reply' => auth()->check() && $this->event->canBeViewedBy(auth()->user()),
-                        'can_approve' => auth()->user()->hasRole('admin') || 
+                        'can_approve' => auth()->user()->hasRole('admin') ||
                                        $this->event->host_id === auth()->id(),
                         'is_author' => auth()->id() === $this->user_id,
                     ];

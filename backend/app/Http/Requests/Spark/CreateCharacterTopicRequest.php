@@ -3,11 +3,9 @@
 namespace App\Http\Requests\Spark;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use App\Models\Spark\CharacterTopic;
 
 /**
- * Create Character Topic Request
+ * Create Character Topic Request.
  *
  * Validates character topic creation data
  */
@@ -75,8 +73,6 @@ class CreateCharacterTopicRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -86,7 +82,7 @@ class CreateCharacterTopicRequest extends FormRequest
                 'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $this->name))),
             ]);
         }
-        
+
         // Normalize category to lowercase
         if ($this->has('category')) {
             $this->merge([

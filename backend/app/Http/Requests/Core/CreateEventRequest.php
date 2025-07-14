@@ -5,8 +5,8 @@ namespace App\Http\Requests\Core;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create Event Request
- * 
+ * Create Event Request.
+ *
  * Validates event creation data
  */
 class CreateEventRequest extends FormRequest
@@ -33,34 +33,34 @@ class CreateEventRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:5000',
             'category_id' => 'required|integer|exists:event_categories,id',
-            
+
             // Location information
             'location' => 'required|string|max:500',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            
+
             // Date and time
             'start_time' => 'required|date|after:now',
             'end_time' => 'required|date|after:start_time',
-            
+
             // Capacity and pricing
             'max_attendees' => 'nullable|integer|min:1|max:10000',
             'price' => 'nullable|numeric|min:0|max:9999.99',
-            
+
             // Event settings
             'status' => 'sometimes|in:draft,published',
             'visibility' => 'sometimes|in:public,private,followers_only',
             'requires_approval' => 'sometimes|boolean',
-            
+
             // Additional information
             'requirements' => 'nullable|array',
             'requirements.*' => 'string|max:255',
             'contact_info' => 'nullable|string|max:1000',
-            
+
             // Images
             'images' => 'nullable|array|max:5',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            
+
             // Tags
             'tags' => 'nullable|array|max:10',
             'tags.*' => 'string|max:50',
@@ -137,8 +137,6 @@ class CreateEventRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

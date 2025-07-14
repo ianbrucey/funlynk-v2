@@ -55,6 +55,15 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "ci": [
+            "@php vendor/bin/pint --test",
+            "@php vendor/bin/phpstan analyse --configuration=phpstan.neon"
+        ],
+        "ci-with-tests": [
+            "@php vendor/bin/pint --test",
+            "@php vendor/bin/phpstan analyse --configuration=phpstan.neon",
+            "@php vendor/bin/phpunit"
         ]
     },
     "extra": {

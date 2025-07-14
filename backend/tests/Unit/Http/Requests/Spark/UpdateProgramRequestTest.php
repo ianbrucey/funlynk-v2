@@ -17,7 +17,7 @@ class UpdateProgramRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create default roles
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'spark_admin']);
@@ -29,22 +29,28 @@ class UpdateProgramRequestTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('admin');
         $program = Program::factory()->create();
-        
+
         $this->actingAs($user);
-        
+
         $request = new UpdateProgramRequest();
         $request->setRouteResolver(function () use ($program) {
-            return new class($program) {
-                public function __construct(private Program $program) {}
-                public function parameter($name) {
+            return new class ($program) {
+                public function __construct(private Program $program)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->program;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->program;
                 }
             };
         });
-        
+
         $this->assertTrue($request->authorize());
     }
 
@@ -53,22 +59,28 @@ class UpdateProgramRequestTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('spark_admin');
         $program = Program::factory()->create();
-        
+
         $this->actingAs($user);
-        
+
         $request = new UpdateProgramRequest();
         $request->setRouteResolver(function () use ($program) {
-            return new class($program) {
-                public function __construct(private Program $program) {}
-                public function parameter($name) {
+            return new class ($program) {
+                public function __construct(private Program $program)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->program;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->program;
                 }
             };
         });
-        
+
         $this->assertTrue($request->authorize());
     }
 
@@ -77,42 +89,54 @@ class UpdateProgramRequestTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('user');
         $program = Program::factory()->create();
-        
+
         $this->actingAs($user);
-        
+
         $request = new UpdateProgramRequest();
         $request->setRouteResolver(function () use ($program) {
-            return new class($program) {
-                public function __construct(private Program $program) {}
-                public function parameter($name) {
+            return new class ($program) {
+                public function __construct(private Program $program)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->program;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->program;
                 }
             };
         });
-        
+
         $this->assertFalse($request->authorize());
     }
 
     public function test_denies_unauthenticated_users(): void
     {
         $program = Program::factory()->create();
-        
+
         $request = new UpdateProgramRequest();
         $request->setRouteResolver(function () use ($program) {
-            return new class($program) {
-                public function __construct(private Program $program) {}
-                public function parameter($name) {
+            return new class ($program) {
+                public function __construct(private Program $program)
+                {
+                }
+
+                public function parameter($name)
+                {
                     return $this->program;
                 }
-                public function route($name) {
+
+                public function route($name)
+                {
                     return $this->program;
                 }
             };
         });
-        
+
         $this->assertFalse($request->authorize());
     }
 
@@ -130,9 +154,9 @@ class UpdateProgramRequestTest extends TestCase
             'learning_objectives' => ['Learn respect', 'Learn responsibility'],
             'is_active' => true,
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->passes());
     }
 
@@ -143,9 +167,9 @@ class UpdateProgramRequestTest extends TestCase
             'title' => 'Updated Program Title',
             'duration_minutes' => 45,
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->passes());
     }
 
@@ -155,9 +179,9 @@ class UpdateProgramRequestTest extends TestCase
         $data = [
             'title' => str_repeat('a', 300), // Too long
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertTrue($validator->errors()->has('title'));
     }
@@ -168,9 +192,9 @@ class UpdateProgramRequestTest extends TestCase
         $data = [
             'grade_levels' => ['invalid_grade'],
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertTrue($validator->errors()->has('grade_levels.0'));
     }
@@ -181,9 +205,9 @@ class UpdateProgramRequestTest extends TestCase
         $data = [
             'duration_minutes' => 10, // Too short
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertTrue($validator->errors()->has('duration_minutes'));
     }
@@ -194,9 +218,9 @@ class UpdateProgramRequestTest extends TestCase
         $data = [
             'max_students' => 0, // Too few
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertTrue($validator->errors()->has('max_students'));
     }
@@ -207,9 +231,9 @@ class UpdateProgramRequestTest extends TestCase
         $data = [
             'price_per_student' => -5, // Negative
         ];
-        
+
         $validator = Validator::make($data, $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertTrue($validator->errors()->has('price_per_student'));
     }
@@ -220,14 +244,14 @@ class UpdateProgramRequestTest extends TestCase
         $request->replace([
             'character_topics' => ['  respect  ', '', 'responsibility', 'respect'],
         ]);
-        
+
         // Use reflection to call the protected method
         $reflection = new \ReflectionMethod($request, 'prepareForValidation');
         $reflection->setAccessible(true);
         $reflection->invoke($request);
-        
+
         $cleanedTopics = $request->get('character_topics');
-        
+
         $this->assertCount(2, $cleanedTopics);
         $this->assertContains('respect', $cleanedTopics);
         $this->assertContains('responsibility', $cleanedTopics);
@@ -240,14 +264,14 @@ class UpdateProgramRequestTest extends TestCase
         $request->replace([
             'learning_objectives' => ['Learn respect', '', '  Learn responsibility  '],
         ]);
-        
+
         // Use reflection to call the protected method
         $reflection = new \ReflectionMethod($request, 'prepareForValidation');
         $reflection->setAccessible(true);
         $reflection->invoke($request);
-        
+
         $cleanedObjectives = $request->get('learning_objectives');
-        
+
         $this->assertCount(2, $cleanedObjectives);
         $this->assertContains('Learn respect', $cleanedObjectives);
         $this->assertContains('  Learn responsibility  ', $cleanedObjectives);
@@ -260,12 +284,12 @@ class UpdateProgramRequestTest extends TestCase
         $request->replace([
             'is_active' => '1',
         ]);
-        
+
         // Use reflection to call the protected method
         $reflection = new \ReflectionMethod($request, 'prepareForValidation');
         $reflection->setAccessible(true);
         $reflection->invoke($request);
-        
+
         $this->assertTrue($request->get('is_active'));
     }
 
@@ -273,7 +297,7 @@ class UpdateProgramRequestTest extends TestCase
     {
         $request = new UpdateProgramRequest();
         $rules = $request->rules();
-        
+
         // Check that all rules have 'sometimes' modifier
         foreach ($rules as $field => $fieldRules) {
             if (is_array($fieldRules)) {
@@ -288,7 +312,7 @@ class UpdateProgramRequestTest extends TestCase
     {
         $createRequest = new \App\Http\Requests\Spark\CreateProgramRequest();
         $updateRequest = new UpdateProgramRequest();
-        
+
         $this->assertEquals($createRequest->messages(), $updateRequest->messages());
     }
 
@@ -296,7 +320,7 @@ class UpdateProgramRequestTest extends TestCase
     {
         $createRequest = new \App\Http\Requests\Spark\CreateProgramRequest();
         $updateRequest = new UpdateProgramRequest();
-        
+
         $this->assertEquals($createRequest->attributes(), $updateRequest->attributes());
     }
 }

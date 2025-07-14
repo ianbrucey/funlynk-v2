@@ -11,8 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Booking Controller
- * 
+ * Booking Controller.
+ *
  * Handles booking API endpoints for Spark programs
  */
 class BookingController extends BaseApiController
@@ -24,7 +24,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Get bookings list
+     * Get bookings list.
      */
     public function index(Request $request): JsonResponse
     {
@@ -47,7 +47,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Create new booking
+     * Create new booking.
      */
     public function store(CreateBookingRequest $request): JsonResponse
     {
@@ -62,7 +62,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Get booking by ID
+     * Get booking by ID.
      */
     public function show(Request $request, int $id): JsonResponse
     {
@@ -83,7 +83,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Update booking
+     * Update booking.
      */
     public function update(UpdateBookingRequest $request, int $id): JsonResponse
     {
@@ -106,7 +106,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Confirm booking
+     * Confirm booking.
      */
     public function confirm(int $id, Request $request): JsonResponse
     {
@@ -144,7 +144,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Cancel booking
+     * Cancel booking.
      */
     public function cancel(int $id, Request $request): JsonResponse
     {
@@ -172,7 +172,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Complete booking
+     * Complete booking.
      */
     public function complete(int $id, Request $request): JsonResponse
     {
@@ -208,7 +208,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Get booking students
+     * Get booking students.
      */
     public function students(int $id, Request $request): JsonResponse
     {
@@ -228,7 +228,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Add students to booking
+     * Add students to booking.
      */
     public function addStudents(int $id, Request $request): JsonResponse
     {
@@ -263,7 +263,7 @@ class BookingController extends BaseApiController
     }
 
     /**
-     * Get booking statistics
+     * Get booking statistics.
      */
     public function statistics(int $id, Request $request): JsonResponse
     {

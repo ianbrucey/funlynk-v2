@@ -6,8 +6,8 @@ use App\Http\Resources\BaseResource;
 use Illuminate\Http\Request;
 
 /**
- * District Resource
- * 
+ * District Resource.
+ *
  * Transforms district data for Spark API responses
  */
 class DistrictResource extends BaseResource
@@ -16,6 +16,7 @@ class DistrictResource extends BaseResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -78,7 +79,7 @@ class DistrictResource extends BaseResource
     }
 
     /**
-     * Check if user can edit this district
+     * Check if user can edit this district.
      *
      * @return bool
      */
@@ -92,7 +93,7 @@ class DistrictResource extends BaseResource
     }
 
     /**
-     * Check if user can manage schools in this district
+     * Check if user can manage schools in this district.
      *
      * @return bool
      */
@@ -106,7 +107,7 @@ class DistrictResource extends BaseResource
     }
 
     /**
-     * Check if user can view users in this district
+     * Check if user can view users in this district.
      *
      * @return bool
      */

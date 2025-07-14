@@ -6,13 +6,13 @@ use App\Models\Spark\School;
 use App\Models\User;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * School Service
- * 
+ * School Service.
+ *
  * Handles school management business logic for Spark educational programs
  */
 class SchoolService
@@ -20,13 +20,15 @@ class SchoolService
     public function __construct(
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get paginated schools with filters
+     * Get paginated schools with filters.
      *
      * @param array $filters
-     * @param int $perPage
+     * @param int   $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getSchools(array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -58,11 +60,13 @@ class SchoolService
     }
 
     /**
-     * Create a new school
+     * Create a new school.
      *
      * @param array $data
-     * @return School
+     *
      * @throws Exception
+     *
+     * @return School
      */
     public function createSchool(array $data): School
     {
@@ -85,6 +89,7 @@ class SchoolService
             );
 
             DB::commit();
+
             return $school;
         } catch (Exception $e) {
             DB::rollBack();
@@ -92,17 +97,20 @@ class SchoolService
                 'user_id' => auth()->id(),
                 'operation' => 'create_school'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update a school
+     * Update a school.
      *
      * @param School $school
-     * @param array $data
-     * @return School
+     * @param array  $data
+     *
      * @throws Exception
+     *
+     * @return School
      */
     public function updateSchool(School $school, array $data): School
     {
@@ -121,6 +129,7 @@ class SchoolService
             );
 
             DB::commit();
+
             return $school;
         } catch (Exception $e) {
             DB::rollBack();
@@ -128,16 +137,19 @@ class SchoolService
                 'school_id' => $school->id,
                 'operation' => 'update_school'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete a school
+     * Delete a school.
      *
      * @param School $school
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteSchool(School $school): bool
     {
@@ -157,6 +169,7 @@ class SchoolService
             $school->delete();
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -164,16 +177,18 @@ class SchoolService
                 'school_id' => $school->id,
                 'operation' => 'delete_school'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Get programs in a school
+     * Get programs in a school.
      *
      * @param School $school
-     * @param array $filters
-     * @param int $perPage
+     * @param array  $filters
+     * @param int    $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getSchoolPrograms(School $school, array $filters = [], int $perPage = 15): LengthAwarePaginator
@@ -192,12 +207,13 @@ class SchoolService
     }
 
     /**
-     * Add administrator to school
+     * Add administrator to school.
      *
      * @param School $school
-     * @param User $user
+     * @param User   $user
      * @param string $role
-     * @param array $permissions
+     * @param array  $permissions
+     *
      * @return bool
      */
     public function addAdministrator(School $school, User $user, string $role, array $permissions = []): bool
@@ -243,15 +259,17 @@ class SchoolService
                 'user_id' => $user->id,
                 'operation' => 'add_school_administrator'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Remove administrator from school
+     * Remove administrator from school.
      *
      * @param School $school
-     * @param User $user
+     * @param User   $user
+     *
      * @return bool
      */
     public function removeAdministrator(School $school, User $user): bool
@@ -295,14 +313,16 @@ class SchoolService
                 'user_id' => $user->id,
                 'operation' => 'remove_school_administrator'
             ]);
+
             return false;
         }
     }
 
     /**
-     * Get school statistics
+     * Get school statistics.
      *
      * @param School $school
+     *
      * @return array
      */
     public function getSchoolStatistics(School $school): array
@@ -311,20 +331,21 @@ class SchoolService
 
         // Add additional computed statistics
         $programs = $school->programs()->withCount(['bookings', 'teachers'])->get();
-        
+
         $stats['programs_by_type'] = $programs->groupBy('type')->map->count();
         $stats['total_bookings'] = $programs->sum('bookings_count');
         $stats['total_program_teachers'] = $programs->sum('teachers_count');
-        $stats['average_bookings_per_program'] = $stats['active_programs'] > 0 ? 
+        $stats['average_bookings_per_program'] = $stats['active_programs'] > 0 ?
             round($stats['total_bookings'] / $stats['active_programs'], 2) : 0;
 
         return $stats;
     }
 
     /**
-     * Bulk import schools from CSV data
+     * Bulk import schools from CSV data.
      *
      * @param array $csvData
+     *
      * @return array
      */
     public function bulkImportSchools(array $csvData): array
@@ -387,6 +408,7 @@ class SchoolService
                 'operation' => 'bulk_import_schools',
                 'total_rows' => count($csvData)
             ]);
+
             throw $e;
         }
     }

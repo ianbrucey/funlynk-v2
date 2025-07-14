@@ -2,18 +2,18 @@
 
 namespace App\Services\Core;
 
-use App\Models\User;
 use App\Models\Core\Event;
 use App\Models\Core\EventComment;
+use App\Models\User;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 /**
- * Event Comment Service
- * 
+ * Event Comment Service.
+ *
  * Handles event comment business logic including CRUD and moderation
  */
 class EventCommentService
@@ -21,14 +21,16 @@ class EventCommentService
     public function __construct(
         private LoggingService $loggingService,
         private NotificationService $notificationService
-    ) {}
+    ) {
+    }
 
     /**
-     * Get comments for an event
+     * Get comments for an event.
      *
      * @param Event $event
-     * @param bool $includeReplies
-     * @param int $perPage
+     * @param bool  $includeReplies
+     * @param int   $perPage
+     *
      * @return LengthAwarePaginator
      */
     public function getEventComments(Event $event, bool $includeReplies = true, int $perPage = 15): LengthAwarePaginator
@@ -47,13 +49,15 @@ class EventCommentService
     }
 
     /**
-     * Create a new comment
+     * Create a new comment.
      *
-     * @param User $user
+     * @param User  $user
      * @param Event $event
      * @param array $data
-     * @return EventComment
+     *
      * @throws Exception
+     *
+     * @return EventComment
      */
     public function createComment(User $user, Event $event, array $data): EventComment
     {
@@ -129,6 +133,7 @@ class EventCommentService
             );
 
             DB::commit();
+
             return $comment;
         } catch (Exception $e) {
             DB::rollBack();
@@ -137,17 +142,20 @@ class EventCommentService
                 'event_id' => $event->id,
                 'operation' => 'create_comment'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Update a comment
+     * Update a comment.
      *
      * @param EventComment $comment
-     * @param array $data
-     * @return EventComment
+     * @param array        $data
+     *
      * @throws Exception
+     *
+     * @return EventComment
      */
     public function updateComment(EventComment $comment, array $data): EventComment
     {
@@ -177,16 +185,19 @@ class EventCommentService
                 'comment_id' => $comment->id,
                 'operation' => 'update_comment'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Delete a comment
+     * Delete a comment.
      *
      * @param EventComment $comment
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function deleteComment(EventComment $comment): bool
     {
@@ -213,25 +224,25 @@ class EventCommentService
                 'comment_id' => $comment->id,
                 'operation' => 'delete_comment'
             ]);
+
             throw $e;
         }
     }
 
     /**
-     * Process mentions in a comment
+     * Process mentions in a comment.
      *
      * @param EventComment $comment
-     * @return void
      */
     private function processMentions(EventComment $comment): void
     {
         $mentions = $comment->getMentions();
-        
+
         foreach ($mentions as $username) {
             // Find user by username (assuming we have a username field)
             // For now, we'll skip this as the User model doesn't have username
             // This would be implemented when username functionality is added
-            
+
             // $mentionedUser = User::where('username', $username)->first();
             // if ($mentionedUser && $mentionedUser->id !== $comment->user_id) {
             //     $this->notificationService->createNotification(
@@ -250,9 +261,10 @@ class EventCommentService
     }
 
     /**
-     * Get comment statistics for an event
+     * Get comment statistics for an event.
      *
      * @param Event $event
+     *
      * @return array
      */
     public function getEventCommentStats(Event $event): array

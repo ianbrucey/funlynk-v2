@@ -135,8 +135,7 @@ class PasswordResetRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @param \Illuminate\Validation\Validator $validator
      */
     public function withValidator($validator): void
     {
@@ -159,8 +158,7 @@ class PasswordResetRequest extends FormRequest
     /**
      * Validate the password reset token.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @param \Illuminate\Validation\Validator $validator
      */
     protected function validatePasswordResetToken($validator): void
     {
@@ -170,11 +168,13 @@ class PasswordResetRequest extends FormRequest
 
         if (!$tokenRecord) {
             $validator->errors()->add('token', 'This password reset token is invalid.');
+
             return;
         }
 
         if (!\Hash::check($this->token, $tokenRecord->token)) {
             $validator->errors()->add('token', 'This password reset token is invalid.');
+
             return;
         }
 
@@ -189,8 +189,6 @@ class PasswordResetRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

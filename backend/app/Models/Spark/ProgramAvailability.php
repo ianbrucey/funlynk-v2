@@ -2,13 +2,13 @@
 
 namespace App\Models\Spark;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Program Availability Model
- * 
+ * Program Availability Model.
+ *
  * Manages availability slots for Spark programs
  */
 class ProgramAvailability extends Model
@@ -67,6 +67,7 @@ class ProgramAvailability extends Model
      * Scope to get available slots.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeAvailable(Builder $query): Builder
@@ -79,6 +80,7 @@ class ProgramAvailability extends Model
      * Scope to get future availability.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeFuture(Builder $query): Builder
@@ -90,8 +92,9 @@ class ProgramAvailability extends Model
      * Scope to get availability for a specific date range.
      *
      * @param Builder $query
-     * @param string $startDate
-     * @param string $endDate
+     * @param string  $startDate
+     * @param string  $endDate
+     *
      * @return Builder
      */
     public function scopeDateRange(Builder $query, string $startDate, string $endDate): Builder
@@ -144,8 +147,8 @@ class ProgramAvailability extends Model
      */
     public function canBook(): bool
     {
-        return $this->is_available && 
-               !$this->is_full && 
+        return $this->is_available &&
+               !$this->is_full &&
                $this->date >= today();
     }
 
@@ -158,8 +161,10 @@ class ProgramAvailability extends Model
     {
         if ($this->canBook()) {
             $this->current_bookings++;
+
             return $this->save();
         }
+
         return false;
     }
 
@@ -172,8 +177,10 @@ class ProgramAvailability extends Model
     {
         if ($this->current_bookings > 0) {
             $this->current_bookings--;
+
             return $this->save();
         }
+
         return false;
     }
 }

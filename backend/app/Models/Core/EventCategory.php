@@ -2,13 +2,13 @@
 
 namespace App\Models\Core;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Event Category Model
- * 
+ * Event Category Model.
+ *
  * Manages event categories for organization and filtering
  */
 class EventCategory extends Model
@@ -61,6 +61,7 @@ class EventCategory extends Model
      * Scope to get active categories.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -72,6 +73,7 @@ class EventCategory extends Model
      * Scope to order by sort order.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeOrdered(Builder $query): Builder

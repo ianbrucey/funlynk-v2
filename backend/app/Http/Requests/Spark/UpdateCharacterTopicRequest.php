@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Spark;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Spark\CharacterTopic;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 /**
- * Update Character Topic Request
+ * Update Character Topic Request.
  *
  * Validates character topic update data with slug uniqueness handling
  */
@@ -22,12 +22,12 @@ class UpdateCharacterTopicRequest extends FormRequest
     public function authorize(): bool
     {
         $characterTopic = $this->route('character_topic');
-        
+
         // Policy-based authorization (stub for future extension)
         if (Gate::getPolicyFor(CharacterTopic::class)) {
             return Gate::allows('update', $characterTopic);
         }
-        
+
         // Fallback to role-based authorization
         return auth()->check() && auth()->user()->hasRole(['admin', 'spark_admin']);
     }
@@ -40,7 +40,7 @@ class UpdateCharacterTopicRequest extends FormRequest
     public function rules(): array
     {
         $characterTopicId = $this->route('character_topic')->id ?? null;
-        
+
         return [
             'name' => 'sometimes|required|string|max:255',
             'slug' => [
@@ -91,8 +91,6 @@ class UpdateCharacterTopicRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -102,7 +100,7 @@ class UpdateCharacterTopicRequest extends FormRequest
                 'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $this->name))),
             ]);
         }
-        
+
         // Normalize category to lowercase
         if ($this->has('category')) {
             $this->merge([

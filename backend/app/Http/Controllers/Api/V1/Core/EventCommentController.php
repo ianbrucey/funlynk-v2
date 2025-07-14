@@ -6,15 +6,15 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Core\CreateCommentRequest;
 use App\Http\Requests\Core\UpdateCommentRequest;
 use App\Http\Resources\Core\EventCommentResource;
-use App\Services\Core\EventCommentService;
 use App\Models\Core\Event;
 use App\Models\Core\EventComment;
-use Illuminate\Http\Request;
+use App\Services\Core\EventCommentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Event Comment Controller
- * 
+ * Event Comment Controller.
+ *
  * Handles event comment operations including CRUD and moderation
  */
 class EventCommentController extends BaseApiController
@@ -26,17 +26,18 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Get comments for an event
+     * Get comments for an event.
      *
      * @param Request $request
-     * @param int $eventId
+     * @param int     $eventId
+     *
      * @return JsonResponse
      */
     public function index(Request $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to view this event');
             }
@@ -57,17 +58,18 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Create a new comment
+     * Create a new comment.
      *
      * @param CreateCommentRequest $request
-     * @param int $eventId
+     * @param int                  $eventId
+     *
      * @return JsonResponse
      */
     public function store(CreateCommentRequest $request, int $eventId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId) {
             $event = Event::findOrFail($eventId);
-            
+
             if (!$event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to comment on this event');
             }
@@ -86,11 +88,12 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Get a specific comment
+     * Get a specific comment.
      *
      * @param Request $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int     $eventId
+     * @param int     $commentId
+     *
      * @return JsonResponse
      */
     public function show(Request $request, int $eventId, int $commentId): JsonResponse
@@ -99,7 +102,7 @@ class EventCommentController extends BaseApiController
             $comment = EventComment::with(['user', 'event', 'replies.user'])
                 ->where('event_id', $eventId)
                 ->findOrFail($commentId);
-            
+
             if (!$comment->event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to view this comment');
             }
@@ -112,18 +115,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Update a comment
+     * Update a comment.
      *
      * @param UpdateCommentRequest $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int                  $eventId
+     * @param int                  $commentId
+     *
      * @return JsonResponse
      */
     public function update(UpdateCommentRequest $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $comment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             if (!$comment->canBeEditedBy($request->user())) {
                 return $this->forbiddenResponse('You do not have permission to edit this comment');
             }
@@ -138,18 +142,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Delete a comment
+     * Delete a comment.
      *
      * @param Request $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int     $eventId
+     * @param int     $commentId
+     *
      * @return JsonResponse
      */
     public function destroy(Request $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $comment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             if (!$comment->canBeDeletedBy($request->user())) {
                 return $this->forbiddenResponse('You do not have permission to delete this comment');
             }
@@ -161,18 +166,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Reply to a comment
+     * Reply to a comment.
      *
      * @param CreateCommentRequest $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int                  $eventId
+     * @param int                  $commentId
+     *
      * @return JsonResponse
      */
     public function reply(CreateCommentRequest $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $parentComment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             if (!$parentComment->event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to reply to this comment');
             }
@@ -194,18 +200,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Get replies to a comment
+     * Get replies to a comment.
      *
      * @param Request $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int     $eventId
+     * @param int     $commentId
+     *
      * @return JsonResponse
      */
     public function replies(Request $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $comment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             if (!$comment->event->canBeViewedBy(auth()->user())) {
                 return $this->forbiddenResponse('You do not have permission to view replies');
             }
@@ -225,18 +232,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Approve a comment (for event hosts and admins)
+     * Approve a comment (for event hosts and admins).
      *
      * @param Request $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int     $eventId
+     * @param int     $commentId
+     *
      * @return JsonResponse
      */
     public function approve(Request $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $comment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             // Only event hosts and admins can approve comments
             if (!($request->user()->hasRole('admin') || $comment->event->host_id === $request->user()->id)) {
                 return $this->forbiddenResponse('You do not have permission to approve comments');
@@ -252,18 +260,19 @@ class EventCommentController extends BaseApiController
     }
 
     /**
-     * Disapprove a comment (for event hosts and admins)
+     * Disapprove a comment (for event hosts and admins).
      *
      * @param Request $request
-     * @param int $eventId
-     * @param int $commentId
+     * @param int     $eventId
+     * @param int     $commentId
+     *
      * @return JsonResponse
      */
     public function disapprove(Request $request, int $eventId, int $commentId): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $eventId, $commentId) {
             $comment = EventComment::where('event_id', $eventId)->findOrFail($commentId);
-            
+
             // Only event hosts and admins can disapprove comments
             if (!($request->user()->hasRole('admin') || $comment->event->host_id === $request->user()->id)) {
                 return $this->forbiddenResponse('You do not have permission to moderate comments');

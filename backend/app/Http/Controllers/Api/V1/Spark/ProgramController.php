@@ -6,14 +6,14 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Spark\CreateProgramRequest;
 use App\Http\Requests\Spark\UpdateProgramRequest;
 use App\Http\Resources\Spark\ProgramResource;
-use App\Services\Spark\ProgramService;
 use App\Models\Spark\Program;
-use Illuminate\Http\Request;
+use App\Services\Spark\ProgramService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
- * Program Controller
- * 
+ * Program Controller.
+ *
  * Handles Spark program management operations
  */
 class ProgramController extends BaseApiController
@@ -25,9 +25,10 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Get paginated list of programs
+     * Get paginated list of programs.
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -58,16 +59,17 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Create a new program
+     * Create a new program.
      *
      * @param CreateProgramRequest $request
+     *
      * @return JsonResponse
      */
     public function store(CreateProgramRequest $request): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request) {
             $program = $this->programService->createProgram($request->validated());
-            
+
             return $this->createdResponse(
                 new ProgramResource($program),
                 'Program created successfully'
@@ -76,17 +78,18 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Get a specific program
+     * Get a specific program.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function show(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $program = Program::with(['availability', 'bookings'])->findOrFail($id);
-            
+
             return $this->successResponse(
                 new ProgramResource($program),
                 'Program retrieved successfully'
@@ -95,10 +98,11 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Update a program
+     * Update a program.
      *
      * @param UpdateProgramRequest $request
-     * @param int $id
+     * @param int                  $id
+     *
      * @return JsonResponse
      */
     public function update(UpdateProgramRequest $request, int $id): JsonResponse
@@ -106,7 +110,7 @@ class ProgramController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $program = Program::findOrFail($id);
             $program = $this->programService->updateProgram($program, $request->validated());
-            
+
             return $this->updatedResponse(
                 new ProgramResource($program),
                 'Program updated successfully'
@@ -115,42 +119,44 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Delete a program
+     * Delete a program.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function destroy(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($id) {
             $program = Program::findOrFail($id);
-            
+
             if (!$program->canBeDeleted()) {
                 return $this->errorResponse(
                     'Cannot delete program with confirmed or pending bookings',
                     400
                 );
             }
-            
+
             $this->programService->deleteProgram($program);
-            
+
             return $this->deletedResponse('Program deleted successfully');
         });
     }
 
     /**
-     * Get program availability
+     * Get program availability.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function availability(Request $request, int $id): JsonResponse
     {
         return $this->handleApiOperation($request, function () use ($request, $id) {
             $program = Program::findOrFail($id);
-            
+
             $request->validate([
                 'start_date' => 'date',
                 'end_date' => 'date|after_or_equal:start_date',
@@ -169,10 +175,11 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Add availability slot
+     * Add availability slot.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function addAvailability(Request $request, int $id): JsonResponse
@@ -197,11 +204,12 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Update availability slot
+     * Update availability slot.
      *
      * @param Request $request
-     * @param int $id
-     * @param int $availabilityId
+     * @param int     $id
+     * @param int     $availabilityId
+     *
      * @return JsonResponse
      */
     public function updateAvailability(Request $request, int $id, int $availabilityId): JsonResponse
@@ -231,11 +239,12 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Remove availability slot
+     * Remove availability slot.
      *
      * @param Request $request
-     * @param int $id
-     * @param int $availabilityId
+     * @param int     $id
+     * @param int     $availabilityId
+     *
      * @return JsonResponse
      */
     public function removeAvailability(Request $request, int $id, int $availabilityId): JsonResponse
@@ -253,10 +262,11 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Get program statistics
+     * Get program statistics.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function statistics(Request $request, int $id): JsonResponse
@@ -264,16 +274,17 @@ class ProgramController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($id) {
             $program = Program::findOrFail($id);
             $statistics = $program->getStatistics();
-            
+
             return $this->successResponse($statistics, 'Program statistics retrieved successfully');
         });
     }
 
     /**
-     * Activate a program
+     * Activate a program.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function activate(Request $request, int $id): JsonResponse
@@ -281,7 +292,7 @@ class ProgramController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($id) {
             $program = Program::findOrFail($id);
             $program->activate();
-            
+
             return $this->successResponse(
                 ['is_active' => true],
                 'Program activated successfully'
@@ -290,10 +301,11 @@ class ProgramController extends BaseApiController
     }
 
     /**
-     * Deactivate a program
+     * Deactivate a program.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return JsonResponse
      */
     public function deactivate(Request $request, int $id): JsonResponse
@@ -301,7 +313,7 @@ class ProgramController extends BaseApiController
         return $this->handleApiOperation($request, function () use ($id) {
             $program = Program::findOrFail($id);
             $program->deactivate();
-            
+
             return $this->successResponse(
                 ['is_active' => false],
                 'Program deactivated successfully'

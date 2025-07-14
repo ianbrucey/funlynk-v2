@@ -5,8 +5,8 @@ namespace App\Http\Requests\Spark;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create School Request
- * 
+ * Create School Request.
+ *
  * Validates school creation data for Spark educational programs
  */
 class CreateSchoolRequest extends FormRequest
@@ -120,8 +120,6 @@ class CreateSchoolRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

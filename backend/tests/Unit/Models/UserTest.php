@@ -15,7 +15,7 @@ class UserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create default roles
         Role::create(['name' => 'user']);
         Role::create(['name' => 'admin']);

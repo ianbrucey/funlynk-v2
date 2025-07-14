@@ -2,13 +2,13 @@
 
 namespace App\Models\Core;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Event Tag Model
- * 
+ * Event Tag Model.
+ *
  * Manages tags for event categorization and search
  */
 class EventTag extends Model
@@ -59,7 +59,8 @@ class EventTag extends Model
      * Scope to get popular tags.
      *
      * @param Builder $query
-     * @param int $limit
+     * @param int     $limit
+     *
      * @return Builder
      */
     public function scopePopular(Builder $query, int $limit = 20): Builder
@@ -71,7 +72,8 @@ class EventTag extends Model
      * Scope to search tags by name.
      *
      * @param Builder $query
-     * @param string $search
+     * @param string  $search
+     *
      * @return Builder
      */
     public function scopeSearch(Builder $query, string $search): Builder
@@ -88,7 +90,6 @@ class EventTag extends Model
      * Set the name attribute and generate slug.
      *
      * @param string $value
-     * @return void
      */
     public function setNameAttribute(string $value): void
     {
@@ -104,28 +105,27 @@ class EventTag extends Model
      * Generate a slug from the name.
      *
      * @param string $name
+     *
      * @return string
      */
     private function generateSlug(string $name): string
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-        
+
         // Ensure uniqueness
         $originalSlug = $slug;
         $counter = 1;
-        
+
         while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
             $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
-        
+
         return $slug;
     }
 
     /**
      * Increment the usage count.
-     *
-     * @return void
      */
     public function incrementUsage(): void
     {
@@ -134,8 +134,6 @@ class EventTag extends Model
 
     /**
      * Decrement the usage count.
-     *
-     * @return void
      */
     public function decrementUsage(): void
     {
@@ -146,12 +144,13 @@ class EventTag extends Model
      * Find or create a tag by name.
      *
      * @param string $name
+     *
      * @return static
      */
     public static function findOrCreateByName(string $name): static
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-        
+
         return static::firstOrCreate(
             ['slug' => $slug],
             ['name' => $name]

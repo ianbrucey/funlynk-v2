@@ -2,21 +2,21 @@
 
 namespace App\Exceptions;
 
+use App\Services\Shared\LoggingService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use App\Services\Shared\LoggingService;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 /**
- * Application Exception Handler
+ * Application Exception Handler.
  *
  * Handles exceptions and provides consistent API error responses
  */
@@ -48,8 +48,9 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param Request $request
+     * @param Request   $request
      * @param Throwable $e
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Throwable $e)
@@ -62,10 +63,11 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Handle API exceptions with consistent JSON responses
+     * Handle API exceptions with consistent JSON responses.
      *
-     * @param Request $request
+     * @param Request   $request
      * @param Throwable $e
+     *
      * @return JsonResponse
      */
     private function handleApiException(Request $request, Throwable $e): JsonResponse

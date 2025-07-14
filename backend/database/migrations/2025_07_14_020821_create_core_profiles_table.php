@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -39,7 +38,7 @@ return new class extends Migration
             $table->string('emergency_contact_relationship')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index('user_id');
             $table->index('is_verified');
             $table->index('profile_completion_score');
