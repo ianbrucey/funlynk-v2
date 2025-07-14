@@ -1,0 +1,16 @@
+# .github/CODEOWNERS
+# Global owners
+* @funlynk/core-team
+
+# Backend specific
+/backend/ @funlynk/backend-team
+/infrastructure/ @funlynk/devops-team
+
+# Frontend specific
+/admin-dashboard/ @funlynk/frontend-team
+/mobile/ @funlynk/mobile-team
+
+# DevOps and deployment
+/.github/workflows/ @funlynk/devops-team
+/docker/ @funlynk/devops-team
+/scripts/ @funlynk/devops-team
