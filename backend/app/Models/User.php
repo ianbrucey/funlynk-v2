@@ -417,4 +417,62 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->followers()->count();
     }
+
+    // ===================================
+    // Event Relationships
+    // ===================================
+
+    /**
+     * Get events hosted by this user.
+     *
+     * @return HasMany
+     */
+    public function hostedEvents(): HasMany
+    {
+        return $this->hasMany(\App\Models\Core\Event::class, 'host_id');
+    }
+
+    /**
+     * Get events this user is attending.
+     *
+     * @return BelongsToMany
+     */
+    public function attendingEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Core\Event::class, 'event_attendees')
+            ->withPivot(['status', 'rsvp_response', 'notes', 'checked_in_at', 'checked_out_at'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get confirmed events this user is attending.
+     *
+     * @return BelongsToMany
+     */
+    public function confirmedEvents(): BelongsToMany
+    {
+        return $this->attendingEvents()->wherePivot('status', 'confirmed');
+    }
+
+    /**
+     * Check if user is attending a specific event.
+     *
+     * @param \App\Models\Core\Event $event
+     * @return bool
+     */
+    public function isAttending(\App\Models\Core\Event $event): bool
+    {
+        return $this->attendingEvents()->where('event_id', $event->id)->exists();
+    }
+
+    /**
+     * Check if user is hosting a specific event.
+     *
+     * @param \App\Models\Core\Event $event
+     * @return bool
+     */
+    public function isHosting(\App\Models\Core\Event $event): bool
+    {
+        return $this->hostedEvents()->where('id', $event->id)->exists();
+    }
 }

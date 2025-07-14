@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Core\UserController;
+use App\Http\Controllers\Api\V1\Core\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +37,28 @@ Route::prefix('users')->group(function () {
     Route::get('/{id}/following', [UserController::class, 'following']);
 });
 
-// Event Management Routes (placeholder for future implementation)
+// Event Management Routes
 Route::prefix('events')->group(function () {
-    // Event routes will be implemented in Agent 2, Task 002
+
+    // Event CRUD operations
+    Route::get('/', [EventController::class, 'index']);
+    Route::post('/', [EventController::class, 'store']);
+    Route::get('/search', [EventController::class, 'search']);
+    Route::get('/categories', [EventController::class, 'categories']);
+
+    // User's events
+    Route::get('/my-hosted', [EventController::class, 'myHostedEvents']);
+    Route::get('/my-attended', [EventController::class, 'myAttendedEvents']);
+
+    // Individual event operations
+    Route::get('/{id}', [EventController::class, 'show']);
+    Route::put('/{id}', [EventController::class, 'update']);
+    Route::delete('/{id}', [EventController::class, 'destroy']);
+
+    // Event attendance
+    Route::post('/{id}/rsvp', [EventController::class, 'rsvp']);
+    Route::delete('/{id}/rsvp', [EventController::class, 'cancelRsvp']);
+    Route::get('/{id}/attendees', [EventController::class, 'attendees']);
 });
 
 // Event Interaction Routes (placeholder for future implementation)

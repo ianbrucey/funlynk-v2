@@ -10,6 +10,7 @@ use App\Services\Shared\NotificationService;
 use App\Services\Shared\ValidationService;
 use App\Services\Shared\CacheService;
 use App\Services\Core\UserService;
+use App\Services\Core\EventService;
 
 /**
  * Core Service Provider
@@ -46,6 +47,15 @@ class CoreServiceProvider extends ServiceProvider
                 $app->make(NotificationService::class)
             );
         });
+
+        // Register EventService with dependencies
+        $this->app->singleton(EventService::class, function ($app) {
+            return new EventService(
+                $app->make(FileUploadService::class),
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
     }
 
     /**
@@ -72,6 +82,7 @@ class CoreServiceProvider extends ServiceProvider
             ValidationService::class,
             CacheService::class,
             UserService::class,
+            EventService::class,
         ];
     }
 }
