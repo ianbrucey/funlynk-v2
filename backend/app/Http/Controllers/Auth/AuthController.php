@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\PasswordResetRequest;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller
+class AuthController extends BaseApiController
 {
     protected AuthService $authService;
 
@@ -52,7 +52,7 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             return $this->validationErrorResponse($e->errors(), 'Login failed');
         } catch (\Exception $e) {
-            return $this->errorResponse('Login failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Login failed. Please try again.');
         }
     }
 
@@ -86,7 +86,7 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             return $this->validationErrorResponse($e->errors(), 'Registration failed');
         } catch (\Exception $e) {
-            return $this->errorResponse('Registration failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Registration failed. Please try again.');
         }
     }
 
@@ -112,7 +112,7 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             return $this->validationErrorResponse($e->errors(), 'Password reset failed');
         } catch (\Exception $e) {
-            return $this->errorResponse('Password reset failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Password reset failed. Please try again.');
         }
     }
 
@@ -154,7 +154,7 @@ class AuthController extends Controller
             return $this->successResponse(null, $result['message']);
 
         } catch (\Exception $e) {
-            return $this->errorResponse('Logout failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Logout failed. Please try again.');
         }
     }
 
@@ -173,7 +173,7 @@ class AuthController extends Controller
             return $this->successResponse(null, $result['message']);
 
         } catch (\Exception $e) {
-            return $this->errorResponse('Logout failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Logout failed. Please try again.');
         }
     }
 
@@ -220,7 +220,7 @@ class AuthController extends Controller
             ], 'Token refreshed successfully');
 
         } catch (\Exception $e) {
-            return $this->errorResponse('Token refresh failed. Please try again.', null, 500);
+            return $this->serverErrorResponse('Token refresh failed. Please try again.');
         }
     }
 }

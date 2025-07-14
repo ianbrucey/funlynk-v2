@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\Auth;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\BaseResource;
+use Illuminate\Http\Request;
 
-class UserResource extends JsonResource
+class UserResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -12,7 +13,7 @@ class UserResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,

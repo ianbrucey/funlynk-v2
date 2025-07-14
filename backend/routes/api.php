@@ -14,10 +14,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () {
-    Route::prefix('auth')->group(base_path('routes/api/auth.php'));
+// API Health Check
+Route::get('/health', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'API is healthy',
+        'data' => [
+            'version' => '1.0',
+            'timestamp' => now()->toISOString(),
+            'environment' => app()->environment(),
+        ],
+    ]);
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// API Version 1 Routes
+Route::prefix('v1')->middleware(['api.middleware'])->group(function () {
+
+    // Authentication routes (public)
+    Route::prefix('auth')->group(base_path('routes/api/auth.php'));
+
+    // Protected routes
+    Route::middleware(['auth:sanctum', 'rate.limit:120,1'])->group(function () {
+
+        // User profile endpoint
+        Route::get('/user', function (Request $request) {
+            return new \App\Http\Resources\Auth\UserResource($request->user());
+        });
+
+        // Core Funlynk routes
+        Route::prefix('core')->group(base_path('routes/api/core.php'));
+
+        // Spark routes
+        Route::prefix('spark')->group(base_path('routes/api/spark.php'));
+    });
+});
+
+// Fallback route for undefined API endpoints
+Route::fallback(function () {
+    return response()->json([
+        'success' => false,
+        'message' => 'API endpoint not found',
+        'timestamp' => now()->toISOString(),
+    ], 404);
 });
