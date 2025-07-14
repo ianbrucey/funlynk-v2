@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -474,5 +475,83 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isHosting(\App\Models\Core\Event $event): bool
     {
         return $this->hostedEvents()->where('id', $event->id)->exists();
+    }
+
+    // ===================================
+    // Spark Relationships
+    // ===================================
+
+    /**
+     * Get the district this user belongs to.
+     *
+     * @return BelongsTo
+     */
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Spark\District::class);
+    }
+
+    /**
+     * Get the school this user belongs to.
+     *
+     * @return BelongsTo
+     */
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Spark\School::class);
+    }
+
+    /**
+     * Get the schools this user administers.
+     *
+     * @return BelongsToMany
+     */
+    public function administeredSchools(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Spark\School::class, 'school_administrators')
+            ->withPivot(['role', 'permissions'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the programs this user teaches.
+     *
+     * @return BelongsToMany
+     */
+    public function teachingPrograms(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Spark\Program::class, 'program_teachers')
+            ->withPivot(['role', 'is_lead_teacher'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user is a school administrator.
+     *
+     * @param \App\Models\Spark\School|null $school
+     * @return bool
+     */
+    public function isSchoolAdministrator(?\App\Models\Spark\School $school = null): bool
+    {
+        if ($school) {
+            return $this->administeredSchools()->where('school_id', $school->id)->exists();
+        }
+
+        return $this->administeredSchools()->exists();
+    }
+
+    /**
+     * Check if user is a program teacher.
+     *
+     * @param \App\Models\Spark\Program|null $program
+     * @return bool
+     */
+    public function isProgramTeacher(?\App\Models\Spark\Program $program = null): bool
+    {
+        if ($program) {
+            return $this->teachingPrograms()->where('program_id', $program->id)->exists();
+        }
+
+        return $this->teachingPrograms()->exists();
     }
 }
