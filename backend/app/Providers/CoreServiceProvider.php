@@ -11,6 +11,8 @@ use App\Services\Shared\ValidationService;
 use App\Services\Shared\CacheService;
 use App\Services\Core\UserService;
 use App\Services\Core\EventService;
+use App\Services\Core\EventCommentService;
+use App\Services\Core\EventInteractionService;
 
 /**
  * Core Service Provider
@@ -56,6 +58,22 @@ class CoreServiceProvider extends ServiceProvider
                 $app->make(NotificationService::class)
             );
         });
+
+        // Register EventCommentService with dependencies
+        $this->app->singleton(EventCommentService::class, function ($app) {
+            return new EventCommentService(
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
+
+        // Register EventInteractionService with dependencies
+        $this->app->singleton(EventInteractionService::class, function ($app) {
+            return new EventInteractionService(
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
     }
 
     /**
@@ -83,6 +101,8 @@ class CoreServiceProvider extends ServiceProvider
             CacheService::class,
             UserService::class,
             EventService::class,
+            EventCommentService::class,
+            EventInteractionService::class,
         ];
     }
 }

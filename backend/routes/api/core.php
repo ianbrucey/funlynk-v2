@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Core\UserController;
 use App\Http\Controllers\Api\V1\Core\EventController;
+use App\Http\Controllers\Api\V1\Core\EventCommentController;
+use App\Http\Controllers\Api\V1\Core\EventInteractionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,9 +61,30 @@ Route::prefix('events')->group(function () {
     Route::post('/{id}/rsvp', [EventController::class, 'rsvp']);
     Route::delete('/{id}/rsvp', [EventController::class, 'cancelRsvp']);
     Route::get('/{id}/attendees', [EventController::class, 'attendees']);
+
+    // Event comments
+    Route::get('/{eventId}/comments', [EventCommentController::class, 'index']);
+    Route::post('/{eventId}/comments', [EventCommentController::class, 'store']);
+    Route::get('/{eventId}/comments/{commentId}', [EventCommentController::class, 'show']);
+    Route::put('/{eventId}/comments/{commentId}', [EventCommentController::class, 'update']);
+    Route::delete('/{eventId}/comments/{commentId}', [EventCommentController::class, 'destroy']);
+    Route::post('/{eventId}/comments/{commentId}/reply', [EventCommentController::class, 'reply']);
+    Route::get('/{eventId}/comments/{commentId}/replies', [EventCommentController::class, 'replies']);
+    Route::post('/{eventId}/comments/{commentId}/approve', [EventCommentController::class, 'approve']);
+    Route::post('/{eventId}/comments/{commentId}/disapprove', [EventCommentController::class, 'disapprove']);
+
+    // Event interactions
+    Route::post('/{id}/share', [EventInteractionController::class, 'share']);
+    Route::get('/{id}/share-stats', [EventInteractionController::class, 'shareStats']);
+    Route::get('/{id}/qr-code', [EventInteractionController::class, 'generateQrCode']);
+    Route::post('/{id}/check-in', [EventInteractionController::class, 'checkIn']);
+    Route::post('/{id}/check-out', [EventInteractionController::class, 'checkOut']);
+    Route::get('/{id}/check-in-stats', [EventInteractionController::class, 'checkInStats']);
+    Route::get('/{id}/analytics', [EventInteractionController::class, 'analytics']);
 });
 
-// Event Interaction Routes (placeholder for future implementation)
-Route::prefix('interactions')->group(function () {
-    // Interaction routes will be implemented in Agent 2, Task 003
+// Event Discovery and Recommendations
+Route::prefix('discover')->group(function () {
+    Route::get('/nearby', [EventInteractionController::class, 'nearbyEvents']);
+    Route::get('/recommendations', [EventInteractionController::class, 'recommendations']);
 });

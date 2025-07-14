@@ -109,6 +109,26 @@ class Event extends Model
         return $this->belongsToMany(EventTag::class, 'event_tag_pivot');
     }
 
+    /**
+     * Get the comments for the event.
+     *
+     * @return HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(EventComment::class);
+    }
+
+    /**
+     * Get the shares for the event.
+     *
+     * @return HasMany
+     */
+    public function shares(): HasMany
+    {
+        return $this->hasMany(EventShare::class);
+    }
+
     // ===================================
     // Scopes
     // ===================================
