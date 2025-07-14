@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Unit\Models\UserTest" file="/Users/ianbruce/Herd/funlynk-v2/backend/tests/Unit/Models/UserTest.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.000000">
+    <testcase name="test_user_has_correct_fillable_attributes" file="/Users/ianbruce/Herd/funlynk-v2/backend/tests/Unit/Models/UserTest.php" line="25" class="Tests\Unit\Models\UserTest" classname="Tests.Unit.Models.UserTest" assertions="0" time="0.000000">
+      <error type="Spatie\Permission\Exceptions\RoleAlreadyExists">Tests\Unit\Models\UserTest::test_user_has_correct_fillable_attributes
+Spatie\Permission\Exceptions\RoleAlreadyExists: A role `user` already exists for guard `web`.
+
+/Users/ianbruce/Herd/funlynk-v2/backend/vendor/spatie/laravel-permission/src/Exceptions/RoleAlreadyExists.php:11
+/Users/ianbruce/Herd/funlynk-v2/backend/vendor/spatie/laravel-permission/src/Models/Role.php:58
+/Users/ianbruce/Herd/funlynk-v2/backend/tests/Unit/Models/UserTest.php:20</error>
+    </testcase>
+  </testsuite>
+</testsuites>
