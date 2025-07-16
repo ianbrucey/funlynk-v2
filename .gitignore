@@ -1,2 +1,8 @@
-# Temporary entry for mobile setup - remove after init is complete
-mobile/
+# Mobile app dependencies and build files
+mobile/node_modules/
+mobile/ios/build/
+mobile/android/build/
+mobile/android/app/build/
+mobile/.expo/
+mobile/dist/
+mobile/.bundle/
