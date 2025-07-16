@@ -1,0 +1,28 @@
+{
+  "last_updated": "2025-01-16T14:30:00Z",
+  "agents": {
+    "technical_lead": {
+      "status": "active",
+      "current_task": "monitoring_system_test",
+      "last_activity": "2025-01-16T14:30:00Z",
+      "completed_tasks_today": 1,
+      "total_hours_logged": 0.5,
+      "availability": "monitoring"
+    },
+    "warp_agent": {
+      "status": "working",
+      "current_task": "booking_mgmt_services_warp",
+      "last_activity": "2025-01-16T01:59:42Z",
+      "completed_tasks_today": 2,
+      "total_hours_logged": 3.25,
+      "availability": "busy"
+    }
+  },
+  "system_status": {
+    "communication_hub_active": true,
+    "last_instruction_update": "2025-01-16T14:30:00Z",
+    "pending_tasks": 1,
+    "active_tasks": 1,
+    "completed_tasks": 0
+  }
+}

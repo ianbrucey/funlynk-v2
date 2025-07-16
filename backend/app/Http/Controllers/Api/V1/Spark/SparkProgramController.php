@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Spark;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Spark\CreateProgramRequest;
 use App\Http\Requests\Spark\UpdateProgramRequest;
-use App\Http\Resources\Spark\ProgramResource;
+use App\Http\Resources\Spark\SparkProgramResource;
 use App\Models\Spark\SparkProgram;
 use App\Services\Spark\SparkProgramService;
 use Illuminate\Http\JsonResponse;
@@ -53,7 +53,7 @@ class SparkProgramController extends BaseApiController
             $program = $this->programService->createProgram($request->validated());
 
             return $this->createdResponse(
-                new ProgramResource($program),
+                new SparkProgramResource($program),
                 'Program created successfully'
             );
         });
@@ -72,7 +72,7 @@ class SparkProgramController extends BaseApiController
             }
 
             return $this->successResponse(
-                new ProgramResource($program),
+                new SparkProgramResource($program),
                 'Program retrieved successfully'
             );
         });
@@ -95,7 +95,7 @@ class SparkProgramController extends BaseApiController
             $program = $this->programService->updateProgram($program, $request->validated());
 
             return $this->successResponse(
-                new ProgramResource($program),
+                new SparkProgramResource($program),
                 'Program updated successfully'
             );
         });
@@ -143,7 +143,7 @@ class SparkProgramController extends BaseApiController
             $program = $this->programService->uploadResourceFiles($program, $request->file('files'));
 
             return $this->successResponse(
-                new ProgramResource($program),
+                new SparkProgramResource($program),
                 'Resource files uploaded successfully'
             );
         });

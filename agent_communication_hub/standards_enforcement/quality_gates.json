@@ -1,0 +1,160 @@
+{
+  "quality_gates": {
+    "php_laravel": {
+      "required_checks": [
+        {
+          "name": "PSR-12 Compliance",
+          "command": "vendor/bin/phpcs --standard=PSR12",
+          "required": true,
+          "description": "Code must follow PSR-12 standards"
+        },
+        {
+          "name": "PHPStan Analysis",
+          "command": "vendor/bin/phpstan analyse",
+          "required": true,
+          "description": "Static analysis must pass"
+        },
+        {
+          "name": "Unit Tests",
+          "command": "php artisan test --testsuite=Unit",
+          "required": true,
+          "description": "All unit tests must pass"
+        },
+        {
+          "name": "Feature Tests",
+          "command": "php artisan test --testsuite=Feature",
+          "required": true,
+          "description": "All feature tests must pass"
+        },
+        {
+          "name": "Code Coverage",
+          "command": "php artisan test --coverage --min=80",
+          "required": true,
+          "description": "Minimum 80% code coverage required"
+        }
+      ],
+      "file_patterns": [
+        "app/Http/Controllers/Core/**/*.php",
+        "app/Http/Controllers/Spark/**/*.php",
+        "app/Services/Core/**/*.php",
+        "app/Services/Spark/**/*.php",
+        "app/Models/**/*.php"
+      ]
+    },
+    "javascript_react": {
+      "required_checks": [
+        {
+          "name": "ESLint",
+          "command": "npm run lint",
+          "required": true,
+          "description": "ESLint rules must pass"
+        },
+        {
+          "name": "TypeScript Check",
+          "command": "npm run type-check",
+          "required": true,
+          "description": "TypeScript compilation must succeed"
+        },
+        {
+          "name": "Prettier Format",
+          "command": "npm run format:check",
+          "required": true,
+          "description": "Code must be properly formatted"
+        },
+        {
+          "name": "Unit Tests",
+          "command": "npm run test:unit",
+          "required": true,
+          "description": "All unit tests must pass"
+        },
+        {
+          "name": "Component Tests",
+          "command": "npm run test:components",
+          "required": true,
+          "description": "All component tests must pass"
+        }
+      ],
+      "file_patterns": [
+        "src/components/core/**/*.{ts,tsx}",
+        "src/components/spark/**/*.{ts,tsx}",
+        "src/screens/core/**/*.{ts,tsx}",
+        "src/screens/spark/**/*.{ts,tsx}",
+        "src/hooks/**/*.{ts,tsx}"
+      ]
+    },
+    "react_native": {
+      "required_checks": [
+        {
+          "name": "ESLint React Native",
+          "command": "npm run lint:mobile",
+          "required": true,
+          "description": "React Native ESLint rules must pass"
+        },
+        {
+          "name": "TypeScript Check",
+          "command": "npm run type-check:mobile",
+          "required": true,
+          "description": "TypeScript compilation must succeed"
+        },
+        {
+          "name": "Metro Bundle",
+          "command": "npm run bundle:check",
+          "required": true,
+          "description": "Metro bundler must succeed"
+        },
+        {
+          "name": "Component Tests",
+          "command": "npm run test:mobile",
+          "required": true,
+          "description": "All mobile tests must pass"
+        }
+      ],
+      "file_patterns": [
+        "mobile/src/components/**/*.{ts,tsx}",
+        "mobile/src/screens/**/*.{ts,tsx}",
+        "mobile/src/hooks/**/*.{ts,tsx}"
+      ]
+    }
+  },
+  "enforcement_rules": {
+    "pre_commit": {
+      "enabled": true,
+      "checks": ["lint", "format", "type-check"],
+      "description": "Run basic checks before commit"
+    },
+    "pre_push": {
+      "enabled": true,
+      "checks": ["test", "coverage"],
+      "description": "Run tests before push"
+    },
+    "pull_request": {
+      "enabled": true,
+      "checks": ["all"],
+      "description": "All checks must pass for PR approval"
+    }
+  },
+  "standards_references": {
+    "php_laravel": "/planning/01_coding_standards_and_style_guide.md#php-laravel-standards",
+    "javascript_react": "/planning/01_coding_standards_and_style_guide.md#javascript-react-native-react-js-standards",
+    "git_commits": "/planning/01_coding_standards_and_style_guide.md#git-commit-message-convention",
+    "testing": "/planning/01_coding_standards_and_style_guide.md#testing-requirements",
+    "security": "/planning/01_coding_standards_and_style_guide.md#security-standards"
+  },
+  "violation_handling": {
+    "critical": {
+      "action": "block_merge",
+      "notification": "immediate",
+      "escalation": "technical_lead"
+    },
+    "major": {
+      "action": "require_fix",
+      "notification": "within_hour",
+      "escalation": "peer_review"
+    },
+    "minor": {
+      "action": "suggest_fix",
+      "notification": "daily_summary",
+      "escalation": "none"
+    }
+  }
+}

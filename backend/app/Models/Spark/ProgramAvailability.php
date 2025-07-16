@@ -14,6 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProgramAvailability extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'spark_program_availability_slots';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -23,8 +30,8 @@ class ProgramAvailability extends Model
         'date',
         'start_time',
         'end_time',
-        'max_bookings',
-        'current_bookings',
+        'max_capacity',
+        'booked_capacity',
         'is_available',
         'notes',
     ];
@@ -36,10 +43,10 @@ class ProgramAvailability extends Model
      */
     protected $casts = [
         'date' => 'date',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-        'max_bookings' => 'integer',
-        'current_bookings' => 'integer',
+        'start_time' => 'time',
+        'end_time' => 'time',
+        'max_capacity' => 'integer',
+        'booked_capacity' => 'integer',
         'is_available' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -73,7 +80,7 @@ class ProgramAvailability extends Model
     public function scopeAvailable(Builder $query): Builder
     {
         return $query->where('is_available', true)
-                    ->where('current_bookings', '<', 'max_bookings');
+                    ->where('booked_capacity', '<', 'max_capacity');
     }
 
     /**
@@ -125,7 +132,7 @@ class ProgramAvailability extends Model
      */
     public function getIsFullAttribute(): bool
     {
-        return $this->current_bookings >= $this->max_bookings;
+        return $this->booked_capacity >= $this->max_capacity;
     }
 
     /**
@@ -135,7 +142,7 @@ class ProgramAvailability extends Model
      */
     public function getRemainingAttribute(): int
     {
-        return max(0, $this->max_bookings - $this->current_bookings);
+        return max(0, $this->max_capacity - $this->booked_capacity);
     }
 
     /**
@@ -172,7 +179,7 @@ class ProgramAvailability extends Model
     public function incrementBooking(): bool
     {
         if ($this->canBook()) {
-            $this->current_bookings++;
+            $this->booked_capacity++;
 
             return $this->save();
         }
@@ -187,8 +194,8 @@ class ProgramAvailability extends Model
      */
     public function decrementBooking(): bool
     {
-        if ($this->current_bookings > 0) {
-            $this->current_bookings--;
+        if ($this->booked_capacity > 0) {
+            $this->booked_capacity--;
 
             return $this->save();
         }

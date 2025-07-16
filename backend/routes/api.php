@@ -33,6 +33,9 @@ Route::prefix('v1')->middleware(['api.middleware'])->group(function () {
     // Authentication routes (public)
     Route::prefix('auth')->group(base_path('routes/api/auth.php'));
 
+    // Public routes (no authentication required)
+    Route::prefix('public')->group(base_path('routes/api/public.php'));
+
     // Protected routes
     Route::middleware(['auth:sanctum', 'rate.limit:120,1'])->group(function () {
 

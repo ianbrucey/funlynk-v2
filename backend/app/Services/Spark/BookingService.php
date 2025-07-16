@@ -4,7 +4,7 @@ namespace App\Services\Spark;
 
 use App\Models\Spark\Booking;
 use App\Models\Spark\BookingStudent;
-use App\Models\Spark\Program;
+use App\Models\Spark\SparkProgram;
 use App\Models\Spark\School;
 use App\Models\User;
 use App\Services\Shared\EmailService;

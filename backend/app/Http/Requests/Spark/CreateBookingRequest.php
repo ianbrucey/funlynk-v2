@@ -14,7 +14,7 @@ class CreateBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'school_id' => ['required', 'exists:spark_schools,id'],
+            'school_id' => ['required', 'exists:schools,id'],
             'program_id' => ['required', 'exists:spark_programs,id'],
             'preferred_date' => ['required', 'date', 'after_or_equal:today'],
             'preferred_time' => ['required', 'date_format:H:i'],

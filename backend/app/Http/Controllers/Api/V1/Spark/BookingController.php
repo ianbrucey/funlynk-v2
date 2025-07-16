@@ -30,7 +30,7 @@ class BookingController extends BaseApiController
     {
         return $this->handleApiOperation($request, function () use ($request) {
             $request->validate([
-                'school_id' => 'sometimes|exists:spark_schools,id',
+                'school_id' => 'sometimes|exists:schools,id',
                 'teacher_id' => 'sometimes|exists:users,id',
                 'program_id' => 'sometimes|exists:spark_programs,id',
                 'status' => 'sometimes|string|in:pending,confirmed,cancelled,completed',

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Spark\BookingController;
 use App\Http\Controllers\Api\V1\Spark\CharacterTopicController;
 use App\Http\Controllers\Api\V1\Spark\DistrictController;
+use App\Http\Controllers\Api\V1\Spark\PermissionSlipController;
 use App\Http\Controllers\Api\V1\Spark\ProgramAvailabilityController;
 use App\Http\Controllers\Api\V1\Spark\ProgramController;
 use App\Http\Controllers\Api\V1\Spark\SchoolController;
@@ -156,6 +157,21 @@ Route::middleware(['auth:sanctum', 'api', 'rate.limit:120,1'])->group(function (
 
         // Booking statistics
         Route::get('/{id}/statistics', [BookingController::class, 'statistics']);
+    });
+
+    // Permission Slip Management Routes
+    Route::prefix('permission-slips')->group(function () {
+        Route::get('/', [PermissionSlipController::class, 'index']);
+        Route::post('/', [PermissionSlipController::class, 'store']);
+        Route::get('/templates', [PermissionSlipController::class, 'templates']);
+        Route::get('/statistics', [PermissionSlipController::class, 'statistics']);
+        Route::post('/bulk-create', [PermissionSlipController::class, 'createBulk']);
+        Route::post('/bulk-reminders', [PermissionSlipController::class, 'sendBulkReminders']);
+        Route::get('/{id}', [PermissionSlipController::class, 'show']);
+        Route::put('/{id}', [PermissionSlipController::class, 'update']);
+        Route::delete('/{id}', [PermissionSlipController::class, 'destroy']);
+        Route::post('/{id}/reminder', [PermissionSlipController::class, 'sendReminder']);
+        Route::post('/{bookingId}/export', [PermissionSlipController::class, 'export']);
     });
 
 });

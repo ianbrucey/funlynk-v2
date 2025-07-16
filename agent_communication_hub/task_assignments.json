@@ -1,0 +1,23 @@
+{
+  "active_tasks": {},
+  "completed_tasks": {},
+  "task_templates": {
+    "backend_development": {
+      "coding_standards": "php_laravel_standards",
+      "required_files": ["controller", "service", "model", "migration", "test"],
+      "quality_gates": ["unit_tests", "integration_tests", "code_review"]
+    },
+    "frontend_development": {
+      "coding_standards": "react_typescript_standards", 
+      "required_files": ["component", "screen", "hook", "test"],
+      "quality_gates": ["component_tests", "accessibility_check", "code_review"]
+    },
+    "mobile_development": {
+      "coding_standards": "react_native_standards",
+      "required_files": ["screen", "component", "navigation", "test"],
+      "quality_gates": ["device_testing", "performance_check", "code_review"]
+    }
+  },
+  "assignment_history": [],
+  "next_task_id": 1
+}

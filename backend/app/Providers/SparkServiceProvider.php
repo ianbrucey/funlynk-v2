@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use App\Services\Spark\BookingService;
 use App\Services\Spark\CharacterTopicService;
 use App\Services\Spark\DistrictService;
-use App\Services\Spark\ProgramService;
+use App\Services\Spark\PermissionSlipService;
+use App\Services\Spark\SparkProgramService;
 use App\Services\Spark\SchoolService;
 use Illuminate\Support\ServiceProvider;
 
@@ -39,20 +41,33 @@ class SparkServiceProvider extends ServiceProvider
             );
         });
 
-        // Register ProgramService with dependencies
-        $this->app->singleton(ProgramService::class, function ($app) {
-            return new ProgramService(
-                $app->make(FileUploadService::class),
-                $app->make(LoggingService::class),
-                $app->make(NotificationService::class)
+        // Register SparkProgramService with dependencies
+        $this->app->singleton(SparkProgramService::class, function ($app) {
+            return new SparkProgramService(
+                $app->make(FileUploadService::class)
             );
         });
 
         // Register CharacterTopicService with dependencies
         $this->app->singleton(CharacterTopicService::class, function ($app) {
-            return new CharacterTopicService(
-                $app->make(LoggingService::class),
-                $app->make(NotificationService::class)
+            return new CharacterTopicService();
+        });
+
+        // Register BookingService with dependencies
+        $this->app->singleton(BookingService::class, function ($app) {
+            return new BookingService(
+                $app->make(\App\Services\Shared\EmailService::class),
+                $app->make(\App\Services\Shared\LoggingService::class),
+                $app->make(\App\Services\Shared\NotificationService::class)
+            );
+        });
+
+        // Register PermissionSlipService with dependencies
+        $this->app->singleton(PermissionSlipService::class, function ($app) {
+            return new PermissionSlipService(
+                $app->make(\App\Services\Shared\EmailService::class),
+                $app->make(\App\Services\Shared\LoggingService::class),
+                $app->make(\App\Services\Shared\NotificationService::class)
             );
         });
     }
@@ -75,8 +90,10 @@ class SparkServiceProvider extends ServiceProvider
         return [
             DistrictService::class,
             SchoolService::class,
-            ProgramService::class,
+            SparkProgramService::class,
             CharacterTopicService::class,
+            BookingService::class,
+            PermissionSlipService::class,
         ];
     }
 }
