@@ -97,7 +97,31 @@ class Program extends Model
      */
     public function characterTopics(): BelongsToMany
     {
-        return $this->belongsToMany(CharacterTopic::class, 'program_character_topics');
+        return $this->belongsToMany(CharacterTopic::class, 'spark_program_character_topics', 'program_id', 'character_topic_id');
+    }
+
+    /**
+     * Get the districts that offer this program.
+     *
+     * @return BelongsToMany
+     */
+    public function districts(): BelongsToMany
+    {
+        return $this->belongsToMany(District::class, 'program_districts')
+            ->withPivot(['is_active', 'price_override'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the schools that offer this program.
+     *
+     * @return BelongsToMany
+     */
+    public function schools(): BelongsToMany
+    {
+        return $this->belongsToMany(School::class, 'program_schools')
+            ->withPivot(['is_active', 'price_override', 'max_students_override'])
+            ->withTimestamps();
     }
 
     // ===================================
@@ -146,14 +170,40 @@ class Program extends Model
      * Scope to get programs by duration range.
      *
      * @param Builder $query
-     * @param int     $minMinutes
-     * @param int     $maxMinutes
+     * @param int     $minDuration
+     * @param int     $maxDuration
      *
      * @return Builder
      */
-    public function scopeByDuration(Builder $query, int $minMinutes, int $maxMinutes): Builder
+    public function scopeByDuration(Builder $query, ?int $minDuration = null, ?int $maxDuration = null): Builder
     {
-        return $query->whereBetween('duration_minutes', [$minMinutes, $maxMinutes]);
+        if ($minDuration) {
+            $query->where('duration_minutes', '>=', $minDuration);
+        }
+        if ($maxDuration) {
+            $query->where('duration_minutes', '<=', $maxDuration);
+        }
+        return $query;
+    }
+
+    /**
+     * Scope to get programs by capacity range.
+     *
+     * @param Builder $query
+     * @param int     $minCapacity
+     * @param int     $maxCapacity
+     *
+     * @return Builder
+     */
+    public function scopeByCapacity(Builder $query, ?int $minCapacity = null, ?int $maxCapacity = null): Builder
+    {
+        if ($minCapacity) {
+            $query->where('max_students', '>=', $minCapacity);
+        }
+        if ($maxCapacity) {
+            $query->where('max_students', '<=', $maxCapacity);
+        }
+        return $query;
     }
 
     /**
@@ -186,6 +236,118 @@ class Program extends Model
         });
     }
 
+    /**
+     * Scope to get programs by district.
+     *
+     * @param Builder $query
+     * @param int     $districtId
+     *
+     * @return Builder
+     */
+    public function scopeByDistrict(Builder $query, int $districtId): Builder
+    {
+        return $query->whereHas('districts', function ($q) use ($districtId) {
+            $q->where('district_id', $districtId);
+        });
+    }
+
+    /**
+     * Scope to get programs by school.
+     *
+     * @param Builder $query
+     * @param int     $schoolId
+     *
+     * @return Builder
+     */
+    public function scopeBySchool(Builder $query, int $schoolId): Builder
+    {
+        return $query->whereHas('schools', function ($q) use ($schoolId) {
+            $q->where('school_id', $schoolId);
+        });
+    }
+
+    /**
+     * Scope to get programs with availability.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeWithAvailability(Builder $query): Builder
+    {
+        return $query->whereHas('availability', function ($q) {
+            $q->where('is_available', true)
+              ->where('date', '>=', now()->toDateString())
+              ->where('current_bookings', '<', 'max_bookings');
+        });
+    }
+
+    /**
+     * Scope to get programs with upcoming availability.
+     *
+     * @param Builder $query
+     * @param int     $days
+     *
+     * @return Builder
+     */
+    public function scopeWithUpcomingAvailability(Builder $query, int $days = 30): Builder
+    {
+        return $query->whereHas('availability', function ($q) use ($days) {
+            $q->where('is_available', true)
+              ->whereBetween('date', [now()->toDateString(), now()->addDays($days)->toDateString()])
+              ->where('current_bookings', '<', 'max_bookings');
+        });
+    }
+
+    /**
+     * Scope to get programs by minimum rating.
+     *
+     * @param Builder $query
+     * @param float   $minRating
+     *
+     * @return Builder
+     */
+    public function scopeByMinRating(Builder $query, float $minRating): Builder
+    {
+        return $query->whereHas('bookings', function ($q) use ($minRating) {
+            $q->whereNotNull('rating')
+              ->having('avg_rating', '>=', $minRating);
+        }, '>=', 1, 'and', function ($q) use ($minRating) {
+            $q->selectRaw('AVG(rating) as avg_rating')
+              ->whereNotNull('rating')
+              ->groupBy('program_id');
+        });
+    }
+
+    /**
+     * Scope to get programs ordered by popularity.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopePopular(Builder $query): Builder
+    {
+        return $query->withCount(['bookings' => function ($q) {
+            $q->where('status', 'completed');
+        }])->orderBy('bookings_count', 'desc');
+    }
+
+    /**
+     * Scope to get programs with recent activity.
+     *
+     * @param Builder $query
+     * @param int     $days
+     *
+     * @return Builder
+     */
+    public function scopeRecentActivity(Builder $query, int $days = 30): Builder
+    {
+        return $query->whereHas('bookings', function ($q) use ($days) {
+            $q->where('created_at', '>=', now()->subDays($days));
+        });
+    }
+
     // ===================================
     // Accessors
     // ===================================
@@ -205,6 +367,16 @@ class Program extends Model
     }
 
     /**
+     * Get grade levels display (alias for compatibility).
+     *
+     * @return string
+     */
+    public function getGradeLevelsDisplayAttribute(): string
+    {
+        return $this->getFormattedGradeLevelsAttribute();
+    }
+
+    /**
      * Get formatted character topics.
      *
      * @return string
@@ -216,6 +388,32 @@ class Program extends Model
         }
 
         return implode(', ', $this->character_topics);
+    }
+
+    /**
+     * Get character topics display (alias for compatibility).
+     *
+     * @return string
+     */
+    public function getCharacterTopicsDisplayAttribute(): string
+    {
+        return $this->getFormattedCharacterTopicsAttribute();
+    }
+
+    /**
+     * Get duration display.
+     *
+     * @return string
+     */
+    public function getDurationDisplayAttribute(): string
+    {
+        $hours = floor($this->duration_minutes / 60);
+        $minutes = $this->duration_minutes % 60;
+        
+        if ($hours > 0) {
+            return $minutes > 0 ? "{$hours}h {$minutes}m" : "{$hours}h";
+        }
+        return "{$minutes}m";
     }
 
     /**
@@ -283,6 +481,202 @@ class Program extends Model
     public function getAvailableSlotsCountAttribute(): int
     {
         return $this->availability()->where('is_available', true)->count();
+    }
+
+    /**
+     * Get total bookings count.
+     *
+     * @return int
+     */
+    public function getTotalBookingsAttribute(): int
+    {
+        return $this->bookings()->count();
+    }
+
+    /**
+     * Get completed bookings count.
+     *
+     * @return int
+     */
+    public function getCompletedBookingsAttribute(): int
+    {
+        return $this->bookings()->where('status', 'completed')->count();
+    }
+
+    /**
+     * Get average rating.
+     *
+     * @return float|null
+     */
+    public function getAverageRatingAttribute(): ?float
+    {
+        return $this->bookings()
+            ->whereNotNull('rating')
+            ->avg('rating');
+    }
+
+    /**
+     * Get pending bookings count.
+     *
+     * @return int
+     */
+    public function getPendingBookingsAttribute(): int
+    {
+        return $this->bookings()->where('status', 'pending')->count();
+    }
+
+    /**
+     * Get cancelled bookings count.
+     *
+     * @return int
+     */
+    public function getCancelledBookingsAttribute(): int
+    {
+        return $this->bookings()->where('status', 'cancelled')->count();
+    }
+
+    /**
+     * Get total participants across all bookings.
+     *
+     * @return int
+     */
+    public function getTotalParticipantsAttribute(): int
+    {
+        return $this->bookings()->sum('student_count');
+    }
+
+    /**
+     * Get total revenue from completed bookings.
+     *
+     * @return float
+     */
+    public function getTotalRevenueAttribute(): float
+    {
+        return $this->bookings()
+            ->where('status', 'completed')
+            ->sum('total_cost');
+    }
+
+    /**
+     * Get next available booking date.
+     *
+     * @return string|null
+     */
+    public function getNextAvailableDateAttribute(): ?string
+    {
+        $nextSlot = $this->availability()
+            ->where('is_available', true)
+            ->where('date', '>=', now()->toDateString())
+            ->where('current_bookings', '<', 'max_bookings')
+            ->orderBy('date')
+            ->first();
+
+        return $nextSlot ? $nextSlot->date->format('Y-m-d') : null;
+    }
+
+    /**
+     * Get program popularity score.
+     *
+     * @return float
+     */
+    public function getPopularityScoreAttribute(): float
+    {
+        $completedBookings = $this->completed_bookings;
+        $averageRating = $this->average_rating ?? 0;
+        $recentActivity = $this->bookings()
+            ->where('created_at', '>=', now()->subDays(30))
+            ->count();
+
+        return ($completedBookings * 0.4) + ($averageRating * 0.4) + ($recentActivity * 0.2);
+    }
+
+    /**
+     * Get program status display.
+     *
+     * @return string
+     */
+    public function getStatusDisplayAttribute(): string
+    {
+        if (!$this->is_active) {
+            return 'Inactive';
+        }
+
+        if ($this->available_slots_count === 0) {
+            return 'Fully Booked';
+        }
+
+        if ($this->next_available_date) {
+            return 'Available';
+        }
+
+        return 'No Availability';
+    }
+
+    /**
+     * Get formatted materials needed.
+     *
+     * @return string
+     */
+    public function getFormattedMaterialsAttribute(): string
+    {
+        if (!$this->materials_needed || empty($this->materials_needed)) {
+            return 'No special materials required';
+        }
+
+        return implode(', ', $this->materials_needed);
+    }
+
+    /**
+     * Get formatted learning objectives.
+     *
+     * @return string
+     */
+    public function getFormattedLearningObjectivesAttribute(): string
+    {
+        if (!$this->learning_objectives || empty($this->learning_objectives)) {
+            return 'General character development';
+        }
+
+        return implode('; ', $this->learning_objectives);
+    }
+
+    /**
+     * Get is popular attribute.
+     *
+     * @return bool
+     */
+    public function getIsPopularAttribute(): bool
+    {
+        return $this->completed_bookings >= 10 && $this->average_rating >= 4.0;
+    }
+
+    /**
+     * Get has availability attribute.
+     *
+     * @return bool
+     */
+    public function getHasAvailabilityAttribute(): bool
+    {
+        return $this->availability()
+            ->where('is_available', true)
+            ->where('date', '>=', now()->toDateString())
+            ->where('current_bookings', '<', 'max_bookings')
+            ->exists();
+    }
+
+    /**
+     * Get booking success rate.
+     *
+     * @return float
+     */
+    public function getBookingSuccessRateAttribute(): float
+    {
+        $totalBookings = $this->total_bookings;
+        if ($totalBookings === 0) {
+            return 0;
+        }
+
+        return ($this->completed_bookings / $totalBookings) * 100;
     }
 
     // ===================================

@@ -107,6 +107,8 @@ class CharacterTopicFactory extends Factory
             'slug' => $this->generateSlug($topicName),
             'description' => $this->generateDescription($topicName, $category),
             'category' => $category,
+            'age_group' => $this->faker->randomElement(['elementary', 'middle', 'high', 'all']),
+            'learning_outcomes' => $this->faker->sentences(3),
             'is_active' => $this->faker->boolean(90), // 90% chance of being active
             'sort_order' => $this->faker->numberBetween(1, 100),
         ];

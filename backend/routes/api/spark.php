@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Spark\DistrictController;
 use App\Http\Controllers\Api\V1\Spark\ProgramAvailabilityController;
 use App\Http\Controllers\Api\V1\Spark\ProgramController;
 use App\Http\Controllers\Api\V1\Spark\SchoolController;
+use App\Http\Controllers\Api\V1\Spark\SparkProgramController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,6 +86,22 @@ Route::middleware(['auth:sanctum', 'api', 'rate.limit:120,1'])->group(function (
 
         // Program statistics
         Route::get('/{id}/statistics', [ProgramController::class, 'statistics']);
+    });
+
+    // SparkProgram Management Routes (Task 002 specification)
+    Route::prefix('spark-programs')->group(function () {
+        Route::get('/', [SparkProgramController::class, 'index']);
+        Route::post('/', [SparkProgramController::class, 'store']);
+        Route::get('/{id}', [SparkProgramController::class, 'show']);
+        Route::put('/{id}', [SparkProgramController::class, 'update']);
+        Route::delete('/{id}', [SparkProgramController::class, 'destroy']);
+
+        // Resource management
+        Route::post('/{id}/resources', [SparkProgramController::class, 'uploadResources']);
+
+        // Availability management
+        Route::get('/{id}/availability', [SparkProgramController::class, 'availability']);
+        Route::post('/{id}/availability', [SparkProgramController::class, 'setAvailability']);
     });
 
     // Character Topics Management Routes

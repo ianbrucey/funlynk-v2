@@ -26,6 +26,8 @@ class CharacterTopic extends Model
         'slug',
         'description',
         'category',
+        'age_group',
+        'learning_outcomes',
         'is_active',
         'sort_order',
     ];
@@ -36,6 +38,7 @@ class CharacterTopic extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'learning_outcomes' => 'array',
         'is_active' => 'boolean',
         'sort_order' => 'integer',
         'created_at' => 'datetime',
@@ -53,7 +56,7 @@ class CharacterTopic extends Model
      */
     public function programs(): BelongsToMany
     {
-        return $this->belongsToMany(Program::class, 'program_character_topics');
+        return $this->belongsToMany(SparkProgram::class, 'spark_program_character_topics', 'character_topic_id', 'program_id');
     }
 
     // ===================================
@@ -83,6 +86,19 @@ class CharacterTopic extends Model
     public function scopeByCategory(Builder $query, string $category): Builder
     {
         return $query->where('category', $category);
+    }
+
+    /**
+     * Scope to get topics by age group.
+     *
+     * @param Builder $query
+     * @param string  $ageGroup
+     *
+     * @return Builder
+     */
+    public function scopeByAgeGroup(Builder $query, string $ageGroup): Builder
+    {
+        return $query->where('age_group', $ageGroup);
     }
 
     /**

@@ -1,0 +1,32 @@
+
+
+Code Coverage Report:
+  2025-07-14 13:26:43
+
+ Summary:
+  Classes:  1.10% (1/91)
+  Methods:  2.12% (17/802)
+  Lines:    2.55% (185/7267)
+
+App\Http\Requests\Spark\CreateCharacterTopicRequest
+  Methods:  40.00% ( 2/ 5)   Lines:  45.16% ( 14/ 31)
+App\Http\Requests\Spark\CreateProgramRequest
+  Methods:  60.00% ( 3/ 5)   Lines:  68.89% ( 62/ 90)
+App\Http\Requests\Spark\UpdateCharacterTopicRequest
+  Methods:  40.00% ( 2/ 5)   Lines:  63.41% ( 26/ 41)
+App\Http\Requests\Spark\UpdateProgramRequest
+  Methods:  40.00% ( 2/ 5)   Lines:  80.49% ( 33/ 41)
+App\Models\Spark\CharacterTopic
+  Methods:   9.09% ( 1/11)   Lines:  13.46% (  7/ 52)
+App\Providers\CoreServiceProvider
+  Methods:  33.33% ( 1/ 3)   Lines:  40.00% ( 20/ 50)
+App\Providers\SharedServiceProvider
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  2/  2)
+App\Providers\SparkServiceProvider
+  Methods:  33.33% ( 1/ 3)   Lines:  56.25% ( 18/ 32)
+App\Services\Shared\NotificationService
+  Methods:  10.00% ( 1/10)   Lines:   0.86% (  1/116)
+App\Services\Spark\CharacterTopicService
+  Methods:   4.76% ( 1/21)   Lines:   0.43% (  1/235)
+App\Services\Spark\ProgramService
+  Methods:   3.70% ( 1/27)   Lines:   0.28% (  1/362)

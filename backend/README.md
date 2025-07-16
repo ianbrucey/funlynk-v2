@@ -1,66 +1,417 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FunLynk Backend API
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://via.placeholder.com/400x100/4F46E5/FFFFFF?text=FunLynk" alt="FunLynk Logo" width="400">
 </p>
 
-## About Laravel
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Laravel-10.x-red.svg" alt="Laravel Version"></a>
+  <a href="#"><img src="https://img.shields.io/badge/PHP-8.2+-blue.svg" alt="PHP Version"></a>
+  <a href="#"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## About FunLynk
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+FunLynk is a comprehensive educational platform that connects schools with engaging educational programs, with a special focus on character development through the **Spark** educational programs module. The platform facilitates seamless booking, management, and coordination of educational experiences for students.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Key Features
 
-## Learning Laravel
+- **🏫 School & District Management**: Comprehensive administration tools for educational institutions
+- **📚 Spark Educational Programs**: Character development programs with topics like respect, responsibility, integrity, and leadership
+- **📅 Booking Management**: Streamlined booking system for educational programs with availability tracking
+- **👥 User Management**: Role-based access control for administrators, teachers, and parents
+- **📊 Analytics & Reporting**: Detailed insights into program effectiveness and usage
+- **🔐 Secure Authentication**: Laravel Sanctum-based API authentication
+- **☁️ Cloud Storage**: AWS S3 integration for file management
+- **📱 Mobile-Ready API**: RESTful API designed for mobile and web applications
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Quick Start
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Prerequisites
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2 or higher
+- Composer
+- MySQL 8.0 or higher
+- Node.js 18+ (for asset compilation)
+- AWS S3 account (for file storage)
 
-## Laravel Sponsors
+### Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/funlynk/funlynk-backend.git
+   cd funlynk-backend/backend
+   ```
 
-### Premium Partners
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Contributing
+4. **Configure your `.env` file**
+   ```env
+   # Database Configuration
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=funlynk
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   # AWS S3 Configuration
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   AWS_DEFAULT_REGION=us-east-1
+   AWS_BUCKET=your_bucket_name
+   AWS_USE_PATH_STYLE_ENDPOINT=false
 
-## Code of Conduct
+   # Mail Configuration
+   MAIL_MAILER=smtp
+   MAIL_HOST=your_smtp_host
+   MAIL_PORT=587
+   MAIL_USERNAME=your_email
+   MAIL_PASSWORD=your_password
+   MAIL_ENCRYPTION=tls
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. **Database setup**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-## Security Vulnerabilities
+6. **Start the development server**
+   ```bash
+   php artisan serve
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The API will be available at `http://localhost:8000`
+
+## API Documentation
+
+### Authentication
+
+All API endpoints require authentication using Laravel Sanctum tokens. Include the token in the Authorization header:
+
+```
+Authorization: Bearer {your-token}
+```
+
+### Available APIs
+
+- **Authentication API**: User login, registration, and token management
+- **Spark Programs API**: Educational program management and booking
+- **District Management API**: School district administration
+- **School Management API**: Individual school administration
+- **Booking Management API**: Program booking and scheduling
+- **Character Topics API**: Character development topic management
+
+### API Documentation Files
+
+- **Authentication API**: [`docs/auth.yaml`](docs/auth.yaml)
+- **Spark Programs API**: [`docs/spark.yaml`](docs/spark.yaml)
+
+### Interactive API Documentation
+
+You can view the interactive API documentation by opening the YAML files in tools like:
+- [Swagger Editor](https://editor.swagger.io/)
+- [Postman](https://www.postman.com/)
+- [Insomnia](https://insomnia.rest/)
+
+## Environment Configuration
+
+### Required Environment Variables
+
+```env
+# Application
+APP_NAME=FunLynk
+APP_ENV=local
+APP_KEY=base64:your_app_key
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=funlynk
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+# AWS S3 Storage
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=your_bucket_name
+
+# Mail
+MAIL_MAILER=smtp
+MAIL_HOST=your_smtp_host
+MAIL_PORT=587
+MAIL_USERNAME=your_email
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@funlynk.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+# Queue (for background jobs)
+QUEUE_CONNECTION=database
+
+# Cache
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+```
+
+### S3 Configuration
+
+FunLynk uses AWS S3 for file storage. Configure your S3 bucket with the following settings:
+
+1. **Create an S3 bucket** in your AWS account
+2. **Set up IAM user** with S3 access permissions
+3. **Configure CORS** for your bucket:
+   ```json
+   [
+     {
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": ["GET", "POST", "PUT", "DELETE"],
+       "AllowedOrigins": ["*"],
+       "ExposeHeaders": []
+     }
+   ]
+   ```
+
+4. **Update your `.env` file** with the S3 credentials
+
+## Testing
+
+FunLynk includes comprehensive test suites to ensure code quality and reliability.
+
+### Running Tests
+
+```bash
+# Run all tests
+php artisan test
+
+# Run tests with coverage
+./vendor/bin/pest --coverage
+
+# Run specific test suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
+# Run tests for specific module
+php artisan test tests/Feature/Spark/
+```
+
+### Test Structure
+
+- **Unit Tests**: Located in `tests/Unit/` - Test individual classes and methods
+- **Feature Tests**: Located in `tests/Feature/` - Test complete API endpoints and workflows
+- **Spark Tests**: Located in `tests/Feature/Spark/` - Comprehensive tests for Spark educational programs
+
+### Test Coverage Requirements
+
+- Minimum 90% code coverage for new features
+- All API endpoints must have feature tests
+- Critical business logic must have unit tests
+- File upload functionality uses `Storage::fake('s3')` for testing
+
+### Example Test Commands
+
+```bash
+# Test specific controller
+php artisan test tests/Feature/Spark/ProgramControllerTest.php
+
+# Test with detailed output
+php artisan test --verbose
+
+# Test with coverage report
+./vendor/bin/pest --coverage --min=90
+```
+
+## Database
+
+### Migrations
+
+```bash
+# Run migrations
+php artisan migrate
+
+# Rollback migrations
+php artisan migrate:rollback
+
+# Reset and re-run all migrations
+php artisan migrate:fresh
+
+# Run migrations with seeding
+php artisan migrate:fresh --seed
+```
+
+### Seeders
+
+The application includes comprehensive seeders for development and testing:
+
+```bash
+# Run all seeders
+php artisan db:seed
+
+# Run specific seeder
+php artisan db:seed --class=SparkSeeder
+php artisan db:seed --class=UserSeeder
+
+# Seed with sample data for development
+php artisan db:seed --class=DevelopmentSeeder
+```
+
+### Database Schema
+
+Key database tables:
+- `users` - User accounts with role-based permissions
+- `spark_districts` - School districts
+- `spark_schools` - Individual schools
+- `spark_programs` - Educational programs
+- `spark_character_topics` - Character development topics
+- `spark_program_availability` - Program scheduling slots
+- `spark_bookings` - Program bookings and reservations
+
+## Development
+
+### Code Standards
+
+Follow the coding standards defined in [`planning/01_coding_standards_and_style_guide.md`](../planning/01_coding_standards_and_style_guide.md).
+
+### Code Quality Tools
+
+```bash
+# PHP CS Fixer (code formatting)
+./vendor/bin/pint
+
+# PHPStan (static analysis)
+./vendor/bin/phpstan analyse
+
+# Run all quality checks
+composer check-code
+```
+
+### Git Workflow
+
+1. Create feature branches from `main`
+2. Follow conventional commit messages
+3. Ensure all tests pass before merging
+4. Require code review for all changes
+
+## Deployment
+
+### Production Requirements
+
+- PHP 8.2+ with required extensions
+- MySQL 8.0+ or PostgreSQL 13+
+- Redis (for caching and queues)
+- AWS S3 bucket for file storage
+- SSL certificate for HTTPS
+
+### Environment Variables for Production
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://api.funlynk.com
+
+# Database (use production credentials)
+DB_CONNECTION=mysql
+DB_HOST=your_production_host
+DB_DATABASE=funlynk_production
+
+# Cache and Sessions
+CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis
+
+# Redis
+REDIS_HOST=your_redis_host
+REDIS_PASSWORD=your_redis_password
+REDIS_PORT=6379
+
+# Mail (production SMTP)
+MAIL_MAILER=smtp
+MAIL_HOST=your_production_smtp
+```
+
+### Deployment Steps
+
+1. **Clone repository** on production server
+2. **Install dependencies**: `composer install --no-dev --optimize-autoloader`
+3. **Configure environment**: Copy and configure `.env` file
+4. **Generate application key**: `php artisan key:generate`
+5. **Run migrations**: `php artisan migrate --force`
+6. **Cache configuration**: `php artisan config:cache`
+7. **Cache routes**: `php artisan route:cache`
+8. **Cache views**: `php artisan view:cache`
+9. **Set permissions**: Ensure `storage/` and `bootstrap/cache/` are writable
+10. **Configure web server**: Point document root to `public/` directory
+
+### Queue Workers
+
+For production, set up queue workers to handle background jobs:
+
+```bash
+# Start queue worker
+php artisan queue:work --daemon
+
+# Use supervisor for process management
+sudo supervisorctl start funlynk-worker:*
+```
+
+## Security
+
+### Security Features
+
+- **Authentication**: Laravel Sanctum for API token management
+- **Authorization**: Role-based permissions using Spatie Laravel Permission
+- **Rate Limiting**: API rate limiting (120 requests/minute)
+- **Input Validation**: Comprehensive request validation
+- **SQL Injection Protection**: Eloquent ORM with parameter binding
+- **XSS Protection**: Output escaping and Content Security Policy
+- **CSRF Protection**: Built-in CSRF token validation
+
+### Security Best Practices
+
+- Keep dependencies updated
+- Use HTTPS in production
+- Implement proper error handling
+- Log security events
+- Regular security audits
+- Follow OWASP guidelines
+
+## Support
+
+### Documentation
+
+- **Environment Setup**: [`docs/README_ENVIRONMENT_SEEDING.md`](docs/README_ENVIRONMENT_SEEDING.md)
+- **API Documentation**: [`docs/auth.yaml`](docs/auth.yaml) and [`docs/spark.yaml`](docs/spark.yaml)
+- **Testing Guide**: [`TESTING_DOCUMENTATION.md`](TESTING_DOCUMENTATION.md)
+
+### Getting Help
+
+- **Issues**: Report bugs and feature requests on GitHub
+- **Development Team**: Contact the FunLynk development team
+- **Documentation**: Check the comprehensive documentation in the `docs/` directory
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+FunLynk is proprietary software. All rights reserved.
+
+## Contributing
+
+Please read our contributing guidelines and code of conduct before submitting pull requests.
+
+---
+
+**Built with ❤️ by the FunLynk Team**

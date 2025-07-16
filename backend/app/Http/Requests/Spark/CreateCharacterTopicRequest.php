@@ -34,6 +34,9 @@ class CreateCharacterTopicRequest extends FormRequest
             'slug' => 'sometimes|string|max:255|unique:character_topics,slug',
             'description' => 'nullable|string|max:1000',
             'category' => 'required|string|max:255',
+            'age_group' => 'nullable|string|max:255',
+            'learning_outcomes' => 'nullable|array',
+            'learning_outcomes.*' => 'string|max:500',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ];
@@ -66,6 +69,8 @@ class CreateCharacterTopicRequest extends FormRequest
             'slug' => 'character topic slug',
             'description' => 'character topic description',
             'category' => 'character topic category',
+            'age_group' => 'age group',
+            'learning_outcomes' => 'learning outcomes',
             'is_active' => 'active status',
             'sort_order' => 'sort order',
         ];

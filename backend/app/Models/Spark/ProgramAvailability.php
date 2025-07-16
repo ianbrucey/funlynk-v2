@@ -77,6 +77,18 @@ class ProgramAvailability extends Model
     }
 
     /**
+     * Scope to get upcoming availability.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeUpcoming(Builder $query): Builder
+    {
+        return $query->where('date', '>=', now()->toDateString());
+    }
+
+    /**
      * Scope to get future availability.
      *
      * @param Builder $query
@@ -89,7 +101,7 @@ class ProgramAvailability extends Model
     }
 
     /**
-     * Scope to get availability for a specific date range.
+     * Scope to filter by date range.
      *
      * @param Builder $query
      * @param string  $startDate
@@ -97,7 +109,7 @@ class ProgramAvailability extends Model
      *
      * @return Builder
      */
-    public function scopeDateRange(Builder $query, string $startDate, string $endDate): Builder
+    public function scopeByDateRange(Builder $query, string $startDate, string $endDate): Builder
     {
         return $query->whereBetween('date', [$startDate, $endDate]);
     }

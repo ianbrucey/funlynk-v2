@@ -13,11 +13,11 @@ return new class () extends Migration {
         Schema::create('spark_program_character_topics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('program_id')->constrained('spark_programs')->onDelete('cascade');
-            $table->string('character_topic', 100);
+            $table->foreignId('character_topic_id')->constrained('character_topics')->onDelete('cascade');
 
-            $table->unique(['program_id', 'character_topic'], 'unique_program_topic');
+            $table->unique(['program_id', 'character_topic_id'], 'unique_program_topic');
             $table->index('program_id');
-            $table->index('character_topic');
+            $table->index('character_topic_id');
         });
     }
 

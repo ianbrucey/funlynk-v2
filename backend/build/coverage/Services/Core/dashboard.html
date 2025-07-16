@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /Users/ianbruce/Herd/funlynk-v2/backend/app/Services/Core</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=10.1.16" rel="stylesheet" type="text/css">
+  <link href="../../_css/nv.d3.min.css?v=10.1.16" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=10.1.16" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/Users/ianbruce/Herd/funlynk-v2/backend/app</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Services</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Core</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventCommentService.php.html#19">App\Services\Core\EventCommentService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#19">App\Services\Core\EventInteractionService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#21">App\Services\Core\EventService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#19">App\Services\Core\UserService</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventService.php.html#21">App\Services\Core\EventService</a></td><td class="text-right">3422</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#19">App\Services\Core\EventInteractionService</a></td><td class="text-right">1332</td></tr>
+       <tr><td><a href="UserService.php.html#19">App\Services\Core\UserService</a></td><td class="text-right">870</td></tr>
+       <tr><td><a href="EventCommentService.php.html#19">App\Services\Core\EventCommentService</a></td><td class="text-right">306</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventCommentService.php.html#21"><abbr title="App\Services\Core\EventCommentService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#36"><abbr title="App\Services\Core\EventCommentService::getEventComments">getEventComments</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#62"><abbr title="App\Services\Core\EventCommentService::createComment">createComment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#160"><abbr title="App\Services\Core\EventCommentService::updateComment">updateComment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#202"><abbr title="App\Services\Core\EventCommentService::deleteComment">deleteComment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#237"><abbr title="App\Services\Core\EventCommentService::processMentions">processMentions</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCommentService.php.html#270"><abbr title="App\Services\Core\EventCommentService::getEventCommentStats">getEventCommentStats</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#21"><abbr title="App\Services\Core\EventInteractionService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#39"><abbr title="App\Services\Core\EventInteractionService::shareEvent">shareEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#100"><abbr title="App\Services\Core\EventInteractionService::getEventShareStats">getEventShareStats</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#114"><abbr title="App\Services\Core\EventInteractionService::generateEventQrCode">generateEventQrCode</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#164"><abbr title="App\Services\Core\EventInteractionService::checkInToEvent">checkInToEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#257"><abbr title="App\Services\Core\EventInteractionService::checkOutFromEvent">checkOutFromEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#323"><abbr title="App\Services\Core\EventInteractionService::getEventCheckInStats">getEventCheckInStats</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#347"><abbr title="App\Services\Core\EventInteractionService::getNearbyEvents">getNearbyEvents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#369"><abbr title="App\Services\Core\EventInteractionService::getEventRecommendations">getEventRecommendations</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#403"><abbr title="App\Services\Core\EventInteractionService::getEventAnalytics">getEventAnalytics</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#432"><abbr title="App\Services\Core\EventInteractionService::generateShareUrl">generateShareUrl</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#458"><abbr title="App\Services\Core\EventInteractionService::calculateDistance">calculateDistance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#23"><abbr title="App\Services\Core\EventService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#38"><abbr title="App\Services\Core\EventService::getEvents">getEvents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#88"><abbr title="App\Services\Core\EventService::createEvent">createEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#150"><abbr title="App\Services\Core\EventService::updateEvent">updateEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#224"><abbr title="App\Services\Core\EventService::deleteEvent">deleteEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#286"><abbr title="App\Services\Core\EventService::searchEvents">searchEvents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#336"><abbr title="App\Services\Core\EventService::attachTags">attachTags</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#354"><abbr title="App\Services\Core\EventService::syncTags">syncTags</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#382"><abbr title="App\Services\Core\EventService::rsvpToEvent">rsvpToEvent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#472"><abbr title="App\Services\Core\EventService::cancelRsvp">cancelRsvp</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#515"><abbr title="App\Services\Core\EventService::getEventAttendees">getEventAttendees</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#535"><abbr title="App\Services\Core\EventService::getUserHostedEvents">getUserHostedEvents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventService.php.html#555"><abbr title="App\Services\Core\EventService::getUserAttendedEvents">getUserAttendedEvents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#21"><abbr title="App\Services\Core\UserService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#38"><abbr title="App\Services\Core\UserService::updateProfile">updateProfile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#104"><abbr title="App\Services\Core\UserService::updateInterests">updateInterests</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#155"><abbr title="App\Services\Core\UserService::searchUsers">searchUsers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#192"><abbr title="App\Services\Core\UserService::followUser">followUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#239"><abbr title="App\Services\Core\UserService::unfollowUser">unfollowUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#274"><abbr title="App\Services\Core\UserService::canViewProfile">canViewProfile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserService.php.html#323"><abbr title="App\Services\Core\UserService::isProfilePublic">isProfilePublic</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventInteractionService.php.html#164"><abbr title="App\Services\Core\EventInteractionService::checkInToEvent">checkInToEvent</abbr></a></td><td class="text-right">182</td></tr>
+       <tr><td><a href="UserService.php.html#274"><abbr title="App\Services\Core\UserService::canViewProfile">canViewProfile</abbr></a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="EventService.php.html#38"><abbr title="App\Services\Core\EventService::getEvents">getEvents</abbr></a></td><td class="text-right">90</td></tr>
+       <tr><td><a href="EventService.php.html#150"><abbr title="App\Services\Core\EventService::updateEvent">updateEvent</abbr></a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="EventService.php.html#382"><abbr title="App\Services\Core\EventService::rsvpToEvent">rsvpToEvent</abbr></a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="EventCommentService.php.html#62"><abbr title="App\Services\Core\EventCommentService::createComment">createComment</abbr></a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="EventService.php.html#286"><abbr title="App\Services\Core\EventService::searchEvents">searchEvents</abbr></a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="EventService.php.html#88"><abbr title="App\Services\Core\EventService::createEvent">createEvent</abbr></a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#257"><abbr title="App\Services\Core\EventInteractionService::checkOutFromEvent">checkOutFromEvent</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="EventService.php.html#224"><abbr title="App\Services\Core\EventService::deleteEvent">deleteEvent</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#369"><abbr title="App\Services\Core\EventInteractionService::getEventRecommendations">getEventRecommendations</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="UserService.php.html#38"><abbr title="App\Services\Core\UserService::updateProfile">updateProfile</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#39"><abbr title="App\Services\Core\EventInteractionService::shareEvent">shareEvent</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="EventService.php.html#354"><abbr title="App\Services\Core\EventService::syncTags">syncTags</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="EventService.php.html#472"><abbr title="App\Services\Core\EventService::cancelRsvp">cancelRsvp</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserService.php.html#104"><abbr title="App\Services\Core\UserService::updateInterests">updateInterests</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserService.php.html#155"><abbr title="App\Services\Core\UserService::searchUsers">searchUsers</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserService.php.html#192"><abbr title="App\Services\Core\UserService::followUser">followUser</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserService.php.html#239"><abbr title="App\Services\Core\UserService::unfollowUser">unfollowUser</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="EventCommentService.php.html#36"><abbr title="App\Services\Core\EventCommentService::getEventComments">getEventComments</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventCommentService.php.html#160"><abbr title="App\Services\Core\EventCommentService::updateComment">updateComment</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventCommentService.php.html#202"><abbr title="App\Services\Core\EventCommentService::deleteComment">deleteComment</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventCommentService.php.html#237"><abbr title="App\Services\Core\EventCommentService::processMentions">processMentions</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#114"><abbr title="App\Services\Core\EventInteractionService::generateEventQrCode">generateEventQrCode</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#323"><abbr title="App\Services\Core\EventInteractionService::getEventCheckInStats">getEventCheckInStats</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventInteractionService.php.html#432"><abbr title="App\Services\Core\EventInteractionService::generateShareUrl">generateShareUrl</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventService.php.html#336"><abbr title="App\Services\Core\EventService::attachTags">attachTags</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventService.php.html#515"><abbr title="App\Services\Core\EventService::getEventAttendees">getEventAttendees</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventService.php.html#535"><abbr title="App\Services\Core\EventService::getUserHostedEvents">getUserHostedEvents</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventService.php.html#555"><abbr title="App\Services\Core\EventService::getUserAttendedEvents">getUserAttendedEvents</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="UserService.php.html#323"><abbr title="App\Services\Core\UserService::isProfilePublic">isProfilePublic</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 10.1.16</a> using <a href="https://www.php.net/" target="_top">PHP 8.3.22</a> and <a href="https://phpunit.de/">PHPUnit 10.5.48</a> at Mon Jul 14 13:26:41 UTC 2025.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/jquery.min.js?v=10.1.16" type="text/javascript"></script>
+  <script src="../../_js/d3.min.js?v=10.1.16" type="text/javascript"></script>
+  <script src="../../_js/nv.d3.min.js?v=10.1.16" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([4,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([40,0,0,0,0,0,0,0,0,0,0,0], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,17,"<a href=\"EventCommentService.php.html#19\">App\\Services\\Core\\EventCommentService<\/a>"],[0,36,"<a href=\"EventInteractionService.php.html#19\">App\\Services\\Core\\EventInteractionService<\/a>"],[0,58,"<a href=\"EventService.php.html#21\">App\\Services\\Core\\EventService<\/a>"],[0,29,"<a href=\"UserService.php.html#19\">App\\Services\\Core\\UserService<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,1,"<a href=\"EventCommentService.php.html#21\">App\\Services\\Core\\EventCommentService::__construct<\/a>"],[0,2,"<a href=\"EventCommentService.php.html#36\">App\\Services\\Core\\EventCommentService::getEventComments<\/a>"],[0,7,"<a href=\"EventCommentService.php.html#62\">App\\Services\\Core\\EventCommentService::createComment<\/a>"],[0,2,"<a href=\"EventCommentService.php.html#160\">App\\Services\\Core\\EventCommentService::updateComment<\/a>"],[0,2,"<a href=\"EventCommentService.php.html#202\">App\\Services\\Core\\EventCommentService::deleteComment<\/a>"],[0,2,"<a href=\"EventCommentService.php.html#237\">App\\Services\\Core\\EventCommentService::processMentions<\/a>"],[0,1,"<a href=\"EventCommentService.php.html#270\">App\\Services\\Core\\EventCommentService::getEventCommentStats<\/a>"],[0,1,"<a href=\"EventInteractionService.php.html#21\">App\\Services\\Core\\EventInteractionService::__construct<\/a>"],[0,3,"<a href=\"EventInteractionService.php.html#39\">App\\Services\\Core\\EventInteractionService::shareEvent<\/a>"],[0,1,"<a href=\"EventInteractionService.php.html#100\">App\\Services\\Core\\EventInteractionService::getEventShareStats<\/a>"],[0,2,"<a href=\"EventInteractionService.php.html#114\">App\\Services\\Core\\EventInteractionService::generateEventQrCode<\/a>"],[0,13,"<a href=\"EventInteractionService.php.html#164\">App\\Services\\Core\\EventInteractionService::checkInToEvent<\/a>"],[0,5,"<a href=\"EventInteractionService.php.html#257\">App\\Services\\Core\\EventInteractionService::checkOutFromEvent<\/a>"],[0,2,"<a href=\"EventInteractionService.php.html#323\">App\\Services\\Core\\EventInteractionService::getEventCheckInStats<\/a>"],[0,1,"<a href=\"EventInteractionService.php.html#347\">App\\Services\\Core\\EventInteractionService::getNearbyEvents<\/a>"],[0,4,"<a href=\"EventInteractionService.php.html#369\">App\\Services\\Core\\EventInteractionService::getEventRecommendations<\/a>"],[0,1,"<a href=\"EventInteractionService.php.html#403\">App\\Services\\Core\\EventInteractionService::getEventAnalytics<\/a>"],[0,2,"<a href=\"EventInteractionService.php.html#432\">App\\Services\\Core\\EventInteractionService::generateShareUrl<\/a>"],[0,1,"<a href=\"EventInteractionService.php.html#458\">App\\Services\\Core\\EventInteractionService::calculateDistance<\/a>"],[0,1,"<a href=\"EventService.php.html#23\">App\\Services\\Core\\EventService::__construct<\/a>"],[0,9,"<a href=\"EventService.php.html#38\">App\\Services\\Core\\EventService::getEvents<\/a>"],[0,6,"<a href=\"EventService.php.html#88\">App\\Services\\Core\\EventService::createEvent<\/a>"],[0,8,"<a href=\"EventService.php.html#150\">App\\Services\\Core\\EventService::updateEvent<\/a>"],[0,5,"<a href=\"EventService.php.html#224\">App\\Services\\Core\\EventService::deleteEvent<\/a>"],[0,7,"<a href=\"EventService.php.html#286\">App\\Services\\Core\\EventService::searchEvents<\/a>"],[0,2,"<a href=\"EventService.php.html#336\">App\\Services\\Core\\EventService::attachTags<\/a>"],[0,3,"<a href=\"EventService.php.html#354\">App\\Services\\Core\\EventService::syncTags<\/a>"],[0,8,"<a href=\"EventService.php.html#382\">App\\Services\\Core\\EventService::rsvpToEvent<\/a>"],[0,3,"<a href=\"EventService.php.html#472\">App\\Services\\Core\\EventService::cancelRsvp<\/a>"],[0,2,"<a href=\"EventService.php.html#515\">App\\Services\\Core\\EventService::getEventAttendees<\/a>"],[0,2,"<a href=\"EventService.php.html#535\">App\\Services\\Core\\EventService::getUserHostedEvents<\/a>"],[0,2,"<a href=\"EventService.php.html#555\">App\\Services\\Core\\EventService::getUserAttendedEvents<\/a>"],[0,1,"<a href=\"UserService.php.html#21\">App\\Services\\Core\\UserService::__construct<\/a>"],[0,4,"<a href=\"UserService.php.html#38\">App\\Services\\Core\\UserService::updateProfile<\/a>"],[0,3,"<a href=\"UserService.php.html#104\">App\\Services\\Core\\UserService::updateInterests<\/a>"],[0,3,"<a href=\"UserService.php.html#155\">App\\Services\\Core\\UserService::searchUsers<\/a>"],[0,3,"<a href=\"UserService.php.html#192\">App\\Services\\Core\\UserService::followUser<\/a>"],[0,3,"<a href=\"UserService.php.html#239\">App\\Services\\Core\\UserService::unfollowUser<\/a>"],[0,10,"<a href=\"UserService.php.html#274\">App\\Services\\Core\\UserService::canViewProfile<\/a>"],[0,2,"<a href=\"UserService.php.html#323\">App\\Services\\Core\\UserService::isProfilePublic<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

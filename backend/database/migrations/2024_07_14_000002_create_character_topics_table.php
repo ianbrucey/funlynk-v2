@@ -16,11 +16,14 @@ return new class () extends Migration {
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('category');
+            $table->string('age_group')->nullable();
+            $table->json('learning_outcomes')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->nullable();
             $table->timestamps();
 
             $table->index(['category', 'is_active']);
+            $table->index('age_group');
             $table->index('sort_order');
         });
     }

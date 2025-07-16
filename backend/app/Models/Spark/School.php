@@ -93,7 +93,7 @@ class School extends Model
      */
     public function programs(): HasMany
     {
-        return $this->hasMany(Program::class);
+        return $this->hasMany(SparkProgram::class);
     }
 
     /**

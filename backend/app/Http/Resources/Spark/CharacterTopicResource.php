@@ -28,6 +28,8 @@ class CharacterTopicResource extends BaseResource
             'description' => $this->description,
             'category' => $this->category,
             'category_display' => $this->category_display,
+            'age_group' => $this->age_group,
+            'learning_outcomes' => $this->learning_outcomes,
             'is_active' => $this->is_active,
 
             // Admin-only fields

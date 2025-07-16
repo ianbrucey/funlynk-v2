@@ -1,0 +1,1817 @@
+openapi: 3.0.3
+info:
+  title: FunLynk Spark Educational Programs API
+  description: |
+    Comprehensive API for managing Spark educational programs, including district management, 
+    school administration, program coordination, booking management, and character development topics.
+    
+    ## Authentication
+    All endpoints require authentication using Laravel Sanctum tokens. Include the token in the 
+    Authorization header: `Authorization: Bearer {token}`
+    
+    ## Rate Limiting
+    API requests are limited to 120 requests per minute per authenticated user.
+    
+    ## Response Format
+    All responses follow a consistent JSON structure with `data`, `message`, and `meta` fields.
+  version: 1.0.0
+  contact:
+    name: FunLynk Team
+    email: developers@funlynk.com
+
+servers:
+  - url: https://api.funlynk.com/v1/spark
+    description: Production server
+  - url: https://staging-api.funlynk.com/v1/spark
+    description: Staging server
+  - url: http://localhost:8000/api/v1/spark
+    description: Local development server
+
+security:
+  - sanctum: []
+
+paths:
+  # District Management Endpoints
+  /districts:
+    get:
+      tags:
+        - Districts
+      summary: Get districts list
+      description: Retrieve a paginated list of districts with optional filtering
+      operationId: getDistricts
+      parameters:
+        - name: state
+          in: query
+          description: Filter by state (2-letter code)
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+            example: "CA"
+        - name: search
+          in: query
+          description: Search districts by name
+          schema:
+            type: string
+            maxLength: 255
+            example: "Los Angeles"
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 15
+      responses:
+        '200':
+          description: Districts retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDistrictsResponse'
+              examples:
+                success:
+                  summary: Successful districts list
+                  value:
+                    data:
+                      - id: 1
+                        name: "Los Angeles Unified School District"
+                        code: "LAUSD"
+                        state: "CA"
+                        address: "333 S Beaudry Ave, Los Angeles, CA 90017"
+                        phone: "(213) 241-1000"
+                        website: "https://achieve.lausd.net"
+                        is_active: true
+                        schools_count: 1124
+                        students_count: 664774
+                        created_at: "2024-01-15T10:30:00Z"
+                        updated_at: "2024-01-15T10:30:00Z"
+                    message: "Districts retrieved successfully"
+                    meta:
+                      current_page: 1
+                      per_page: 15
+                      total: 1
+                      last_page: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags:
+        - Districts
+      summary: Create a new district
+      description: Create a new school district
+      operationId: createDistrict
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDistrictRequest'
+            examples:
+              create_district:
+                summary: Create district example
+                value:
+                  name: "San Francisco Unified School District"
+                  code: "SFUSD"
+                  state: "CA"
+                  address: "555 Franklin St, San Francisco, CA 94102"
+                  phone: "(415) 241-6000"
+                  website: "https://www.sfusd.edu"
+      responses:
+        '201':
+          description: District created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}:
+    get:
+      tags:
+        - Districts
+      summary: Get a specific district
+      description: Retrieve detailed information about a specific district
+      operationId: getDistrict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: District retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Districts
+      summary: Update a district
+      description: Update an existing district's information
+      operationId: updateDistrict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDistrictRequest'
+      responses:
+        '200':
+          description: District updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Districts
+      summary: Delete a district
+      description: Delete a district (only if no associated schools exist)
+      operationId: deleteDistrict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: District deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Cannot delete district with associated schools
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}/activate:
+    post:
+      tags:
+        - Districts
+      summary: Activate a district
+      description: Activate a district to enable operations
+      operationId: activateDistrict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: District activated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}/deactivate:
+    post:
+      tags:
+        - Districts
+      summary: Deactivate a district
+      description: Deactivate a district to suspend operations
+      operationId: deactivateDistrict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: District deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}/statistics:
+    get:
+      tags:
+        - Districts
+      summary: Get district statistics
+      description: Retrieve statistical information about a district
+      operationId: getDistrictStatistics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: District statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictStatisticsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}/schools:
+    get:
+      tags:
+        - Districts
+      summary: Get schools in a district
+      description: Retrieve all schools belonging to a specific district
+      operationId: getDistrictSchools
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 15
+      responses:
+        '200':
+          description: District schools retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchoolsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /districts/{id}/users:
+    get:
+      tags:
+        - Districts
+      summary: Get users in a district
+      description: Retrieve all users associated with a specific district
+      operationId: getDistrictUsers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: District ID
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 15
+      responses:
+        '200':
+          description: District users retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsersResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # School Management Endpoints
+  /schools:
+    get:
+      tags:
+        - Schools
+      summary: Get schools list
+      description: Retrieve a paginated list of schools with optional filtering
+      operationId: getSchools
+      parameters:
+        - name: district_id
+          in: query
+          description: Filter by district ID
+          schema:
+            type: integer
+            example: 1
+        - name: state
+          in: query
+          description: Filter by state (2-letter code)
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+            example: "CA"
+        - name: grade_level
+          in: query
+          description: Filter by grade level
+          schema:
+            type: string
+            example: "K-5"
+        - name: search
+          in: query
+          description: Search schools by name
+          schema:
+            type: string
+            maxLength: 255
+            example: "Lincoln Elementary"
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 15
+      responses:
+        '200':
+          description: Schools retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchoolsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # Program Management Endpoints
+  /programs:
+    get:
+      tags:
+        - Programs
+      summary: Get programs list
+      description: Retrieve a paginated list of educational programs with optional filtering
+      operationId: getPrograms
+      parameters:
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 15
+        - name: search
+          in: query
+          description: Search programs by title or description
+          schema:
+            type: string
+            maxLength: 100
+            example: "Character Building"
+        - name: grade_level
+          in: query
+          description: Filter by grade level
+          schema:
+            type: string
+            maxLength: 10
+            example: "K-2"
+        - name: character_topic
+          in: query
+          description: Filter by character topic
+          schema:
+            type: string
+            maxLength: 50
+            example: "Respect"
+        - name: min_duration
+          in: query
+          description: Minimum duration in minutes
+          schema:
+            type: integer
+            minimum: 1
+            example: 30
+        - name: max_duration
+          in: query
+          description: Maximum duration in minutes
+          schema:
+            type: integer
+            minimum: 1
+            example: 120
+        - name: min_price
+          in: query
+          description: Minimum price per student
+          schema:
+            type: number
+            minimum: 0
+            example: 10.00
+        - name: max_price
+          in: query
+          description: Maximum price per student
+          schema:
+            type: number
+            minimum: 0
+            example: 50.00
+        - name: active_only
+          in: query
+          description: Show only active programs
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Programs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProgramsResponse'
+              examples:
+                success:
+                  summary: Successful programs list
+                  value:
+                    data:
+                      - id: 1
+                        title: "Character Building Adventure"
+                        description: "An interactive program focusing on respect and responsibility"
+                        is_active: true
+                        grade_levels: ["K", "1", "2"]
+                        formatted_grade_levels: "K-2"
+                        duration_minutes: 60
+                        formatted_duration: "1 hour"
+                        max_students: 30
+                        price_per_student: 15.00
+                        formatted_price: "$15.00"
+                        character_topics: ["Respect", "Responsibility"]
+                        formatted_character_topics: "Respect, Responsibility"
+                        learning_objectives: ["Understand the importance of respect", "Practice responsibility"]
+                        materials_needed: ["Worksheets", "Props"]
+                        special_requirements: "Gymnasium space required"
+                        statistics:
+                          booking_count: 25
+                          confirmed_booking_count: 20
+                          available_slots_count: 15
+                        created_at: "2024-01-15T10:30:00Z"
+                        updated_at: "2024-01-15T10:30:00Z"
+                    message: "Programs retrieved successfully"
+                    meta:
+                      current_page: 1
+                      per_page: 15
+                      total: 1
+                      last_page: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags:
+        - Programs
+      summary: Create a new program
+      description: Create a new educational program
+      operationId: createProgram
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProgramRequest'
+            examples:
+              create_program:
+                summary: Create program example
+                value:
+                  title: "Leadership Skills Workshop"
+                  description: "A comprehensive workshop designed to develop leadership skills in students"
+                  grade_levels: ["3", "4", "5"]
+                  duration_minutes: 90
+                  max_students: 25
+                  price_per_student: 20.00
+                  character_topics: ["Leadership", "Teamwork", "Communication"]
+                  learning_objectives:
+                    - "Understand different leadership styles"
+                    - "Practice effective communication"
+                    - "Learn teamwork strategies"
+                  materials_needed: ["Handouts", "Activity cards", "Flipchart paper"]
+                  special_requirements: "Classroom with moveable desks"
+                  resource_files: []
+      responses:
+        '201':
+          description: Program created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /programs/{id}:
+    get:
+      tags:
+        - Programs
+      summary: Get a specific program
+      description: Retrieve detailed information about a specific program
+      operationId: getProgram
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Program retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Laravel Sanctum authentication token
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Unauthenticated"
+            errors: {}
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Resource not found"
+            errors: {}
+
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            message: "The given data was invalid"
+            errors:
+              name: ["The name field is required."]
+              email: ["The email field must be a valid email address."]
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: "Internal server error"
+            errors: {}
+
+  schemas:
+    # Base Response Schemas
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operation completed successfully"
+        data:
+          type: object
+          nullable: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "An error occurred"
+        errors:
+          type: object
+          additionalProperties: true
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid"
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 15
+        total:
+          type: integer
+          example: 100
+        last_page:
+          type: integer
+          example: 7
+        from:
+          type: integer
+          example: 1
+        to:
+          type: integer
+          example: 15
+
+    # District Schemas
+    District:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Los Angeles Unified School District"
+        code:
+          type: string
+          example: "LAUSD"
+        state:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          example: "CA"
+        address:
+          type: string
+          example: "333 S Beaudry Ave, Los Angeles, CA 90017"
+        phone:
+          type: string
+          example: "(213) 241-1000"
+        website:
+          type: string
+          format: uri
+          example: "https://achieve.lausd.net"
+        is_active:
+          type: boolean
+          example: true
+        schools_count:
+          type: integer
+          example: 1124
+        students_count:
+          type: integer
+          example: 664774
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    CreateDistrictRequest:
+      type: object
+      required:
+        - name
+        - code
+        - state
+        - address
+        - phone
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: "San Francisco Unified School District"
+        code:
+          type: string
+          maxLength: 20
+          example: "SFUSD"
+        state:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          example: "CA"
+        address:
+          type: string
+          maxLength: 500
+          example: "555 Franklin St, San Francisco, CA 94102"
+        phone:
+          type: string
+          maxLength: 20
+          example: "(415) 241-6000"
+        website:
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://www.sfusd.edu"
+
+    UpdateDistrictRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: "San Francisco Unified School District"
+        code:
+          type: string
+          maxLength: 20
+          example: "SFUSD"
+        state:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          example: "CA"
+        address:
+          type: string
+          maxLength: 500
+          example: "555 Franklin St, San Francisco, CA 94102"
+        phone:
+          type: string
+          maxLength: 20
+          example: "(415) 241-6000"
+        website:
+          type: string
+          format: uri
+          maxLength: 255
+          example: "https://www.sfusd.edu"
+
+    DistrictResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/District'
+        message:
+          type: string
+          example: "District retrieved successfully"
+
+    PaginatedDistrictsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/District'
+        message:
+          type: string
+          example: "Districts retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    DistrictStatisticsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            schools_count:
+              type: integer
+              example: 1124
+            students_count:
+              type: integer
+              example: 664774
+            active_programs_count:
+              type: integer
+              example: 45
+            total_bookings:
+              type: integer
+              example: 2340
+        message:
+          type: string
+          example: "District statistics retrieved successfully"
+
+    # Program Schemas
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Character Building Adventure"
+        description:
+          type: string
+          example: "An interactive program focusing on respect and responsibility"
+        is_active:
+          type: boolean
+          example: true
+        grade_levels:
+          type: array
+          items:
+            type: string
+          example: ["K", "1", "2"]
+        formatted_grade_levels:
+          type: string
+          example: "K-2"
+        duration_minutes:
+          type: integer
+          example: 60
+        formatted_duration:
+          type: string
+          example: "1 hour"
+        max_students:
+          type: integer
+          example: 30
+        price_per_student:
+          type: number
+          format: float
+          example: 15.00
+        formatted_price:
+          type: string
+          example: "$15.00"
+        character_topics:
+          type: array
+          items:
+            type: string
+          example: ["Respect", "Responsibility"]
+        formatted_character_topics:
+          type: string
+          example: "Respect, Responsibility"
+        learning_objectives:
+          type: array
+          items:
+            type: string
+          example: ["Understand the importance of respect", "Practice responsibility"]
+        materials_needed:
+          type: array
+          items:
+            type: string
+          example: ["Worksheets", "Props"]
+        special_requirements:
+          type: string
+          nullable: true
+          example: "Gymnasium space required"
+        statistics:
+          type: object
+          properties:
+            booking_count:
+              type: integer
+              example: 25
+            confirmed_booking_count:
+              type: integer
+              example: 20
+            available_slots_count:
+              type: integer
+              example: 15
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    CreateProgramRequest:
+      type: object
+      required:
+        - title
+        - description
+        - grade_levels
+        - duration_minutes
+        - max_students
+        - price_per_student
+        - character_topics
+        - learning_objectives
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          example: "Leadership Skills Workshop"
+        description:
+          type: string
+          maxLength: 2000
+          example: "A comprehensive workshop designed to develop leadership skills in students"
+        grade_levels:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum: ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+          example: ["3", "4", "5"]
+        duration_minutes:
+          type: integer
+          minimum: 15
+          maximum: 480
+          example: 90
+        max_students:
+          type: integer
+          minimum: 1
+          maximum: 500
+          example: 25
+        price_per_student:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 999.99
+          example: 20.00
+        character_topics:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            maxLength: 100
+          example: ["Leadership", "Teamwork", "Communication"]
+        learning_objectives:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            maxLength: 500
+          example: ["Understand different leadership styles", "Practice effective communication"]
+        materials_needed:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          example: ["Handouts", "Activity cards", "Flipchart paper"]
+        special_requirements:
+          type: string
+          nullable: true
+          maxLength: 1000
+          example: "Classroom with moveable desks"
+        resource_files:
+          type: array
+          items:
+            type: string
+          example: []
+
+    ProgramResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Program'
+        message:
+          type: string
+          example: "Program retrieved successfully"
+
+    PaginatedProgramsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Program'
+        message:
+          type: string
+          example: "Programs retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # Placeholder schemas for other entities
+    PaginatedSchoolsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        message:
+          type: string
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedUsersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        message:
+          type: string
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # Booking Management Schemas
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        booking_reference:
+          type: string
+          example: "BK-2024-001234"
+        status:
+          type: string
+          enum: ["pending", "confirmed", "cancelled", "completed"]
+          example: "confirmed"
+        student_count:
+          type: integer
+          example: 25
+        total_cost:
+          type: number
+          format: float
+          example: 375.00
+        preferred_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        preferred_time:
+          type: string
+          format: time
+          example: "10:00"
+        confirmed_date:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-02-15"
+        confirmed_time:
+          type: string
+          format: time
+          nullable: true
+          example: "10:30"
+        confirmed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2024-01-20T14:30:00Z"
+        special_requests:
+          type: string
+          nullable: true
+          example: "Need wheelchair accessible venue"
+        contact_info:
+          type: object
+          properties:
+            primary_contact_name:
+              type: string
+              example: "Sarah Johnson"
+            primary_contact_email:
+              type: string
+              format: email
+              example: "sarah.johnson@school.edu"
+            primary_contact_phone:
+              type: string
+              example: "(555) 123-4567"
+            secondary_contact_name:
+              type: string
+              nullable: true
+              example: "Mike Davis"
+            secondary_contact_email:
+              type: string
+              format: email
+              nullable: true
+              example: "mike.davis@school.edu"
+            secondary_contact_phone:
+              type: string
+              nullable: true
+              example: "(555) 987-6543"
+        payment_status:
+          type: string
+          enum: ["pending", "partial", "paid", "refunded"]
+          example: "paid"
+        payment_due_date:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-02-01"
+        notes:
+          type: string
+          nullable: true
+          example: "Confirmed with principal approval"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          nullable: true
+          example: 5
+        feedback:
+          type: string
+          nullable: true
+          example: "Excellent program, students loved it!"
+        is_pending:
+          type: boolean
+          example: false
+        is_confirmed:
+          type: boolean
+          example: true
+        is_cancelled:
+          type: boolean
+          example: false
+        is_completed:
+          type: boolean
+          example: false
+        can_be_cancelled:
+          type: boolean
+          example: true
+        permission_slips_signed_count:
+          type: integer
+          example: 23
+        permission_slips_required_count:
+          type: integer
+          example: 25
+        all_permission_slips_signed:
+          type: boolean
+          example: false
+        school:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Lincoln Elementary School"
+            code:
+              type: string
+              example: "LES001"
+            address:
+              type: string
+              example: "123 Main St, Springfield, IL 62701"
+            phone:
+              type: string
+              example: "(217) 555-0123"
+        program:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            title:
+              type: string
+              example: "Character Building Adventure"
+            duration_minutes:
+              type: integer
+              example: 60
+            price_per_student:
+              type: number
+              format: float
+              example: 15.00
+        teacher:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Sarah Johnson"
+            email:
+              type: string
+              format: email
+              example: "sarah.johnson@school.edu"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-20T14:30:00Z"
+
+    CreateBookingRequest:
+      type: object
+      required:
+        - school_id
+        - program_id
+        - preferred_date
+        - preferred_time
+        - student_count
+        - contact_info
+      properties:
+        school_id:
+          type: integer
+          example: 1
+        program_id:
+          type: integer
+          example: 1
+        preferred_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        preferred_time:
+          type: string
+          format: time
+          example: "10:00"
+        student_count:
+          type: integer
+          minimum: 1
+          maximum: 100
+          example: 25
+        special_requests:
+          type: string
+          nullable: true
+          maxLength: 1000
+          example: "Need wheelchair accessible venue"
+        contact_info:
+          type: object
+          required:
+            - primary_contact_name
+            - primary_contact_email
+            - primary_contact_phone
+          properties:
+            primary_contact_name:
+              type: string
+              maxLength: 255
+              example: "Sarah Johnson"
+            primary_contact_email:
+              type: string
+              format: email
+              maxLength: 255
+              example: "sarah.johnson@school.edu"
+            primary_contact_phone:
+              type: string
+              maxLength: 20
+              example: "(555) 123-4567"
+            secondary_contact_name:
+              type: string
+              maxLength: 255
+              nullable: true
+              example: "Mike Davis"
+            secondary_contact_email:
+              type: string
+              format: email
+              maxLength: 255
+              nullable: true
+              example: "mike.davis@school.edu"
+            secondary_contact_phone:
+              type: string
+              maxLength: 20
+              nullable: true
+              example: "(555) 987-6543"
+
+    UpdateBookingRequest:
+      type: object
+      properties:
+        preferred_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        preferred_time:
+          type: string
+          format: time
+          example: "10:00"
+        student_count:
+          type: integer
+          minimum: 1
+          maximum: 100
+          example: 25
+        special_requests:
+          type: string
+          nullable: true
+          maxLength: 1000
+          example: "Need wheelchair accessible venue"
+        contact_info:
+          type: object
+          properties:
+            primary_contact_name:
+              type: string
+              maxLength: 255
+              example: "Sarah Johnson"
+            primary_contact_email:
+              type: string
+              format: email
+              maxLength: 255
+              example: "sarah.johnson@school.edu"
+            primary_contact_phone:
+              type: string
+              maxLength: 20
+              example: "(555) 123-4567"
+            secondary_contact_name:
+              type: string
+              maxLength: 255
+              nullable: true
+              example: "Mike Davis"
+            secondary_contact_email:
+              type: string
+              format: email
+              maxLength: 255
+              nullable: true
+              example: "mike.davis@school.edu"
+            secondary_contact_phone:
+              type: string
+              maxLength: 20
+              nullable: true
+              example: "(555) 987-6543"
+        notes:
+          type: string
+          nullable: true
+          maxLength: 2000
+          example: "Updated requirements from principal"
+
+    BookingResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Booking'
+        message:
+          type: string
+          example: "Booking retrieved successfully"
+
+    PaginatedBookingsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'
+        message:
+          type: string
+          example: "Bookings retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # Social Features Schemas
+    ActivityFeed:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        actor_id:
+          type: integer
+          example: 2
+        action_type:
+          type: string
+          enum: ["event_created", "event_joined", "event_commented", "user_followed", "program_booked"]
+          example: "event_created"
+        actionable_type:
+          type: string
+          example: "App\\Models\\Core\\Event"
+        actionable_id:
+          type: integer
+          example: 1
+        data:
+          type: object
+          properties:
+            event_title:
+              type: string
+              example: "Community Cleanup Day"
+            event_date:
+              type: string
+              format: date
+              example: "2024-02-15"
+        is_public:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        actor:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: "John Smith"
+            profile_image:
+              type: string
+              format: uri
+              nullable: true
+              example: "https://example.com/profiles/john.jpg"
+
+    DirectMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        sender_id:
+          type: integer
+          example: 1
+        recipient_id:
+          type: integer
+          example: 2
+        message:
+          type: string
+          example: "Hey, are you going to the community event tomorrow?"
+        is_read:
+          type: boolean
+          example: false
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2024-01-15T11:00:00Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        sender:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Sarah Johnson"
+            profile_image:
+              type: string
+              format: uri
+              nullable: true
+              example: "https://example.com/profiles/sarah.jpg"
+        recipient:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: "Mike Davis"
+            profile_image:
+              type: string
+              format: uri
+              nullable: true
+              example: "https://example.com/profiles/mike.jpg"
+
+    FriendSuggestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        suggested_user_id:
+          type: integer
+          example: 3
+        reason:
+          type: string
+          example: "mutual_friends"
+        score:
+          type: number
+          format: float
+          example: 0.85
+        is_dismissed:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        suggested_user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 3
+            name:
+              type: string
+              example: "Emily Wilson"
+            profile_image:
+              type: string
+              format: uri
+              nullable: true
+              example: "https://example.com/profiles/emily.jpg"
+            mutual_friends_count:
+              type: integer
+              example: 5
+            common_interests:
+              type: array
+              items:
+                type: string
+              example: ["Education", "Community Service"]
+
+    # Social Features Request/Response Schemas
+    CreateMessageRequest:
+      type: object
+      required:
+        - recipient_id
+        - message
+      properties:
+        recipient_id:
+          type: integer
+          example: 2
+        message:
+          type: string
+          maxLength: 1000
+          example: "Hey, are you going to the community event tomorrow?"
+
+    PaginatedActivityFeedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityFeed'
+        message:
+          type: string
+          example: "Activity feed retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedMessagesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DirectMessage'
+        message:
+          type: string
+          example: "Messages retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedSuggestionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FriendSuggestion'
+        message:
+          type: string
+          example: "Friend suggestions retrieved successfully"
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    MessageResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DirectMessage'
+        message:
+          type: string
+          example: "Message sent successfully"
+
+    # Enhanced Error Responses with Examples
+    BookingValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid"
+        errors:
+          type: object
+          properties:
+            school_id:
+              type: array
+              items:
+                type: string
+              example: ["The selected school does not exist"]
+            program_id:
+              type: array
+              items:
+                type: string
+              example: ["The selected program does not exist"]
+            preferred_date:
+              type: array
+              items:
+                type: string
+              example: ["The preferred date must be today or in the future"]
+            student_count:
+              type: array
+              items:
+                type: string
+              example: ["The student count must be between 1 and 100"]
+            contact_info.primary_contact_email:
+              type: array
+              items:
+                type: string
+              example: ["The primary contact email must be a valid email address"]
+
+    BookingConflictError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Booking conflict detected"
+        errors:
+          type: object
+          properties:
+            availability:
+              type: array
+              items:
+                type: string
+              example: ["The selected time slot is no longer available"]
+            capacity:
+              type: array
+              items:
+                type: string
+              example: ["Not enough capacity for the requested number of students"]
+
+    PaymentRequiredError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Payment required to complete booking"
+        errors:
+          type: object
+          properties:
+            payment:
+              type: array
+              items:
+                type: string
+              example: ["Payment must be completed before booking confirmation"]
+            amount:
+              type: string
+              example: "$375.00"
+            due_date:
+              type: string
+              format: date
+              example: "2024-02-01"
+
+    # Complex Workflow Examples
+    BookingWorkflowExample:
+      type: object
+      description: "Complete booking workflow from creation to completion"
+      properties:
+        step_1_create_booking:
+          type: object
+          properties:
+            endpoint:
+              type: string
+              example: "POST /api/v1/spark/bookings"
+            request:
+              $ref: '#/components/schemas/CreateBookingRequest'
+            response:
+              $ref: '#/components/schemas/BookingResponse'
+        step_2_confirm_booking:
+          type: object
+          properties:
+            endpoint:
+              type: string
+              example: "POST /api/v1/spark/bookings/{id}/confirm"
+            request:
+              type: object
+              properties:
+                confirmed_date:
+                  type: string
+                  format: date
+                  example: "2024-02-15"
+                confirmed_time:
+                  type: string
+                  format: time
+                  example: "10:30"
+                notes:
+                  type: string
+                  example: "Confirmed with principal approval"
+        step_3_add_students:
+          type: object
+          properties:
+            endpoint:
+              type: string
+              example: "POST /api/v1/spark/bookings/{id}/students"
+            request:
+              type: object
+              properties:
+                students:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "John Doe"
+                      grade:
+                        type: string
+                        example: "3"
+                      special_needs:
+                        type: string
+                        nullable: true
+                        example: "Wheelchair accessible"
+        step_4_complete_booking:
+          type: object
+          properties:
+            endpoint:
+              type: string
+              example: "POST /api/v1/spark/bookings/{id}/complete"
+            request:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                feedback:
+                  type: string
+                  example: "Excellent program, students loved it!"
