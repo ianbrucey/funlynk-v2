@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Core\ActivityFeedController;
+use App\Http\Controllers\Api\V1\Core\DirectMessageController;
 use App\Http\Controllers\Api\V1\Core\EventCommentController;
 use App\Http\Controllers\Api\V1\Core\EventController;
 use App\Http\Controllers\Api\V1\Core\EventInteractionController;
+use App\Http\Controllers\Api\V1\Core\SocialController;
 use App\Http\Controllers\Api\V1\Core\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -87,4 +90,56 @@ Route::prefix('events')->group(function () {
 Route::prefix('discover')->group(function () {
     Route::get('/nearby', [EventInteractionController::class, 'nearbyEvents']);
     Route::get('/recommendations', [EventInteractionController::class, 'recommendations']);
+});
+
+// Activity Feed Routes
+Route::prefix('activity')->group(function () {
+    Route::get('/', [ActivityFeedController::class, 'index']);
+    Route::get('/discover', [ActivityFeedController::class, 'discover']);
+    Route::get('/trending', [ActivityFeedController::class, 'trending']);
+    Route::get('/statistics', [ActivityFeedController::class, 'statistics']);
+    Route::get('/unread-count', [ActivityFeedController::class, 'unreadCount']);
+    Route::post('/mark-all-read', [ActivityFeedController::class, 'markAllAsRead']);
+    Route::post('/preferences', [ActivityFeedController::class, 'updatePreferences']);
+    Route::get('/{id}', [ActivityFeedController::class, 'show']);
+    Route::post('/{id}/read', [ActivityFeedController::class, 'markAsRead']);
+    Route::post('/{id}/hide', [ActivityFeedController::class, 'hide']);
+    Route::post('/{id}/report', [ActivityFeedController::class, 'report']);
+    Route::get('/{id}/engagement', [ActivityFeedController::class, 'engagement']);
+});
+
+// Direct Messages Routes
+Route::prefix('messages')->group(function () {
+    Route::get('/conversations', [DirectMessageController::class, 'conversations']);
+    Route::get('/conversation/{conversationId}', [DirectMessageController::class, 'conversation']);
+    Route::post('/send', [DirectMessageController::class, 'send']);
+    Route::get('/search', [DirectMessageController::class, 'search']);
+    Route::get('/unread-count', [DirectMessageController::class, 'unreadCount']);
+    Route::get('/statistics', [DirectMessageController::class, 'statistics']);
+    Route::post('/conversation/{conversationId}/read', [DirectMessageController::class, 'markConversationAsRead']);
+    Route::get('/{id}', [DirectMessageController::class, 'show']);
+    Route::put('/{id}', [DirectMessageController::class, 'update']);
+    Route::delete('/{id}', [DirectMessageController::class, 'destroy']);
+    Route::post('/{id}/read', [DirectMessageController::class, 'markAsRead']);
+    Route::post('/{id}/report', [DirectMessageController::class, 'report']);
+    Route::post('/block/{userId}', [DirectMessageController::class, 'blockUser']);
+    Route::delete('/block/{userId}', [DirectMessageController::class, 'unblockUser']);
+});
+
+// Social Features Routes
+Route::prefix('social')->group(function () {
+    Route::get('/suggestions', [SocialController::class, 'suggestions']);
+    Route::post('/suggestions/{id}/dismiss', [SocialController::class, 'dismissSuggestion']);
+    Route::post('/suggestions/{id}/contacted', [SocialController::class, 'markSuggestionContacted']);
+    Route::post('/suggestions/bulk-dismiss', [SocialController::class, 'bulkDismissSuggestions']);
+    Route::post('/suggestions/refresh', [SocialController::class, 'refreshSuggestions']);
+    Route::get('/suggestions/statistics', [SocialController::class, 'suggestionStatistics']);
+    Route::get('/mutual-connections/{userId}', [SocialController::class, 'mutualConnections']);
+    Route::get('/network-analysis', [SocialController::class, 'networkAnalysis']);
+    Route::get('/discover', [SocialController::class, 'discover']);
+    Route::get('/statistics', [SocialController::class, 'statistics']);
+    Route::get('/trending', [SocialController::class, 'trending']);
+    Route::get('/recommendations', [SocialController::class, 'recommendations']);
+    Route::post('/preferences', [SocialController::class, 'updatePreferences']);
+    Route::get('/insights', [SocialController::class, 'insights']);
 });

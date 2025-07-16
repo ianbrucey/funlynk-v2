@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Services\Core\ActivityFeedService;
+use App\Services\Core\DirectMessageService;
 use App\Services\Core\EventCommentService;
 use App\Services\Core\EventInteractionService;
 use App\Services\Core\EventService;
+use App\Services\Core\FriendSuggestionService;
+use App\Services\Core\SocialGraphService;
 use App\Services\Core\UserService;
 use App\Services\Shared\CacheService;
 use App\Services\Shared\EmailService;
@@ -74,6 +78,35 @@ class CoreServiceProvider extends ServiceProvider
                 $app->make(NotificationService::class)
             );
         });
+
+        // Register ActivityFeedService with dependencies
+        $this->app->singleton(ActivityFeedService::class, function ($app) {
+            return new ActivityFeedService(
+                $app->make(LoggingService::class)
+            );
+        });
+
+        // Register DirectMessageService with dependencies
+        $this->app->singleton(DirectMessageService::class, function ($app) {
+            return new DirectMessageService(
+                $app->make(LoggingService::class),
+                $app->make(NotificationService::class)
+            );
+        });
+
+        // Register FriendSuggestionService with dependencies
+        $this->app->singleton(FriendSuggestionService::class, function ($app) {
+            return new FriendSuggestionService(
+                $app->make(LoggingService::class)
+            );
+        });
+
+        // Register SocialGraphService with dependencies
+        $this->app->singleton(SocialGraphService::class, function ($app) {
+            return new SocialGraphService(
+                $app->make(LoggingService::class)
+            );
+        });
     }
 
     /**
@@ -103,6 +136,10 @@ class CoreServiceProvider extends ServiceProvider
             EventService::class,
             EventCommentService::class,
             EventInteractionService::class,
+            ActivityFeedService::class,
+            DirectMessageService::class,
+            FriendSuggestionService::class,
+            SocialGraphService::class,
         ];
     }
 }

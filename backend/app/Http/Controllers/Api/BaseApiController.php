@@ -55,7 +55,7 @@ class BaseApiController extends Controller
      *
      * @return JsonResponse
      */
-    protected function errorResponse(string $message = 'Error', int $statusCode = 400, array $errors = []): JsonResponse
+    protected function errorResponse(string $message = 'Error', $data = null, int $status = 400): JsonResponse
     {
         $response = [
             'success' => false,
@@ -63,11 +63,11 @@ class BaseApiController extends Controller
             'timestamp' => now()->toISOString(),
         ];
 
-        if (!empty($errors)) {
-            $response['errors'] = $errors;
+        if ($data !== null) {
+            $response['data'] = $data;
         }
 
-        return response()->json($response, $statusCode);
+        return response()->json($response, $status);
     }
 
     /**
@@ -79,7 +79,7 @@ class BaseApiController extends Controller
      */
     protected function validationErrorResponse(array $errors): JsonResponse
     {
-        return $this->errorResponse('Validation failed', 422, $errors);
+        return $this->errorResponse('Validation failed', ['errors' => $errors], 422);
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Spark\AnalyticsController;
 use App\Http\Controllers\Api\V1\Spark\BookingController;
 use App\Http\Controllers\Api\V1\Spark\CharacterTopicController;
 use App\Http\Controllers\Api\V1\Spark\DistrictController;
@@ -172,6 +173,22 @@ Route::middleware(['auth:sanctum', 'api', 'rate.limit:120,1'])->group(function (
         Route::delete('/{id}', [PermissionSlipController::class, 'destroy']);
         Route::post('/{id}/reminder', [PermissionSlipController::class, 'sendReminder']);
         Route::post('/{bookingId}/export', [PermissionSlipController::class, 'export']);
+    });
+
+    // Analytics and Reporting Routes
+    Route::prefix('analytics')->group(function () {
+        Route::get('/dashboard', [AnalyticsController::class, 'dashboard']);
+        Route::get('/booking-analytics', [AnalyticsController::class, 'bookingAnalytics']);
+        Route::get('/program-performance', [AnalyticsController::class, 'programPerformance']);
+        Route::get('/school-engagement', [AnalyticsController::class, 'schoolEngagement']);
+        Route::get('/financial-summary', [AnalyticsController::class, 'financialSummary']);
+        Route::get('/metrics', [AnalyticsController::class, 'getMetrics']);
+        Route::post('/reports', [AnalyticsController::class, 'generateReport']);
+        Route::get('/reports', [AnalyticsController::class, 'getUserReports']);
+        Route::get('/reports/{id}', [AnalyticsController::class, 'getReport']);
+        Route::delete('/reports/{id}', [AnalyticsController::class, 'deleteReport']);
+        Route::post('/reports/{id}/export', [AnalyticsController::class, 'exportReport']);
+        Route::post('/reports/schedule', [AnalyticsController::class, 'scheduleReport']);
     });
 
 });

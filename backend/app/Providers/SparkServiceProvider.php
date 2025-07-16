@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Services\Shared\FileUploadService;
 use App\Services\Shared\LoggingService;
 use App\Services\Shared\NotificationService;
+use App\Services\Spark\AnalyticsService;
 use App\Services\Spark\BookingService;
 use App\Services\Spark\CharacterTopicService;
 use App\Services\Spark\DistrictService;
@@ -70,6 +71,13 @@ class SparkServiceProvider extends ServiceProvider
                 $app->make(\App\Services\Shared\NotificationService::class)
             );
         });
+
+        // Register AnalyticsService with dependencies
+        $this->app->singleton(AnalyticsService::class, function ($app) {
+            return new AnalyticsService(
+                $app->make(\App\Services\Shared\LoggingService::class)
+            );
+        });
     }
 
     /**
@@ -94,6 +102,7 @@ class SparkServiceProvider extends ServiceProvider
             CharacterTopicService::class,
             BookingService::class,
             PermissionSlipService::class,
+            AnalyticsService::class,
         ];
     }
 }
