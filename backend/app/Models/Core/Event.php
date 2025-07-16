@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\Core\Payment;
 /**
  * Event Model.
  *
@@ -126,7 +126,16 @@ class Event extends Model
     public function shares(): HasMany
     {
         return $this->hasMany(EventShare::class);
-    }
+
+    /**
+     * Get the payments for this event.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function payments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Payment::class, 'payable');
+    }    }
 
     // ===================================
     // Scopes

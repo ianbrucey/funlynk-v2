@@ -571,5 +571,38 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $this->teachingPrograms()->exists();
+
+    // ===================================
+    // Payment Relationships
+    // ===================================
+
+    /**
+     * Get the user's Stripe account.
+     *
+     * @return HasOne
+     */
+    public function stripeAccount(): HasOne
+    {
+        return $this->hasOne(\App\Models\Core\StripeAccount::class);
     }
+
+    /**
+     * Get the user's payments.
+     *
+     * @return HasMany
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(\App\Models\Core\Payment::class);
+    }
+
+    /**
+     * Get the user's payouts.
+     *
+     * @return HasMany
+     */
+    public function payouts(): HasMany
+    {
+        return $this->hasMany(\App\Models\Core\Payout::class);
+    }    }
 }

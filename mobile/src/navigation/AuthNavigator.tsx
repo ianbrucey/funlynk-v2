@@ -11,6 +11,7 @@ import RegisterScreen from '@/screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '@/screens/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '@/screens/auth/ResetPasswordScreen';
 import RoleSelectionScreen from '@/screens/auth/RoleSelectionScreen';
+import OnboardingScreen from '@/screens/auth/OnboardingScreen';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -82,13 +83,22 @@ export const AuthNavigator: React.FC = () => {
           headerShown: true,
         }}
       />
-      <Stack.Screen 
-        name="RoleSelection" 
+      <Stack.Screen
+        name="RoleSelection"
         component={RoleSelectionScreen}
         options={{
           title: 'Choose Your Role',
           headerShown: true,
           headerLeft: () => null, // Prevent going back
+        }}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingScreen}
+        options={{
+          title: 'Welcome',
+          headerShown: false,
+          gestureEnabled: false, // Prevent going back
         }}
       />
     </Stack.Navigator>

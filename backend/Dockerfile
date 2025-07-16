@@ -1,66 +1,96 @@
-# Use the official PHP 8.1 FPM image
-FROM php:8.1-fpm
+# Multi-stage build for Laravel backend
 
-# Set working directory
+# Base stage with common dependencies
+FROM php:8.1-fpm-alpine AS base
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
+    oniguruma-dev \
     libxml2-dev \
     zip \
     unzip \
     libzip-dev \
-    libpq-dev \
+    postgresql-dev \
     supervisor \
     nginx \
     && docker-php-ext-install \
     pdo_mysql \
+    pdo_pgsql \
     mbstring \
     exif \
     pcntl \
     bcmath \
     gd \
     zip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apk del --no-cache \
+    libpng-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    libzip-dev \
+    postgresql-dev
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
+# Development stage
+FROM base AS development
+COPY . /var/www/html
+RUN composer install --optimize-autoloader
+EXPOSE 8000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+# Build stage
+FROM base AS build
+
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --optimize-autoloader
+
+# Copy application code
 COPY . /var/www/html
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/html
+# Complete composer installation
+RUN composer dump-autoload --optimize --no-dev
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev --no-scripts
+# Create Laravel directories and set permissions
+RUN mkdir -p storage/logs \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Create directories for Laravel
-RUN mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/storage/framework/cache \
-    && mkdir -p /var/www/html/storage/framework/sessions \
-    && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache
+# Production stage
+FROM base AS production
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+# Create non-root user
+RUN addgroup -g 1001 -S laravel \
+    && adduser -S laravel -u 1001 -G laravel
 
-# Copy nginx configuration
-COPY docker/nginx.conf /etc/nginx/sites-available/default
+# Copy built application from build stage
+COPY --from=build --chown=laravel:laravel /var/www/html /var/www/html
 
-# Copy supervisor configuration
+# Copy configuration files
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Copy PHP configuration
 COPY docker/php.ini /usr/local/etc/php/conf.d/docker-php-custom.ini
+
+# Security hardening
+RUN rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/* \
+    && find /var/www/html -name "*.md" -delete \
+    && find /var/www/html -name ".git*" -delete
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+# Switch to non-root user
+USER laravel
 
 # Expose port 80
 EXPOSE 80

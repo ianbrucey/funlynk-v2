@@ -77,9 +77,10 @@ class BaseApiController extends Controller
      *
      * @return JsonResponse
      */
-    protected function validationErrorResponse(array $errors): JsonResponse
+    protected function validationErrorResponse(array $errors, string $message = "Validation failed"): JsonResponse
     {
-        return $this->errorResponse('Validation failed', ['errors' => $errors], 422);
+        return $this->errorResponse($message, ["errors" => $errors], 422);
+    }        return $this->errorResponse('Validation failed', ['errors' => $errors], 422);
     }
 
     /**

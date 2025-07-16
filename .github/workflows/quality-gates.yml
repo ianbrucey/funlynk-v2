@@ -24,10 +24,18 @@ jobs:
       - name: Run CodeQL Analysis
         uses: github/codeql-action/init@v2
         with:
-          languages: php, javascript, typescript
+          languages: php, javascript, typescript, php
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+
+      - name: Check code quality thresholds
+        run: |
+          # Check if SonarCloud quality gate passed
+          if [ "${{ env.SONAR_QUALITY_GATE_STATUS }}" != "OK" ]; then
+            echo "Quality gate failed!"
+            exit 1
+          fi
 
   dependency-check:
     name: Dependency Security Check
@@ -94,3 +102,107 @@ jobs:
       - name: Run Larastan
         working-directory: ./backend
         run: vendor/bin/phpstan analyse --error-format=github
+
+  frontend-quality:
+    name: Frontend Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Check mobile app quality
+        working-directory: ./mobile
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+            npm run lint
+            npm run type-check
+          fi
+        continue-on-error: true
+
+      - name: Check admin dashboard quality
+        working-directory: ./admin-dashboard
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+            npm run lint
+            npm run type-check
+          fi
+        continue-on-error: true
+
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Snyk for backend
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --file=backend/composer.json
+        continue-on-error: true
+
+      - name: Run Snyk for mobile
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --file=mobile/package.json
+        continue-on-error: true
+
+      - name: Run Snyk for admin dashboard
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --file=admin-dashboard/package.json
+        continue-on-error: true
+
+  test-coverage:
+    name: Test Coverage Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run backend tests with coverage
+        working-directory: ./backend
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Check coverage threshold
+        working-directory: ./backend
+        run: |
+          # Extract coverage percentage
+          COVERAGE=$(php -r "
+            \$xml = simplexml_load_file('coverage.xml');
+            \$metrics = \$xml->project->metrics;
+            \$covered = (float)\$metrics['coveredstatements'];
+            \$total = (float)\$metrics['statements'];
+            echo round((\$covered / \$total) * 100, 2);
+          ")
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below minimum threshold of 80%"
+            exit 1
+          fi

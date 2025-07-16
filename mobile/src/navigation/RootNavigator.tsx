@@ -14,6 +14,7 @@ import SplashScreen from '@/screens/SplashScreen';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import ModalScreen from '@/screens/ModalScreen';
+import OnboardingScreen from '@/screens/auth/OnboardingScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

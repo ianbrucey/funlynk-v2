@@ -7,7 +7,8 @@ use App\Http\Controllers\Api\V1\Core\EventController;
 use App\Http\Controllers\Api\V1\Core\EventInteractionController;
 use App\Http\Controllers\Api\V1\Core\SocialController;
 use App\Http\Controllers\Api\V1\Core\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Core\PaymentController;
+use App\Http\Controllers\Api\V1\Core\StripeConnectController;use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,4 +143,21 @@ Route::prefix('social')->group(function () {
     Route::get('/recommendations', [SocialController::class, 'recommendations']);
     Route::post('/preferences', [SocialController::class, 'updatePreferences']);
     Route::get('/insights', [SocialController::class, 'insights']);
+});
+
+// Payment Routes
+Route::prefix('payments')->group(function () {
+    Route::post('/events/{id}/payment-intent', [PaymentController::class, 'createPaymentIntent']);
+    Route::post('/confirm', [PaymentController::class, 'confirmPayment']);
+    Route::get('/history', [PaymentController::class, 'history']);
+    Route::post('/{id}/refund', [PaymentController::class, 'requestRefund']);
+});
+
+// Stripe Connect Routes
+Route::prefix('stripe-connect')->group(function () {
+    Route::post('/account', [StripeConnectController::class, 'createAccount']);
+    Route::get('/onboarding-link', [StripeConnectController::class, 'getOnboardingLink']);
+    Route::get('/dashboard-link', [StripeConnectController::class, 'getDashboardLink']);
+    Route::get('/account-status', [StripeConnectController::class, 'getAccountStatus']);
+    Route::get('/earnings', [StripeConnectController::class, 'getEarnings']);
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,22 +13,78 @@ import { useNavigation } from '@react-navigation/native';
 import { theme } from '@/constants/theme';
 import { AuthStackScreenProps } from '@/types/navigation';
 import { useAuth } from '@/store/hooks';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 type LoginScreenProps = AuthStackScreenProps<'Login'>;
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+interface LoginFormErrors {
+  email?: string;
+  password?: string;
+  general?: string;
+}
 
 export const LoginScreen: React.FC = () => {
   const navigation = useNavigation<LoginScreenProps['navigation']>();
   const { login, isLoginLoading, error, clearAuthError } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) {
-      return;
+  // Form state
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState<LoginFormErrors>({});
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // Form validation
+  const validateForm = useCallback((data: LoginFormData): LoginFormErrors => {
+    const newErrors: LoginFormErrors = {};
+
+    // Email validation
+    if (!data.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
+    // Password validation
+    if (!data.password) {
+      newErrors.password = 'Password is required';
+    } else if (data.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    return newErrors;
+  }, []);
+
+  // Handle form input changes
+  const handleInputChange = useCallback((field: keyof LoginFormData, value: string) => {
+    const newFormData = { ...formData, [field]: value };
+    setFormData(newFormData);
+
+    // Real-time validation
+    const newErrors = validateForm(newFormData);
+    setErrors(newErrors);
+    setIsFormValid(Object.keys(newErrors).length === 0);
+  }, [formData, validateForm]);
+
+  const handleLogin = async () => {
     try {
-      await login(email.trim(), password);
+      const validationErrors = validateForm(formData);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
+      await login(formData.email.trim().toLowerCase(), formData.password);
       // Navigation will be handled automatically by RootNavigator when auth state changes
     } catch (error) {
       // Error is already handled by the useAuth hook
@@ -44,12 +100,25 @@ export const LoginScreen: React.FC = () => {
     navigation.navigate('ForgotPassword');
   };
 
+  // Handle social login
+  const handleSocialLogin = useCallback(async (provider: 'google' | 'apple') => {
+    try {
+      // TODO: Implement social login API calls
+      console.log(`Social login with ${provider}`);
+      // For now, just show a placeholder message
+      setErrors({ general: `${provider} login not yet implemented` });
+    } catch (error) {
+      console.log(`${provider} login failed:`, error);
+      setErrors({ general: `${provider} login failed. Please try again.` });
+    }
+  }, []);
+
   // Clear error when component mounts or when user starts typing
   React.useEffect(() => {
     if (error) {
       clearAuthError();
     }
-  }, [email, password]);
+  }, [formData.email, formData.password]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,61 +126,88 @@ export const LoginScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoid}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your account</Text>
-          </View>
-
-          {error && (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <AuthHeader
+            title="Welcome Back"
+            subtitle="Sign in to continue to Funlynk"
+          />
 
           <View style={styles.form}>
-            {/* TODO: Replace with actual Input components */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
-              <View style={styles.input}>
-                <Text style={styles.placeholder}>
-                  {email || 'Enter your email'}
-                </Text>
-              </View>
-            </View>
+            {/* Email Input */}
+            <Input
+              label="Email Address"
+              value={formData.email}
+              onChangeText={(value) => handleInputChange('email', value)}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              error={errors.email}
+              containerStyle={styles.inputContainer}
+              testID="login-email-input"
+            />
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.input}>
-                <Text style={styles.placeholder}>
-                  {password || 'Enter your password'}
-                </Text>
-              </View>
-            </View>
+            {/* Password Input */}
+            <Input
+              label="Password"
+              value={formData.password}
+              onChangeText={(value) => handleInputChange('password', value)}
+              placeholder="Enter your password"
+              secureTextEntry
+              autoComplete="password"
+              error={errors.password}
+              containerStyle={styles.inputContainer}
+              testID="login-password-input"
+            />
 
+            {/* General Error */}
+            {(error || errors.general) && (
+              <ErrorMessage
+                message={error || errors.general || ''}
+                testID="login-error-message"
+              />
+            )}
+
+            {/* Forgot Password Link */}
             <TouchableOpacity
               style={styles.forgotPassword}
               onPress={handleForgotPassword}
+              testID="forgot-password-button"
             >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.loginButton, isLoginLoading && styles.loginButtonDisabled]}
+            {/* Login Button */}
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
               onPress={handleLogin}
-              disabled={isLoginLoading || !email.trim() || !password.trim()}
+              disabled={!isFormValid || isLoginLoading}
+              loading={isLoginLoading}
+              style={styles.loginButton}
+              testID="login-submit-button"
             >
-              <Text style={styles.loginButtonText}>
-                {isLoginLoading ? 'Signing In...' : 'Sign In'}
-              </Text>
-            </TouchableOpacity>
+              {isLoginLoading ? 'Signing In...' : 'Sign In'}
+            </Button>
+          </View>
 
-            <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Don't have an account? </Text>
-              <TouchableOpacity onPress={handleRegister}>
-                <Text style={styles.registerLink}>Sign Up</Text>
-              </TouchableOpacity>
-            </View>
+          {/* Social Login Section */}
+          <SocialLoginButtons
+            onGoogleLogin={() => handleSocialLogin('google')}
+            onAppleLogin={() => handleSocialLogin('apple')}
+            loading={isLoginLoading}
+          />
+
+          {/* Register Link */}
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={handleRegister} testID="register-link-button">
+              <Text style={styles.registerLink}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -122,7 +218,7 @@ export const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.white,
   },
   keyboardAvoid: {
     flex: 1,
@@ -130,95 +226,45 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: theme.spacing.lg,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-  },
-  title: {
-    ...theme.textStyles.title1,
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.sm,
-  },
-  subtitle: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.textSecondary,
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.xxl,
   },
   form: {
     width: '100%',
+    marginBottom: theme.spacing.lg,
   },
   inputContainer: {
     marginBottom: theme.spacing.lg,
   },
-  label: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.sm,
-    fontWeight: theme.typography.fontWeight.medium,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.surface,
-    minHeight: theme.touchTargets.minimum,
-    justifyContent: 'center',
-  },
-  placeholder: {
-    ...theme.textStyles.body,
-    color: theme.colors.textTertiary,
-  },
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: theme.spacing.xl,
+    paddingVertical: theme.spacing.sm,
   },
   forgotPasswordText: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.primary,
+    fontSize: 16,
+    color: theme.colors.primary[600],
+    fontFamily: theme.typography.fontFamily?.medium,
   },
   loginButton: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.md,
-    alignItems: 'center',
-    minHeight: theme.touchTargets.minimum,
     marginBottom: theme.spacing.lg,
-  },
-  loginButtonDisabled: {
-    backgroundColor: theme.colors.textTertiary,
-    opacity: 0.6,
-  },
-  loginButtonText: {
-    ...theme.textStyles.headline,
-    color: theme.colors.textOnPrimary,
-  },
-  errorContainer: {
-    backgroundColor: theme.colors.errorContainer,
-    borderRadius: theme.borderRadius.sm,
-    padding: theme.spacing.md,
-    marginBottom: theme.spacing.lg,
-    marginHorizontal: theme.spacing.lg,
-  },
-  errorText: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.error,
-    textAlign: 'center',
   },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: theme.spacing.lg,
   },
   registerText: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.textSecondary,
+    fontSize: 16,
+    color: theme.colors.neutral[600],
+    fontFamily: theme.typography.fontFamily?.regular,
   },
   registerLink: {
-    ...theme.textStyles.subhead,
-    color: theme.colors.primary,
-    fontWeight: theme.typography.fontWeight.medium,
+    fontSize: 16,
+    color: theme.colors.primary[600],
+    fontFamily: theme.typography.fontFamily?.medium,
   },
 });
 

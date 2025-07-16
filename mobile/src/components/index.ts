@@ -2,6 +2,12 @@
 export { Button } from './ui/Button';
 export { Text } from './ui/Text';
 export { Input } from './ui/Input';
+export { TextArea } from './ui/TextArea';
+export { DatePicker } from './ui/DatePicker';
+export { ImagePicker } from './ui/ImagePicker';
+export { SearchInput } from './ui/SearchInput';
+export { LoadingSpinner } from './ui/LoadingSpinner';
+export { EmptyState } from './ui/EmptyState';
 export { Avatar } from './ui/Avatar';
 
 // Form Components

@@ -178,18 +178,54 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/develop'
     environment: staging
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to staging
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Deploy to EKS staging
         run: |
-          echo "Deploying to staging environment"
-          # Add actual deployment commands here
+          # Update kubeconfig
+          aws eks update-kubeconfig --region ${{ secrets.AWS_DEFAULT_REGION }} --name funlynk-staging
+
+          # Apply Kubernetes manifests
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/staging/
+
+          # Update deployment image
+          kubectl set image deployment/backend backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:develop-${{ github.sha }} -n funlynk
+
+          # Wait for rollout
+          kubectl rollout status deployment/backend -n funlynk --timeout=300s
         env:
           STAGING_SERVER: ${{ secrets.STAGING_SERVER }}
           STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+
+      - name: Run staging smoke tests
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+
+          # Run basic health checks
+          curl -f ${{ secrets.STAGING_API_URL }}/health || exit 1
+          curl -f ${{ secrets.STAGING_API_URL }}/api/status || exit 1
+        continue-on-error: false
+
+      - name: Notify staging deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: "Backend staging deployment ${{ job.status }}! 🚀"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
 
   deploy-production:
     name: Deploy to Production
@@ -197,28 +233,70 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     environment: production
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to production
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Deploy to EKS production
         run: |
-          echo "Deploying to production environment"
-          # Add actual deployment commands here
+          # Update kubeconfig
+          aws eks update-kubeconfig --region ${{ secrets.AWS_DEFAULT_REGION }} --name funlynk-production
+
+          # Apply Kubernetes manifests
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/production/
+
+          # Update deployment image
+          kubectl set image deployment/backend backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} -n funlynk
+
+          # Wait for rollout
+          kubectl rollout status deployment/backend -n funlynk --timeout=600s
         env:
           PRODUCTION_SERVER: ${{ secrets.PRODUCTION_SERVER }}
           PRODUCTION_SSH_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
 
-      - name: Run smoke tests
+      - name: Run production smoke tests
         run: |
-          echo "Running post-deployment smoke tests"
-          # Add smoke test commands here
+          # Wait for deployment to be ready
+          sleep 60
+
+          # Run comprehensive health checks
+          curl -f ${{ secrets.PRODUCTION_API_URL }}/health || exit 1
+          curl -f ${{ secrets.PRODUCTION_API_URL }}/api/status || exit 1
+
+          # Test critical endpoints
+          curl -f ${{ secrets.PRODUCTION_API_URL }}/api/auth/check || exit 1
+        continue-on-error: false
+
+      - name: Create deployment record
+        run: |
+          # Record deployment in monitoring system
+          curl -X POST ${{ secrets.MONITORING_WEBHOOK_URL }} \
+            -H "Content-Type: application/json" \
+            -d '{
+              "deployment": {
+                "service": "backend",
+                "version": "${{ github.sha }}",
+                "environment": "production",
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                "status": "success"
+              }
+            }'
+        continue-on-error: true
 
       - name: Notify deployment success
         uses: 8398a7/action-slack@v3
         with:
-          status: success
-          text: "Backend deployment to production successful! 🚀"
+          status: ${{ job.status }}
+          text: "Backend production deployment ${{ job.status }}! 🚀\nVersion: ${{ github.sha }}"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()

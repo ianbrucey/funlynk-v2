@@ -19,6 +19,7 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
   ResetPassword: { token: string };
   RoleSelection: undefined;
+  Onboarding: { userId?: string };
 };
 
 // Main Tab Navigator (Core App)
@@ -40,9 +41,14 @@ export type HomeStackParamList = {
 
 export type EventsStackParamList = {
   EventsList: undefined;
+  EventList: undefined;
+  EventBrowse: undefined;
   EventDetails: { eventId: string };
+  EventRSVP: { eventId: string };
+  CreateEvent: undefined;
+  EditEvent: { eventId: string };
   EventSearch: undefined;
-  EventFilters: undefined;
+  RSVPManagement: { eventId: string };
   MyEvents: undefined;
 };
 

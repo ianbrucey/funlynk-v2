@@ -6,13 +6,24 @@ import { Platform } from 'react-native';
 import { SparkTabParamList } from '@/types/navigation';
 import { theme } from '@/constants/theme';
 
-// Import placeholder screens
+// Import teacher screens
+import TeacherDashboardScreen from '@/screens/spark/teacher/TeacherDashboardScreen';
+import ProgramListScreen from '@/screens/spark/teacher/ProgramListScreen';
+import BookingListScreen from '@/screens/spark/teacher/BookingListScreen';
+import BookingDetailsScreen from '@/screens/spark/teacher/BookingDetailsScreen';
+import StudentRosterScreen from '@/screens/spark/teacher/StudentRosterScreen';
+import SessionNotesScreen from '@/screens/spark/teacher/SessionNotesScreen';
+import TeachingResourcesScreen from '@/screens/spark/teacher/TeachingResourcesScreen';
+import AvailabilityManagementScreen from '@/screens/spark/teacher/AvailabilityManagementScreen';
+
+// Import placeholder screens (fallback)
 import SparkDashboardScreen from '@/screens/spark/DashboardScreen';
 import SparkProgramsScreen from '@/screens/spark/ProgramsScreen';
 import SparkBookingsScreen from '@/screens/spark/BookingsScreen';
 import SparkStudentsScreen from '@/screens/spark/StudentsScreen';
 
 const Tab = createBottomTabNavigator<SparkTabParamList>();
+const Stack = createNativeStackNavigator();
 
 // Tab Navigator Icon Component (placeholder)
 const TabIcon: React.FC<{ name: string; focused: boolean; size: number }> = ({ 
@@ -30,6 +41,12 @@ const TabIcon: React.FC<{ name: string; focused: boolean; size: number }> = ({
         return focused ? '📅' : '📆';
       case 'Students':
         return focused ? '👥' : '👤';
+      case 'Resources':
+        return focused ? '📋' : '📄';
+      case 'Availability':
+        return focused ? '🗓️' : '📅';
+      case 'Notes':
+        return focused ? '📝' : '📄';
       default:
         return '⚪';
     }
@@ -96,36 +113,60 @@ export const SparkNavigator: React.FC = () => {
         tabBarHideOnKeyboard: Platform.OS === 'android',
       })}
     >
-      <Tab.Screen 
-        name="Dashboard" 
-        component={SparkDashboardScreen}
+      <Tab.Screen
+        name="Dashboard"
+        component={TeacherDashboardScreen}
         options={{
           tabBarLabel: 'Dashboard',
-          title: 'Spark Dashboard',
+          title: 'Teacher Dashboard',
         }}
       />
-      <Tab.Screen 
-        name="Programs" 
-        component={SparkProgramsScreen}
+      <Tab.Screen
+        name="Programs"
+        component={ProgramListScreen}
         options={{
           tabBarLabel: 'Programs',
-          title: 'Programs',
+          title: 'My Programs',
         }}
       />
-      <Tab.Screen 
-        name="Bookings" 
-        component={SparkBookingsScreen}
+      <Tab.Screen
+        name="Bookings"
+        component={BookingListScreen}
         options={{
           tabBarLabel: 'Bookings',
-          title: 'Bookings',
+          title: 'My Bookings',
         }}
       />
-      <Tab.Screen 
-        name="Students" 
-        component={SparkStudentsScreen}
+      <Tab.Screen
+        name="Students"
+        component={StudentRosterScreen}
         options={{
           tabBarLabel: 'Students',
-          title: 'Students',
+          title: 'Student Roster',
+        }}
+      />
+      <Tab.Screen
+        name="Resources"
+        component={TeachingResourcesScreen}
+        options={{
+          tabBarLabel: 'Resources',
+          title: 'Teaching Resources',
+        }}
+      />
+      <Tab.Screen
+        name="Availability"
+        component={AvailabilityManagementScreen}
+        options={{
+          tabBarLabel: 'Schedule',
+          title: 'Availability',
+        }}
+      />
+      <Tab.Screen
+        name="Notes"
+        component={SessionNotesScreen}
+        options={{
+          tabBarLabel: 'Notes',
+          title: 'Session Notes',
         }}
       />
     </Tab.Navigator>

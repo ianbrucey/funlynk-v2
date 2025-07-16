@@ -15,6 +15,12 @@ import { theme } from '@/constants/theme';
 // Import screen components
 import HomeScreen from '@/screens/core/HomeScreen';
 import EventsScreen from '@/screens/core/EventsScreen';
+import { EventDetailsScreen } from '@/screens/core/events/EventDetailsScreen';
+import { CreateEventScreen } from '@/screens/core/events/CreateEventScreen';
+import { EventListScreen } from '@/screens/core/events/EventListScreen';
+import { EventBrowseScreen } from '@/screens/core/events/EventBrowseScreen';
+import { EventRSVPScreen } from '@/screens/core/events/EventRSVPScreen';
+import { EditEventScreen } from '@/screens/core/events/EditEventScreen';
 import SocialScreen from '@/screens/core/SocialScreen';
 import ProfileScreen from '@/screens/core/ProfileScreen';
 
@@ -80,10 +86,40 @@ const EventsStackNavigator = () => (
       }),
     }}
   >
-    <EventsStack.Screen 
-      name="EventsList" 
+    <EventsStack.Screen
+      name="EventsList"
       component={EventsScreen}
       options={{ title: 'Events' }}
+    />
+    <EventsStack.Screen
+      name="EventList"
+      component={EventListScreen}
+      options={{ title: 'All Events' }}
+    />
+    <EventsStack.Screen
+      name="EventBrowse"
+      component={EventBrowseScreen}
+      options={{ title: 'Browse Events' }}
+    />
+    <EventsStack.Screen
+      name="EventDetails"
+      component={EventDetailsScreen}
+      options={{ title: 'Event Details' }}
+    />
+    <EventsStack.Screen
+      name="EventRSVP"
+      component={EventRSVPScreen}
+      options={{ title: 'RSVP' }}
+    />
+    <EventsStack.Screen
+      name="CreateEvent"
+      component={CreateEventScreen}
+      options={{ title: 'Create Event' }}
+    />
+    <EventsStack.Screen
+      name="EditEvent"
+      component={EditEventScreen}
+      options={{ title: 'Edit Event' }}
     />
   </EventsStack.Navigator>
 );
